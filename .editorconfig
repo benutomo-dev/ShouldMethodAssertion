@@ -1,0 +1,16 @@
+root = true
+
+[*]
+
+# filescope namespace
+csharp_style_namespace_declarations=file_scoped:warning
+
+# スペルチェック
+spelling_languages = en-us,ja-jp
+spelling_exclusion_path = .\exclusion.dic
+
+[*.cs]
+
+# IDE005: 不要なusing
+dotnet_diagnostic.IDE0005.severity = warning
+
