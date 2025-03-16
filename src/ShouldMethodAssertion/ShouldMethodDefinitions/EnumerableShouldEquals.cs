@@ -22,8 +22,8 @@ public partial struct EnumerableShouldEquals<T> // ShouldMethod属性で指定�
             string v = IgnoreOrder.OneLine;
         }
 
-        var expectedExpression = ExpressionUtil.AdjustExpressionIndent(Context.GetExpressionOf(nameof(expected)));
-        var comparerExpression = ExpressionUtil.ToOneLineExpression(Context.GetExpressionOf(nameof(comparer)));
+        var expectedExpression = ExpressionUtil.AdjustExpressionIndent(Context.GetExpressionOf(nameof(expected)), withComplementBruckets: true);
+        var comparerExpression = ExpressionUtil.ToOneLineExpression(Context.GetExpressionOf(nameof(comparer)), withComplementBruckets: true);
 
         if (ignoreOrder)
             MatchWithoutOrdering(expected, comparer, expectedExpression!, comparerExpression);
@@ -45,14 +45,14 @@ public partial struct EnumerableShouldEquals<T> // ShouldMethod属性で指定�
     [StackTraceHidden]
     private void MatchWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer, string expectedExpression, string? comparerExpression)
     {
-        var oneLineActualExpression = ExpressionUtil.ToOneLineExpression(Context.ActualExpression);
+        var oneLineActualExpression = ExpressionUtil.ToOneLineExpression(Context.ActualExpression, withComplementBruckets: true);
 
         using var expectedEnumerator = expected.GetEnumerator();
         using var actualEnumerator = Context.Actual.GetEnumerator();
 
         var comparerAnnotation = comparerExpression is null
             ? ""
-            : $"`{comparerExpression}`による比較で";
+            : $"{comparerExpression}による比較で";
 
         int count = 0;
         while (true)
@@ -73,9 +73,9 @@ public partial struct EnumerableShouldEquals<T> // ShouldMethod属性で指定�
                 }
 
                 throw AssertExceptionUtil.Create($"""
-                        `{oneLineActualExpression}`は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
+                        {oneLineActualExpression}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
 
-                        `{expectedExpression}`
+                        {expectedExpression}
                         
                         {count}番目の要素の内容が異なっています。
                         期待値: {ExpressionUtil.ToOneLineValueString(expectedCurrent)}
@@ -89,11 +89,11 @@ public partial struct EnumerableShouldEquals<T> // ShouldMethod属性で指定�
             else if (expectedHasValue)
             {
                 throw AssertExceptionUtil.Create($"""
-                        `{oneLineActualExpression}`は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
+                        {oneLineActualExpression}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
 
-                        `{expectedExpression}`
+                        {expectedExpression}
                         
-                        `{oneLineActualExpression}`の要素数が期待値より不足しています。
+                        {oneLineActualExpression}の要素数が期待値より不足しています。
                         """);
             }
             else
@@ -101,11 +101,11 @@ public partial struct EnumerableShouldEquals<T> // ShouldMethod属性で指定�
                 Debug.Assert(actualHasValue);
 
                 throw AssertExceptionUtil.Create($"""
-                        `{oneLineActualExpression}`は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
+                        {oneLineActualExpression}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
 
-                        `{expectedExpression}`
+                        {expectedExpression}
                         
-                        `{oneLineActualExpression}`の要素数が期待値より余分に存在します。
+                        {oneLineActualExpression}の要素数が期待値より余分に存在します。
                         """);
             }
         }
@@ -114,7 +114,7 @@ public partial struct EnumerableShouldEquals<T> // ShouldMethod属性で指定�
     [StackTraceHidden]
     private void MatchWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer, string expectedExpression, string? comparerExpression)
     {
-        var oneLineActualExpression = ExpressionUtil.ToOneLineExpression(Context.ActualExpression);
+        var oneLineActualExpression = ExpressionUtil.ToOneLineExpression(Context.ActualExpression, withComplementBruckets: true);
 
         var actualValuesHistgram = toValueHistgram(Context.Actual, comparer);
         var expectedValuesHistgram = toValueHistgram(expected, comparer);
@@ -152,9 +152,9 @@ public partial struct EnumerableShouldEquals<T> // ShouldMethod属性で指定�
             : $"`{comparerExpression}`による比較で並び順を無視して";
 
         throw AssertExceptionUtil.Create($"""
-                `{oneLineActualExpression}`は{comparingDescription}以下と一致しなければなりませんが、一致しませんでした。
+                {oneLineActualExpression}は{comparingDescription}以下と一致しなければなりませんが、一致しませんでした。
 
-                `{expectedExpression}`
+                {expectedExpression}
                 
                 以下にそれぞれのコレクションの差異を同じ項目に対する格納数の違いで表示します。
                 [実際のコレクションに含まれている数, 期待値側のコレクションに含まれている数] : 対象項目

@@ -91,5 +91,7 @@ public class UnitTest1
             throw new FileNotFoundException("fugafuga");
         }).Should().ThrowAsync<IOException>(includeDerivedType: true).ConfigureAwait(true);
         exception2.Message.Should().Be("fugafuga");
+
+        "asdf".ShouldSatisfy(v => v.Length == 4);
     }
 }

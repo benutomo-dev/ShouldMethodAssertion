@@ -4,9 +4,9 @@ namespace ShouldMethodAssertion.ShouldAssertionContexts;
 
 public struct ValueExpression
 {
-    public string Default => _indentAdjustmentedValue ??= ExpressionUtil.AdjustExpressionIndent(_rawValue);
+    public string Default => _indentAdjustmentedValue ??= ExpressionUtil.AdjustExpressionIndent(_rawValue, withComplementBruckets: true);
 
-    public string OneLine => _oneLineValue ??= ExpressionUtil.ToOneLineExpression(_rawValue);
+    public string OneLine => _oneLineValue ??= ExpressionUtil.ToOneLineExpression(_rawValue, withComplementBruckets: true);
 
     public bool IsMultiLine => _rawValue.Contains('\n');
 
@@ -16,10 +16,13 @@ public struct ValueExpression
 
     private string? _indentAdjustmentedValue;
     private string? _oneLineValue;
+
     public ValueExpression(string rawValue) : this()
     {
         _rawValue = rawValue;
     }
+
+    public override string ToString() => Default;
 }
 
 
@@ -28,9 +31,9 @@ public struct NullableValueExpression
     [MemberNotNullWhen(true, nameof(Default), nameof(OneLine))]
     public bool HasValue => _rawValue is not null;
 
-    public string? Default => _indentAdjustmentedValue ??= ExpressionUtil.AdjustExpressionIndent(_rawValue);
+    public string? Default => _indentAdjustmentedValue ??= ExpressionUtil.AdjustExpressionIndent(_rawValue, withComplementBruckets: true);
 
-    public string? OneLine => _oneLineValue ??= ExpressionUtil.ToOneLineExpression(_rawValue);
+    public string? OneLine => _oneLineValue ??= ExpressionUtil.ToOneLineExpression(_rawValue, withComplementBruckets: true);
 
     [MemberNotNullWhen(true, nameof(Default), nameof(OneLine))]
     public bool IsMultiLine => _rawValue?.Contains('\n') ?? false;
@@ -47,4 +50,6 @@ public struct NullableValueExpression
     {
         _rawValue = rawValue;
     }
+
+    public override string? ToString() => Default;
 }

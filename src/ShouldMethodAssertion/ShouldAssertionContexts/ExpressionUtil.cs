@@ -7,7 +7,7 @@ namespace ShouldMethodAssertion.ShouldAssertionContexts;
 
 public static partial class ExpressionUtil
 {
-    [GeneratedRegex(@"\A(@$""|$@""|[@$]""|$*""{2,}|[\[(`])")]
+    [GeneratedRegex(@"\A(@$""|$@""|[@$]""|$*""{2,}|[\[(`""])")]
     private static partial Regex HasBracketsRegex();
 
 
@@ -18,22 +18,37 @@ public static partial class ExpressionUtil
     private static partial Regex LineSeparatorWithBeforeAndAfterWhiteSpaceRegex();
 
     [return: NotNullIfNotNull(nameof(expression))]
-    public static string? AdjustExpressionIndent(string? expression)
+    public static string? AdjustExpressionIndent(string? expression, bool withComplementBruckets)
     {
         if (expression is null)
             return null;
 
         if (!expression.Contains('\n'))
-            return expression;
+        {
+            if (withComplementBruckets && !HasBracketsExpression(expression))
+                return $"`{expression}`";
+            else
+                return expression;
+        }
 
         var lines = LineSeparatorRegex().Split(expression);
 
         if (lines.Length == 2)
         {
-            return $"""
-                {lines[0]}
-                {lines[1].TrimStart()}
-                """;
+            if (withComplementBruckets && !HasBracketsExpression(expression))
+            {
+                return $"""
+                    `{lines[0]}
+                    {lines[1].TrimStart()}`
+                    """;
+            }
+            else
+            {
+                return $"""
+                    {lines[0]}
+                    {lines[1].TrimStart()}
+                    """;
+            }
         }
 
         int trimCharCount = 0;
@@ -62,7 +77,12 @@ public static partial class ExpressionUtil
         if (trimCharCount == 0)
             return expression;
 
-        var fixedExpressionBuilder = new StringBuilder(expression.Length);
+        var putBruckets = withComplementBruckets && !HasBracketsExpression(expression);
+
+        var fixedExpressionBuilder = new StringBuilder(putBruckets ? expression.Length + 2 : expression.Length); 
+
+        if (putBruckets)
+            fixedExpressionBuilder.Append('`');
 
         fixedExpressionBuilder.Append(lines[0]);
         for (int i = 1; i < lines.Length; i++)
@@ -70,6 +90,9 @@ public static partial class ExpressionUtil
             fixedExpressionBuilder.AppendLine();
             fixedExpressionBuilder.Append(lines[i].AsSpan(trimCharCount));
         }
+
+        if (putBruckets)
+            fixedExpressionBuilder.Append('`');
 
         return fixedExpressionBuilder.ToString();
     }
@@ -84,15 +107,23 @@ public static partial class ExpressionUtil
     }
 
     [return: NotNullIfNotNull(nameof(expression))]
-    public static string? ToOneLineExpression(string? expression)
+    public static string? ToOneLineExpression(string? expression, bool withComplementBruckets)
     {
         if (expression is null)
             return null;
 
         if (!expression.Contains('\n'))
-            return expression;
+        {
+            if (withComplementBruckets && !HasBracketsExpression(expression))
+                return $"`{expression}`";
+            else
+                return expression;
+        }
 
-        return LineSeparatorWithBeforeAndAfterWhiteSpaceRegex().Replace(expression, _ => "");
+        if (withComplementBruckets && !HasBracketsExpression(expression))
+            return $"`{LineSeparatorWithBeforeAndAfterWhiteSpaceRegex().Replace(expression, _ => "")}`";
+        else
+            return LineSeparatorWithBeforeAndAfterWhiteSpaceRegex().Replace(expression, _ => "");
     }
 
     public static string ToOneLineValueString<TValue>(TValue? value)
