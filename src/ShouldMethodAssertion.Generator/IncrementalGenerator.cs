@@ -64,6 +64,7 @@ public class IncrementalGenerator : IIncrementalGenerator
         CsTypeReference StringType,
         CsTypeReference CallerArgumentExpressionAttributeType,
         CsTypeReference ShouldMethodDefinitionType,
+        string? ActualValueConvertMethodName,
 
         CsTypeRefWithNullability? ShouldMethodDefinitionActualValueType,
         CsTypeReference? ShouldAssertionContextType,
@@ -247,6 +248,8 @@ public class IncrementalGenerator : IIncrementalGenerator
             {
                 var shouldMethodDefinitionTypeSymbol = shouldMethodAttributeData.ConstructorArguments[0].Value as INamedTypeSymbol;
 
+                var convertMethodName = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == "ConvertBy").Value.Value as string;
+
                 DebugSGen.AssertIsNotNull(shouldMethodDefinitionTypeSymbol);
 
                 if (shouldMethodDefinitionTypeSymbol.IsUnboundGenericType)
@@ -264,6 +267,7 @@ public class IncrementalGenerator : IIncrementalGenerator
                         stringType,
                         callerArgumentExpressionAttribute,
                         shouldMethodDefinitionType.Type,
+                        convertMethodName,
                         null,
                         null,
                         EquatableArray<CsMethod>.Empty,
@@ -294,6 +298,7 @@ public class IncrementalGenerator : IIncrementalGenerator
                     stringType,
                     callerArgumentExpressionAttribute,
                     shouldMethodDefinitionType.Type,
+                    convertMethodName,
                     shouldMethodDefinitionActualValueType,
                     shouldAssertionContextType,
                     shouldMethods,
@@ -411,9 +416,9 @@ public class IncrementalGenerator : IIncrementalGenerator
         string hintName;
 
         if (args.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"ShouldExtensions/{args.ActualValueType.Type.TypeArgs[0][0].Type.TypeDefinition.MakeStandardHintName()}.cs";
+            hintName = $"ShouldExtensions/{args.ActualValueType.Type.TypeArgs[0][0].Type.Cref}.cs";
         else
-            hintName = $"ShouldExtensions/{args.ActualValueType.Type.TypeDefinition.MakeStandardHintName()}.cs";
+            hintName = $"ShouldExtensions/{args.ActualValueType.Type.Cref}.cs";
 
         using var sb = new SourceBuilder(context, $"{hintName}.cs");
 
@@ -526,9 +531,9 @@ public class IncrementalGenerator : IIncrementalGenerator
         string hintName;
 
         if (args.ShouldObjectActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Type.TypeDefinition.MakeStandardHintName()}/{args.ShouldMethodDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
+            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
         else
-            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.TypeDefinition.MakeStandardHintName()}/{args.ShouldMethodDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
+            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
 
         using var sb = new SourceBuilder(context, $"{hintName}.cs");
 
@@ -612,6 +617,12 @@ public class IncrementalGenerator : IIncrementalGenerator
                                 }
                                 sb.AppendLine();
                             }
+                        }
+
+                        if (args.ActualValueConvertMethodName is not null)
+                        {
+                            sb.AppendLineWithFirstIndent($"var __convertedActualValue = {args.ActualValueConvertMethodName}({actualValueRefSymbolName});");
+                            actualValueRefSymbolName = "__convertedActualValue";
                         }
 
                         sb.AppendLineWithFirstIndent($"var __context = new {args.ShouldAssertionContextType.GlobalReference}(");

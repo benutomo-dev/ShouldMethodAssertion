@@ -5,7 +5,7 @@ public class ShouldMethodAttribute : Attribute
 {
     public Type ShouldMethodDefinitionType { get; }
 
-    public Type[]? TypeArgs { get; init; }
+    public string? ConvertBy { get; init; }
 
     public ShouldMethodAttribute(Type shouldMethodDefinitionType)
     {
