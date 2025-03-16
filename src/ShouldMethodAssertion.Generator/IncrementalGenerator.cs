@@ -589,6 +589,9 @@ public class IncrementalGenerator : IIncrementalGenerator
 
                         string actualValueRefSymbolName = "Actual";
 
+                        if (extendedShouldMethod.Name == "Be")
+                            ;
+
                         if (args.ShouldMethodDefinitionActualValueType is not { IsNullable: true, Type.TypeDefinition.IsReferenceType: true })
                         {
                             // ShouldAssertionContextのActualがnull許容の参照型でない場合は、必要に応じて事前にnullチェックを実施してから、

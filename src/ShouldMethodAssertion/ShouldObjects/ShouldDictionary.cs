@@ -4,6 +4,7 @@ using ShouldMethodAssertion.ShouldMethodDefinitions;
 namespace ShouldMethodAssertion.ShouldObjects;
 
 [ShouldExtension(typeof(IReadOnlyDictionary<,>))]
+[ShouldMethod(typeof(ObjectShouldBeNull))]
 [ShouldMethod(typeof(DictionaryShouldEquals<,>))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
 [ShouldMethod(typeof(ObjectShouldBeAssignableTo))]
