@@ -14,3 +14,10 @@ spelling_exclusion_path = .\exclusion.dic
 # IDE005: 不要なusing
 dotnet_diagnostic.IDE0005.severity = warning
 
+
+[test/**/*.cs]
+# CA1707: 識別子はアンダースコアを含むことはできません
+dotnet_diagnostic.CA1707.severity = silent
+
+# CA2201: 予約された例外の種類を発生させません
+dotnet_diagnostic.CA2201.severity = silent

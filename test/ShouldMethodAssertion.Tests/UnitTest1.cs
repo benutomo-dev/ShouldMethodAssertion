@@ -82,14 +82,14 @@ public class UnitTest1
 
         //Guid.NewGuid().Should().Be(Guid.NewGuid());
 
-        var exception1 = new Action(() => throw new FileNotFoundException("hogehoge")).Should().Throw<IOException>();
+        var exception1 = new Action(() => throw new FileNotFoundException("hogehoge")).Should().Throw<IOException>(includeDerivedType: true);
         exception1.Message.Should().Be("hogehoge");
 
         var exception2 = await new Func<Task>(async () =>
         {
             await Task.Delay(1).ConfigureAwait(true);
             throw new FileNotFoundException("fugafuga");
-        }).Should().ThrowAsync<IOException>().ConfigureAwait(true);
+        }).Should().ThrowAsync<IOException>(includeDerivedType: true).ConfigureAwait(true);
         exception2.Message.Should().Be("fugafuga");
     }
 }

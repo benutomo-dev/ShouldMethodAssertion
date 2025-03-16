@@ -6,4 +6,9 @@ public static class AssertExceptionUtil
     {
         return new InvalidOperationException(message);
     }
+
+    public static Exception Create(string message, Exception exception)
+    {
+        return new InvalidOperationException(message, exception);
+    }
 }
