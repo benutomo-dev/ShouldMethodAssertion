@@ -11,7 +11,7 @@ public partial struct ObjectShouldSameReferenceAs
         if (ReferenceEquals(Actual, expected))
             return;
 
-        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not same as {ParamExpressions.expected.OneLine}.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not same reference as {ParamExpressions.expected.OneLine}. But did not expect it to be.");
     }
 
     public void ShouldNotSameReferenceAs<T>(T expected) where T : class
@@ -19,6 +19,6 @@ public partial struct ObjectShouldSameReferenceAs
         if (!ReferenceEquals(Actual, expected))
             return;
 
-        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is same as {ParamExpressions.expected.OneLine}.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is same reference as {ParamExpressions.expected.OneLine}. But did not expect it to be.");
     }
 }
