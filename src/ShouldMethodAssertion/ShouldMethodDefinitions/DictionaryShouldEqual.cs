@@ -3,7 +3,7 @@
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
 [ShouldMethodDefinition(typeof(IReadOnlyDictionary<,>))]
-public partial struct DictionaryShouldEquals<TKey, TValue>
+public partial struct DictionaryShouldEqual<TKey, TValue>
 {
     public void ShouldEqual(IEnumerable<KeyValuePair<TKey, TValue>> expected, IEqualityComparer<TValue>? valueComparer = null)
     {

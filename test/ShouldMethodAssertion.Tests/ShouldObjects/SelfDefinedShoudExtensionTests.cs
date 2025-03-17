@@ -20,7 +20,7 @@ public partial class SelfDefinedShoudExtensionTests
 
     [ShouldExtension(typeof(MixIn))]
     [ShouldMethod(typeof(ObjectShouldBeOneOf))]
-    [ShouldMethod(typeof(EnumerableShouldEquals<>), TypeArgs = [typeof(int)])]
+    [ShouldMethod(typeof(EnumerableShouldEqual<>), TypeArgs = [typeof(int)])]
     [ShouldMethod(typeof(ComparableShouldCompare<>), TypeArgs = [typeof(MixIn)])]
     [ShouldMethod(typeof(CustumShouldMethodDefine))]
     public partial struct ShouldMixIn

@@ -4,7 +4,7 @@ using ShouldMethodAssertion.ShouldMethodDefinitions;
 namespace ShouldMethodAssertion.ShouldObjects;
 
 [ShouldExtension(typeof(IEnumerable<>))]
-[ShouldMethod(typeof(EnumerableShouldEquals<>))]
+[ShouldMethod(typeof(EnumerableShouldEqual<>))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
 [ShouldMethod(typeof(ObjectShouldBeAssignableTo))]
 public partial struct ShouldEnumerable<T>

@@ -51,7 +51,8 @@ public class UnitTest1
         default(int?).Should().BeNull();
         default(Guid?).Should().BeNull();
 
-        //Guid.NewGuid().Should().Be(Guid.NewGuid());
+        var guid = Guid.NewGuid();
+        guid.Should().Be(guid);
 
         var exception1 = new Action(() => throw new FileNotFoundException("hogehoge")).Should().Throw<IOException>(includeDerivedType: true);
         exception1.Message.Should().Be("hogehoge");

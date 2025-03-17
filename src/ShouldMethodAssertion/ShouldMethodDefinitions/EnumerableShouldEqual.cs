@@ -9,7 +9,7 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
 [ShouldMethodDefinition(typeof(IEnumerable<>))]
 [StructLayout(LayoutKind.Auto)]
-public partial struct EnumerableShouldEquals<T> // ShouldMethod属性で指定した型と同じ数と制約の型引数
+public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定した型と同じ数と制約の型引数
 {
     NullableValueExpression IgnoreOrder { get; }
 
