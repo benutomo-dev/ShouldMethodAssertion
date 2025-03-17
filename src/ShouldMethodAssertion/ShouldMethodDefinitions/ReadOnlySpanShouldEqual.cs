@@ -1,6 +1,5 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
 using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
-using System;
 using System.Diagnostics;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
