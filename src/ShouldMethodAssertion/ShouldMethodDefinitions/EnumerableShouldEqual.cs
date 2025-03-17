@@ -25,10 +25,10 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (!Actual.SequenceEqual(expected, comparer))
-            return;
-
-        throw AssertExceptionUtil.Create($"{ActualExpression} is {ParamExpressions.expected}.");
+        if (ignoreOrder)
+            NotMatchWithoutOrdering(expected, comparer);
+        else
+            NotMatchWithOrdering(expected, comparer);
     }
 
 
@@ -102,8 +102,8 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
     [StackTraceHidden]
     private void MatchWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
     {
-        var actualValuesHistgram = toValueHistgram(Actual, comparer);
-        var expectedValuesHistgram = toValueHistgram(expected, comparer);
+        var actualValuesHistgram = ToValueHistgram(Actual, comparer);
+        var expectedValuesHistgram = ToValueHistgram(expected, comparer);
 
         var differenceValueList = new List<(T? value, int countInActual, int countInExpected)>();
 
@@ -154,34 +154,82 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
                 {differeceListTextBuilder}
                 """);
 
-#nullable disable warnings
-        static (Dictionary<T, int> valueCountTable, int nullCount) toValueHistgram(IEnumerable<T> values, IEqualityComparer<T> comparer)
+    }
+
+    private void NotMatchWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    {
+        if (!Actual.SequenceEqual(expected, comparer))
+            return;
+
+        var comparerAnnotation = ParamExpressions.comparer.HasValue
+            ? $"{ParamExpressions.comparer}による比較で"
+            : "";
+
+        throw AssertExceptionUtil.Create($"""
+            {ActualExpression.OneLine}は{comparerAnnotation}以下と一致しています。
+
+            {ParamExpressions.expected}
+            """);
+    }
+
+    private void NotMatchWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    {
+        var actualValuesHistgram = ToValueHistgram(Actual, comparer);
+        var expectedValuesHistgram = ToValueHistgram(expected, comparer);
+
+        if (actualValuesHistgram.nullCount != expectedValuesHistgram.nullCount)
+            return;
+
+        if (actualValuesHistgram.valueCountTable.Count != expectedValuesHistgram.valueCountTable.Count)
+            return;
+
+        foreach (var actualValueEntry in actualValuesHistgram.valueCountTable)
         {
-            var valueCountTable = new Dictionary<T, int>(comparer);
-            int nullCount = 0;
-            foreach (var value in values)
+            if (expectedValuesHistgram.valueCountTable.TryGetValue(actualValueEntry.Key, out var expectedCount))
             {
-                if (value is null)
-                {
-                    nullCount++;
-                    continue;
-                }
+                if (actualValueEntry.Value != expectedCount)
+                    return;
+            }
+        }
 
-#if NETFRAMEWORK
-                if (valueCountTable.TryGetValue(value, out var valueCount))
-                    valueCount++;
-                else
-                    valueCount = 1;
+        var comparerAnnotation = ParamExpressions.comparer.HasValue
+            ? $"{ParamExpressions.comparer}による並び順を無視した比較で"
+            : "";
 
-                valueCountTable[value] = valueCount;
-#else
-                ref var valueCountRef = ref CollectionsMarshal.GetValueRefOrAddDefault(valueCountTable, value, out var exists);
-                valueCountRef++;
-#endif
+        throw AssertExceptionUtil.Create($"""
+            {ActualExpression.OneLine}は{comparerAnnotation}以下と一致しています。
+
+            {ParamExpressions.expected}
+            """);
+    }
+
+#nullable disable warnings
+    private static (Dictionary<T, int> valueCountTable, int nullCount) ToValueHistgram(IEnumerable<T> values, IEqualityComparer<T> comparer)
+    {
+        var valueCountTable = new Dictionary<T, int>(comparer);
+        int nullCount = 0;
+        foreach (var value in values)
+        {
+            if (value is null)
+            {
+                nullCount++;
+                continue;
             }
 
-            return (valueCountTable, nullCount);
+#if NETFRAMEWORK
+            if (valueCountTable.TryGetValue(value, out var valueCount))
+                valueCount++;
+            else
+                valueCount = 1;
+
+            valueCountTable[value] = valueCount;
+#else
+            ref var valueCountRef = ref CollectionsMarshal.GetValueRefOrAddDefault(valueCountTable, value, out var exists);
+            valueCountRef++;
+#endif
         }
-#nullable restore
+
+        return (valueCountTable, nullCount);
     }
+#nullable restore
 }
