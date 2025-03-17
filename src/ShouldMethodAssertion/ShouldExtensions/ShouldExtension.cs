@@ -1,4 +1,4 @@
-﻿using ShouldMethodAssertion.ShouldAssertionContexts;
+﻿using ShouldMethodAssertion.ExpressionUtils;
 using ShouldMethodAssertion.ShouldMethodDefinitions;
 using System.Runtime.CompilerServices;
 

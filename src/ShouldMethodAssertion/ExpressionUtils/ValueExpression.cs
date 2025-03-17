@@ -1,4 +1,4 @@
-﻿namespace ShouldMethodAssertion.ShouldAssertionContexts;
+﻿namespace ShouldMethodAssertion.ExpressionUtils;
 
 public struct ValueExpression
 {

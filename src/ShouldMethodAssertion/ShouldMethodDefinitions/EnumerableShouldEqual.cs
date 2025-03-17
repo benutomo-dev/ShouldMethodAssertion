@@ -1,5 +1,5 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
-using ShouldMethodAssertion.ShouldAssertionContexts;
+using ShouldMethodAssertion.ExpressionUtils;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
