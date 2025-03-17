@@ -1,13 +1,14 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
 using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
+using System;
 using System.Diagnostics;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
-[ShouldMethodDefinition(typeof(IEnumerable<>))]
-public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定した型と同じ数と制約の型引数
+[ShouldMethodDefinition(typeof(ReadOnlySpan<>))]
+public partial struct ReadOnlySpanShouldEqual<T> // ShouldMethod属性で指定した型と同じ数と制約の型引数
 {
-    public void ShouldEqual(IEnumerable<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null)
+    public void ShouldEqual(ReadOnlySpan<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
 
@@ -17,7 +18,7 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
             MatchWithOrdering(expected, comparer);
     }
 
-    public void ShouldNotEqual(IEnumerable<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null)
+    public void ShouldNotEqual(ReadOnlySpan<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
 
@@ -27,12 +28,11 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
             NotMatchWithOrdering(expected, comparer);
     }
 
-
     [StackTraceHidden]
-    private void MatchWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    private void MatchWithOrdering(ReadOnlySpan<T> expected, IEqualityComparer<T> comparer)
     {
-        using var expectedEnumerator = expected.GetEnumerator();
-        using var actualEnumerator = Actual.GetEnumerator();
+        var expectedEnumerator = expected.GetEnumerator();
+        var actualEnumerator = Actual.GetEnumerator();
 
         SequenceHelper.MatchWithOrderingCore(
             new CommonEnumerator<T>(actualEnumerator),
@@ -44,7 +44,7 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
     }
 
     [StackTraceHidden]
-    private void MatchWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    private void MatchWithoutOrdering(ReadOnlySpan<T> expected, IEqualityComparer<T> comparer)
     {
         var actualValuesHistgram = ToValueHistgram(Actual, comparer);
         var expectedValuesHistgram = ToValueHistgram(expected, comparer);
@@ -57,9 +57,9 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
             ParamExpressions.comparer);
     }
 
-    private void NotMatchWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    private void NotMatchWithOrdering(ReadOnlySpan<T> expected, IEqualityComparer<T> comparer)
     {
-        if (!Actual.SequenceEqual(expected, comparer))
+        if (!SequenceEqual(Actual, expected, comparer))
             return;
 
         SequenceHelper.NotMatchWithOrderingCore(
@@ -68,7 +68,7 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
             ParamExpressions.comparer);
     }
 
-    private void NotMatchWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    private void NotMatchWithoutOrdering(ReadOnlySpan<T> expected, IEqualityComparer<T> comparer)
     {
         var actualValuesHistgram = ToValueHistgram(Actual, comparer);
         var expectedValuesHistgram = ToValueHistgram(expected, comparer);
@@ -81,8 +81,26 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
             ParamExpressions.comparer);
     }
 
+    private static bool SequenceEqual(ReadOnlySpan<T> actual, ReadOnlySpan<T> expected, IEqualityComparer<T> comparer)
+    {
+#if NETFRAMEWORK
+        if (actual.Length != expected.Length)
+            return false;
+
+        for (int i = 0; i < actual.Length; i++)
+        {
+            if (!comparer.Equals(actual[i], expected[i]))
+                return false;
+        }
+
+        return true;
+#else
+        return actual.SequenceEqual(expected, comparer);
+#endif
+    }
+
 #nullable disable warnings
-    private static (Dictionary<T, int> valueCountTable, int nullCount) ToValueHistgram(IEnumerable<T> values, IEqualityComparer<T> comparer)
+    private static (Dictionary<T, int> valueCountTable, int nullCount) ToValueHistgram(ReadOnlySpan<T> values, IEqualityComparer<T> comparer)
     {
         var valueCountTable = new Dictionary<T, int>(comparer);
         int nullCount = 0;

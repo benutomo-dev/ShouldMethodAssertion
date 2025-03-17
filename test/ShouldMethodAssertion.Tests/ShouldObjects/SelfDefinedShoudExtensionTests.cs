@@ -1,6 +1,7 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
 using ShouldMethodAssertion.ShouldExtensions;
 using ShouldMethodAssertion.ShouldMethodDefinitions;
+using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 using System.Collections;
 
 namespace ShouldMethodAssertion.Tests.ShouldObjects;
