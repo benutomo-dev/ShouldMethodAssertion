@@ -7,15 +7,33 @@ namespace ShouldMethodAssertion.ExpressionUtils;
 
 public static partial class ExpressionUtil
 {
-    [GeneratedRegex(@"\A(@$""|$@""|[@$]""|$*""{2,}|[\[(`""])")]
+    private const string HasBracketsRegexValue = /* language=regex */ @"\A(@$""|$@""|[@$]""|$*""{2,}|[\[(`""])";
+
+    private const string LineSeparatorRegexValue = /* language=regex */ @"\r?\n";
+
+    private const string LineSeparatorWithBeforeAndAfterWhiteSpaceRegexValue = /* language=regex */ @"\s*\r?\n\s*";
+
+#if NET8_0_OR_GREATER
+    [GeneratedRegex(HasBracketsRegexValue)]
     private static partial Regex HasBracketsRegex();
 
 
-    [GeneratedRegex(@"\r?\n")]
+    [GeneratedRegex(LineSeparatorRegexValue)]
     private static partial Regex LineSeparatorRegex();
 
-    [GeneratedRegex(@"\s*\r?\n\s*")]
+    [GeneratedRegex(LineSeparatorWithBeforeAndAfterWhiteSpaceRegexValue)]
     private static partial Regex LineSeparatorWithBeforeAndAfterWhiteSpaceRegex();
+#else
+    private static Regex HasBracketsRegex() => _hasBracketsRegex;
+    private static Regex _hasBracketsRegex = new Regex(HasBracketsRegexValue, RegexOptions.Compiled);
+
+
+    private static Regex LineSeparatorRegex() => _lineSeparatorRegex;
+    private static Regex _lineSeparatorRegex = new Regex(LineSeparatorRegexValue, RegexOptions.Compiled);
+
+    private static Regex LineSeparatorWithBeforeAndAfterWhiteSpaceRegex() => _lineSeparatorWithBeforeAndAfterWhiteSpaceRegex;
+    private static Regex _lineSeparatorWithBeforeAndAfterWhiteSpaceRegex = new Regex(LineSeparatorWithBeforeAndAfterWhiteSpaceRegexValue, RegexOptions.Compiled);
+#endif
 
     [return: NotNullIfNotNull(nameof(expression))]
     public static string? AdjustExpressionIndent(string? expression, bool withComplementBruckets)

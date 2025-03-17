@@ -112,8 +112,14 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
 
         foreach (var expectedValueEntry in expectedValuesHistgram.valueCountTable)
         {
+#if NETFRAMEWORK
+#nullable disable warnings
+#endif
             if (!actualValuesHistgram.valueCountTable.Remove(expectedValueEntry.Key, out var actualValueCount))
                 actualValueCount = 0;
+#if NETFRAMEWORK
+#nullable restore
+#endif
 
             if (expectedValueEntry.Value != actualValueCount)
                 differenceValueList.Add((expectedValueEntry.Key, actualValueCount, expectedValueEntry.Value));
@@ -124,6 +130,7 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
 
         if (differenceValueList.Count == 0)
             return;
+
 
         var differeceListTextBuilder = new StringBuilder();
         const int maxListingCount = 10;
@@ -160,8 +167,17 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
                     continue;
                 }
 
+#if NETFRAMEWORK
+                if (valueCountTable.TryGetValue(value, out var valueCount))
+                    valueCount++;
+                else
+                    valueCount = 1;
+
+                valueCountTable[value] = valueCount;
+#else
                 ref var valueCountRef = ref CollectionsMarshal.GetValueRefOrAddDefault(valueCountTable, value, out var exists);
                 valueCountRef++;
+#endif
             }
 
             return (valueCountTable, nullCount);

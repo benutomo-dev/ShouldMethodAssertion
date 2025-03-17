@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net6.0;net8.0;net462</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -24,12 +24,22 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <None Include="$(OutputPath)\..\..\..\ShouldMethodAssertion.Generator\$(Configuration)\netstandard2.0\ShouldMethodAssertion.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.0/cs" Visible="false" />
-    <None Update="nuget.readme.md" Pack="true" PackagePath="/" />
+    <None Include="$(OutputPath)\..\..\ShouldMethodAssertion.Generator\$(Configuration)\netstandard2.0\ShouldMethodAssertion.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.0/cs" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)nuget.readme.md" Pack="true" PackagePath="/" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\ShouldMethodAssertion.Generator\ShouldMethodAssertion.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <PackageReference Include="Polyfill" Version="7.16.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Memory" Version="4.6.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.0" />
   </ItemGroup>
 
 </Project>

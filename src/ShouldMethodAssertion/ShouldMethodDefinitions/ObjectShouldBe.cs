@@ -12,7 +12,7 @@ public partial struct ObjectShouldBe
         if (Actual is null && expected is null)
             return;
 
-        if (Actual is T actual && comparer.Equals(actual, expected))
+        if (Actual is T actual && comparer.Equals(actual, expected!))
             return;
 
         throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
@@ -25,7 +25,7 @@ public partial struct ObjectShouldBe
         if (Actual is null && expected is null)
             throw AssertExceptionUtil.Create($"Both {ActualExpression} and {ParamExpressions.expected} are `null`.");
 
-        if (Actual is not T actual || !comparer.Equals(actual, expected))
+        if (Actual is not T actual || !comparer.Equals(actual, expected!))
             return;
 
         throw AssertExceptionUtil.Create($"{ActualExpression} is {ParamExpressions.expected}.");

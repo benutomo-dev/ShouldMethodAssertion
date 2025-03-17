@@ -9,7 +9,7 @@ public partial struct ReadOnlySpanShouldEquals<T> // ShouldMethod属性で指定
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (Actual.SequenceEqual(expected, comparer))
+        if (SequenceEqual(Actual, expected, comparer))
             return;
 
         throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
@@ -19,9 +19,27 @@ public partial struct ReadOnlySpanShouldEquals<T> // ShouldMethod属性で指定
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (!Actual.SequenceEqual(expected, comparer))
+        if (!SequenceEqual(Actual, expected, comparer))
             return;
 
         throw AssertExceptionUtil.Create($"{ActualExpression} is {ParamExpressions.expected}.");
+    }
+
+    private static bool SequenceEqual(ReadOnlySpan<T> actual, ReadOnlySpan<T> expected, IEqualityComparer<T> comparer)
+    {
+#if NETFRAMEWORK
+        if (actual.Length != expected.Length)
+            return false;
+
+        for (int i = 0; i < actual.Length; i++)
+        {
+            if (!comparer.Equals(actual[i], expected[i]))
+                return false;
+        }
+
+        return true;
+#else
+        return actual.SequenceEqual(expected, comparer);
+#endif
     }
 }
