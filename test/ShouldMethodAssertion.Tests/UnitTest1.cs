@@ -23,7 +23,7 @@ public class UnitTest1
 
         //new int[1].AsSpan().Should().Equal(new int[2]);
 
-        (2.0).Should().LessThan(3);
+        (2.0).Should().BeLessThan(3);
 
         //Guid.NewGuid().Should().Be(Guid.NewGuid());
         

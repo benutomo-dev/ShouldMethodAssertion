@@ -46,7 +46,7 @@ public partial class SelfDefinedShoudExtensionTests
 
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => m1.Should().BeOneOf([m2]));
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new [] { m1, m2 }.Should().Equal([m1, m1], ignoreOrder: true));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => m2.Should().LessThan(m1));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => m2.Should().BeLessThan(m1));
     }
 
     [Fact]
@@ -57,7 +57,7 @@ public partial class SelfDefinedShoudExtensionTests
 
         m1.Should().BeOneOf([m2, m1]);
         new[] { m1, m2 }.Should().Equal([m2, m1], ignoreOrder: true);
-        m1.Should().LessThan(m2);
+        m1.Should().BeLessThan(m2);
     }
 
     [Fact]
