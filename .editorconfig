@@ -21,3 +21,6 @@ dotnet_diagnostic.CA1707.severity = silent
 
 # CA2201: 予約された例外の種類を発生させません
 dotnet_diagnostic.CA2201.severity = silent
+
+# CA1861: 引数として定数配列を使用しない
+dotnet_diagnostic.CA1861.severity = silent

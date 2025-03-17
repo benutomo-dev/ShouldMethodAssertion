@@ -21,7 +21,7 @@ public class IncrementalGenerator : IIncrementalGenerator
 
     private const string CallerArgumentExpressionAttributeMetadataName = "System.Runtime.CompilerServices.CallerArgumentExpressionAttribute";
 
-    private const string ExceptionCreateCall = "global::ShouldMethodAssertion.AssertExceptionUtil.Create";
+    private const string ExceptionCreateCall = "global::ShouldMethodAssertion.ShouldMethodDefinitions.AssertExceptionUtil.Create";
 
     record struct ShouldExtensionWithProvider(
         GeneratorAttributeSyntaxContext Context,
@@ -250,6 +250,12 @@ public class IncrementalGenerator : IIncrementalGenerator
 
                 var convertMethodName = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == "ConvertBy").Value.Value as string;
 
+                var typeArgsTypedConstant = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == "TypeArgs").Value;
+
+                var explicitTypeArgs = typeArgsTypedConstant.Kind == TypedConstantKind.Array
+                    ? typeArgsTypedConstant.Values.Select(v => args.DeclarationProvider.GetTypeReference((ITypeSymbol)v.Value!)).ToImmutableArray().ToEquatableArray()
+                    : default;
+
                 DebugSGen.AssertIsNotNull(shouldMethodDefinitionTypeSymbol);
 
                 if (shouldMethodDefinitionTypeSymbol.IsUnboundGenericType)
@@ -259,9 +265,7 @@ public class IncrementalGenerator : IIncrementalGenerator
 
                 var shouldMethodDefinitionAttribute = shouldMethodDefinitionTypeSymbol.GetAttributes().FirstOrDefault(v => SymbolEqualityComparer.Default.Equals(v.AttributeClass, shouldMethodDefinitionAttributeSymbol));
 
-                if (shouldMethodDefinitionAttribute is null)
-                {
-                    yield return new(
+                var failedDefaultValue = new ShouldObjectAssertionMethodsInput(
                         extensionType,
                         actualValueType,
                         stringType,
@@ -271,15 +275,67 @@ public class IncrementalGenerator : IIncrementalGenerator
                         null,
                         null,
                         EquatableArray<CsMethod>.Empty,
-                        $"{shouldMethodDefinitionTypeSymbol.Name}に{ShouldMethodDefinitionAttributeMetadataName}属性が付与されていません。");
+                        $"ソース生成に失敗しました。");
 
+                if (shouldMethodDefinitionAttribute is null)
+                {
+                    yield return failedDefaultValue with
+                    {
+                        WarningMessage = $"{shouldMethodDefinitionTypeSymbol.Name}に{ShouldMethodDefinitionAttributeMetadataName}属性が付与されていません。",
+                    };
                     continue;
                 }
 
                 var shouldMethodDefinitionActualValueType = GetActualValueTypeFromShouldMethodDefinitionAttribute(args.DeclarationProvider, shouldMethodDefinitionAttribute);
 
-                if (!shouldMethodDefinitionActualValueType.Type.TypeArgs.IsDefaultOrEmpty && shouldMethodDefinitionActualValueType.Type.TypeArgs[0].Values.Any(v => v.Type.TypeDefinition is CsErrorType))
+                Dictionary<CsTypeReference, CsTypeReference>? typeRedirectDictionary = null;
+
+                if (!explicitTypeArgs.IsDefaultOrEmpty)
                 {
+                    if (shouldMethodDefinitionActualValueType.Type.TypeArgs.IsDefaultOrEmpty || explicitTypeArgs.Length != shouldMethodDefinitionActualValueType.Type.TypeArgs[0].Length)
+                    {
+                        yield return failedDefaultValue with
+                        {
+                            WarningMessage = $"TypeArgsの数が適用対象の型の型パラメータの数と一致しません。",
+                        };
+                        continue;
+                    }
+
+                    typeRedirectDictionary = new(explicitTypeArgs.Length);
+
+                    for (int i = 0; i < explicitTypeArgs.Length; i++)
+                    {
+                        typeRedirectDictionary.Add(
+                            shouldMethodDefinitionActualValueType.Type.TypeArgs.Values[0][i].Type,
+                            explicitTypeArgs[i].Type
+                            );
+                    }
+
+                    shouldMethodDefinitionActualValueType = shouldMethodDefinitionActualValueType.WithTypeArgs(EquatableArray.Create(explicitTypeArgs));
+
+                    shouldMethodDefinitionType = shouldMethodDefinitionType.WithTypeRedirection(typeRedirectDictionary);
+                }
+                else if (!shouldMethodDefinitionActualValueType.Type.TypeArgs.IsDefaultOrEmpty && shouldMethodDefinitionActualValueType.Type.TypeArgs[0].Values.Any(v => v.Type.TypeDefinition is CsErrorType))
+                {
+                    if (shouldMethodDefinitionType.Type.TypeArgs[0].Length != shouldMethodDefinitionActualValueType.Type.TypeArgs[0].Length)
+                    {
+                        yield return failedDefaultValue with
+                        {
+                            WarningMessage = $"型パラメータの数が一致しないため、型パラメータを継承出来ません。ShouldMethod属性にTypeArgsの指定が必要です。",
+                        };
+                        continue;
+                    }
+
+                    typeRedirectDictionary = new(shouldMethodDefinitionType.Type.TypeArgs[0].Length);
+
+                    for (int i = 0; i < shouldMethodDefinitionType.Type.TypeArgs[0].Length; i++)
+                    {
+                        typeRedirectDictionary.Add(
+                            shouldMethodDefinitionActualValueType.Type.TypeArgs.Values[0][i].Type,
+                            shouldMethodDefinitionType.Type.TypeArgs[0][i].Type
+                            );
+                    }
+
                     shouldMethodDefinitionActualValueType = shouldMethodDefinitionActualValueType.WithTypeArgs(shouldMethodDefinitionType.Type.TypeArgs);
                 }
 
@@ -289,7 +345,35 @@ public class IncrementalGenerator : IIncrementalGenerator
                     .OfType<IMethodSymbol>()
                     .Where(v => v is { IsStatic: false, MethodKind: MethodKind.Ordinary, DeclaredAccessibility: Accessibility.Public })
                     .Where(v => v.Name.StartsWith("Should", StringComparison.Ordinal))
-                    .Select(declarationProvider.GetMethodDeclaration)
+                    .Select(v =>
+                    {
+                        var method = declarationProvider.GetMethodDeclaration(v);
+
+                        if (typeRedirectDictionary is null)
+                            return method;
+
+                        var remapReturnType = method.ReturnType.WithTypeRedirection(typeRedirectDictionary);
+
+                        if (!method.ReturnType.Equals(remapReturnType))
+                        {
+                            method = method with { ReturnType = remapReturnType };
+                        }
+
+                        var remapedParamsBuilder = ImmutableArray.CreateBuilder<CsMethodParam>(method.Params.Length);
+                        foreach (var param in method.Params.Values)
+                        {
+                            var remapedPramType = param.Type.WithTypeRedirection(typeRedirectDictionary);
+
+                            if (param.Type.Equals(remapReturnType))
+                                remapedParamsBuilder.Add(param);
+                            else
+                                remapedParamsBuilder.Add(param with { Type = remapedPramType });
+                        }
+
+                        method = method with { Params = remapedParamsBuilder.MoveToImmutable() };
+
+                        return method;
+                    })
                     .ToImmutableArray();
 
                 yield return new(
@@ -531,9 +615,9 @@ public class IncrementalGenerator : IIncrementalGenerator
         string hintName;
 
         if (args.ShouldObjectActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
+            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
         else
-            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
+            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
 
         using var sb = new SourceBuilder(context, $"{hintName}.cs");
 
@@ -588,9 +672,6 @@ public class IncrementalGenerator : IIncrementalGenerator
                         sb.AppendLine($"#pragma warning restore CS0693");
 
                         string actualValueRefSymbolName = "Actual";
-
-                        if (extendedShouldMethod.Name == "Be")
-                            ;
 
                         if (args.ShouldMethodDefinitionActualValueType is not { IsNullable: true, Type.TypeDefinition.IsReferenceType: true })
                         {

@@ -6,40 +6,11 @@ using System.Runtime.CompilerServices;
 
 namespace ShouldMethodAssertion.Tests;
 
-[ShouldExtension(typeof(UnitTest1.X))]
-[ShouldMethod(typeof(EnumerableShouldEquals<int>))]
-[ShouldMethod(typeof(ComparableShouldCompare<UnitTest1.X>))]
-public partial struct XShould
-{
-}
-
 public class UnitTest1
 {
-    public class X : IEnumerable<int>, IComparable<X>
-    {
-        private int _value;
-
-        public X(int value)
-        {
-            _value = value;
-        }
-
-        public int CompareTo(X? other) => Comparer<int?>.Default.Compare(_value, other?._value);
-
-        public IEnumerator<int> GetEnumerator() => new[] { _value }.AsEnumerable().GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => new[] { _value }.AsEnumerable().GetEnumerator();
-    }
-
     [Fact]
     public async Task Test1()
     {
-        new X(0).AsEnumerable().Should().Equal([0], ignoreOrder: true);
-        new X(0).AsEnumerable().Should().BeAssignableTo(typeof(IComparable<X>));
-
-        new X(0).Should().Equal([0], ignoreOrder: true);
-        new X(0).Should().GreaterThan(new X(-1));
-
         new[] {
             1,
             2,

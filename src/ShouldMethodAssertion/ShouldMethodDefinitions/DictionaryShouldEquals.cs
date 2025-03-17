@@ -5,7 +5,7 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 [ShouldMethodDefinition(typeof(IReadOnlyDictionary<,>))]
 public partial struct DictionaryShouldEquals<TKey, TValue>
 {
-    public void ShouldEqual(IEnumerable<KeyValuePair<TKey, TValue>> expected, bool ignoreOrder = false, IEqualityComparer<TValue>? valueComparer = null)
+    public void ShouldEqual(IEnumerable<KeyValuePair<TKey, TValue>> expected, IEqualityComparer<TValue>? valueComparer = null)
     {
         valueComparer ??= EqualityComparer<TValue>.Default;
 
@@ -26,7 +26,7 @@ public partial struct DictionaryShouldEquals<TKey, TValue>
             throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not `{Context.GetExpressionOf(nameof(expected))}`.");
     }
 
-    public void ShouldNotEqual(IEnumerable<KeyValuePair<TKey, TValue>> expected, bool ignoreOrder, IEqualityComparer<TValue>? valueComparer = null)
+    public void ShouldNotEqual(IEnumerable<KeyValuePair<TKey, TValue>> expected, IEqualityComparer<TValue>? valueComparer = null)
     {
         valueComparer ??= EqualityComparer<TValue>.Default;
 

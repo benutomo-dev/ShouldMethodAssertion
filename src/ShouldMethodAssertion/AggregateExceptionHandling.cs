@@ -1,4 +1,4 @@
-﻿namespace ShouldMethodAssertion.ShouldMethodDefinitions;
+﻿namespace ShouldMethodAssertion;
 
 /// <summary>
 /// AggregateException内の期待する例外をどのように扱うかを指定するオプション

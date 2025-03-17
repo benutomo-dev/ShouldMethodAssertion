@@ -3,7 +3,7 @@
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
 [ShouldMethodDefinition(typeof(IComparable<>))]
-public partial struct ComparableShouldCompare<T> // ShouldMethod属性で指定した型と同じ数と制約の型引数
+public partial struct ComparableShouldCompare<T>
 {
     public void ShouldLessThan(T expected, IComparer<T>? comparer = null)
     {

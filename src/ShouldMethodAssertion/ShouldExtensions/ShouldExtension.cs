@@ -1,4 +1,5 @@
 ﻿using ShouldMethodAssertion.ShouldAssertionContexts;
+using ShouldMethodAssertion.ShouldMethodDefinitions;
 using System.Runtime.CompilerServices;
 
 namespace ShouldMethodAssertion.ShouldExtensions;

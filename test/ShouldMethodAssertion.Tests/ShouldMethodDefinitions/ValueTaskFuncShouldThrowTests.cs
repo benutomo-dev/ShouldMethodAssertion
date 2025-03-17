@@ -1,6 +1,5 @@
 ﻿using Moq;
 using ShouldMethodAssertion.ShouldExtensions;
-using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
