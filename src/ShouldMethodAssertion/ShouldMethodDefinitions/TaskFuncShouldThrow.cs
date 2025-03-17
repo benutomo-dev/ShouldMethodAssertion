@@ -24,9 +24,9 @@ public partial struct TaskFuncShouldThrow
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"{ActualExpression} is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex);
         }
-        throw AssertExceptionUtil.Create($"{ActualExpression} is not throw.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not throw.");
     }
 
     public async Task<Exception> ShouldThrowAsync(Type expectedExceptionType, bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling  = AggregateExceptionHandling.None)
@@ -47,9 +47,9 @@ public partial struct TaskFuncShouldThrow
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"{ActualExpression} is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex);
         }
-        throw AssertExceptionUtil.Create($"{ActualExpression} is not throw.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not throw.");
     }
 
     public async Task ShouldNotThrowAsync()
@@ -60,7 +60,7 @@ public partial struct TaskFuncShouldThrow
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"{ActualExpression} is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex);
         }
     }
 }

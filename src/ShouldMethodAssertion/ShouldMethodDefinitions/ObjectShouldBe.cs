@@ -16,7 +16,7 @@ public partial struct ObjectShouldBe
         if (Actual is T actual && comparer.Equals(actual, expected!))
             return;
 
-        throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
+        throw AssertExceptionUtil.CreateSimpleIsStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
     }
 
     public void ShouldNotBe<T>(T? expected, IEqualityComparer<T>? comparer = null)
@@ -24,11 +24,11 @@ public partial struct ObjectShouldBe
         comparer ??= EqualityComparer<T>.Default;
 
         if (Actual is null && expected is null)
-            throw AssertExceptionUtil.Create($"Both {ActualExpression} and {ParamExpressions.expected} are `null`.");
+            throw AssertExceptionUtil.Create($"Both {ActualExpression.OneLine} and {ParamExpressions.expected.OneLine} are null.");
 
         if (Actual is not T actual || !comparer.Equals(actual, expected!))
             return;
 
-        throw AssertExceptionUtil.Create($"{ActualExpression} is {ParamExpressions.expected}.");
+        throw AssertExceptionUtil.CreateSimpleIsNotStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
     }
 }

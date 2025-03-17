@@ -16,7 +16,7 @@ public partial struct ObjectShouldBeOneOf
                 return;
         }
 
-        throw AssertExceptionUtil.Create($"{ActualExpression} is not one of {ParamExpressions.expectedList}.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not one of {ParamExpressions.expectedList.OneLine}.");
     }
 
     public void ShouldNotBeOneOf<T>(ReadOnlySpan<T> expectedList, IEqualityComparer<T>? comparer = null)
@@ -26,7 +26,7 @@ public partial struct ObjectShouldBeOneOf
         foreach (var expected in expectedList)
         {
             if (Actual is T actual && comparer.Equals(actual, expected))
-                throw AssertExceptionUtil.Create($"{ActualExpression} is one of {ParamExpressions.expectedList}.");
+                throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is one of {ParamExpressions.expectedList.OneLine}.");
         }
 
         return;

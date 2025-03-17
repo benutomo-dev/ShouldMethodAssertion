@@ -9,13 +9,13 @@ public partial struct ObjectShouldBeNull
     public void ShouldBeNull()
     {
         if (!IsNull(Actual))
-            throw AssertExceptionUtil.Create($"{ActualExpression} is not null.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not null.");
     }
 
     public void ShouldNotBeNull()
     {
         if (IsNull(Actual))
-            throw AssertExceptionUtil.Create($"{ActualExpression} is null.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is null.");
     }
 
     private static bool IsNull<T>(T value)

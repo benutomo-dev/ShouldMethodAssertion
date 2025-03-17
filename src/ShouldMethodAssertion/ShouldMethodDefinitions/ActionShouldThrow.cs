@@ -20,13 +20,13 @@ public partial struct ActionShouldThrow
         {
             var self = this;
             return ThrowHandlingHelper.HandleCatchedAggregateException<TException>(ex, includeDerivedType, aggregateExceptionHandling,
-                createFailException: () => AssertExceptionUtil.Create($"{self.ActualExpression} is throw {ex.GetType().FullName}.", ex));
+                createFailException: () => AssertExceptionUtil.Create($"{self.ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex));
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"{ActualExpression} is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex);
         }
-        throw AssertExceptionUtil.Create($"{ActualExpression} is not throw.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not throw.");
     }
 
     public Exception ShouldThrow(Type expectedExceptionType, bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None)
@@ -47,9 +47,9 @@ public partial struct ActionShouldThrow
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"{ActualExpression} is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex);
         }
-        throw AssertExceptionUtil.Create($"{ActualExpression} is not throw.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not throw.");
     }
 
     public void ShouldNotThrow()
@@ -60,7 +60,7 @@ public partial struct ActionShouldThrow
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"{ActualExpression} is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex);
         }
     }
 }

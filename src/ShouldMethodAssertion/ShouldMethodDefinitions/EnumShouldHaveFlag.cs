@@ -11,7 +11,7 @@ public partial struct EnumShouldHaveFlag
         if (Actual.HasFlag(expected))
             return;
 
-        throw AssertExceptionUtil.Create($"{ActualExpression} not has {ParamExpressions.expected}.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} not has {ParamExpressions.expected.OneLine}.");
     }
 
     public void ShouldNotHaveFlag<T>(T expected) where T : struct, Enum
@@ -19,6 +19,6 @@ public partial struct EnumShouldHaveFlag
         if (!Actual.HasFlag(expected))
             return;
 
-        throw AssertExceptionUtil.Create($"{ActualExpression} has {ParamExpressions.expected}.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} has {ParamExpressions.expected.OneLine}.");
     }
 }

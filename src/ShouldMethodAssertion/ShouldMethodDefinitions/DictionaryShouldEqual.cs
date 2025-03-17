@@ -17,14 +17,14 @@ public partial struct DictionaryShouldEqual<TKey, TValue>
             expectedKeySet.Add(expectedKeyValuePair.Key);
 
             if (!Actual.TryGetValue(expectedKeyValuePair.Key, out var actualValue))
-                throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
+                throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not {ParamExpressions.expected.OneLine}.");
 
             if (!valueComparer.Equals(expectedKeyValuePair.Value, actualValue))
-                throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
+                throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not {ParamExpressions.expected.OneLine}.");
         }
 
         if (Actual.Count != expectedKeySet.Count)
-            throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not {ParamExpressions.expected.OneLine}.");
     }
 
     public void ShouldNotEqual(IEnumerable<KeyValuePair<TKey, TValue>> expected, IEqualityComparer<TValue>? valueComparer = null)
@@ -47,6 +47,6 @@ public partial struct DictionaryShouldEqual<TKey, TValue>
         if (Actual.Count != expectedKeySet.Count)
             return;
 
-        throw AssertExceptionUtil.Create($"{ActualExpression} is {ParamExpressions.expected}.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is {ParamExpressions.expected.OneLine}.");
     }
 }

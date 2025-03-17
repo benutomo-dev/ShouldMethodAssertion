@@ -11,7 +11,7 @@ public partial struct GuidShouldBeEmpty
         if (Actual == Guid.Empty)
             return;
 
-        throw AssertExceptionUtil.Create($"{ActualExpression} is not Empty.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not Empty.");
     }
 
     public void ShouldNotBeEmpty()
@@ -19,6 +19,6 @@ public partial struct GuidShouldBeEmpty
         if (Actual != Guid.Empty)
             return;
         
-        throw AssertExceptionUtil.Create($"{ActualExpression} is Empty.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is Empty.");
     }
 }
