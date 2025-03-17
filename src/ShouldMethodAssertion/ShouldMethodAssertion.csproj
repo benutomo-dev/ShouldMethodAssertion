@@ -5,12 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <Version>1.0.0.1</Version>
+    <Version>1.0.1.0</Version>
   </PropertyGroup>
 
   <!-- NuGet -->
   <PropertyGroup>
-    <PackageVersion>1.0.0-preview1</PackageVersion>
+    <PackageVersion>1.0.1-preview1</PackageVersion>
 
     <PackageId>ShouldMethodAssertion</PackageId>
     <Description>ShouldMethodAssertion is an assertion framework.</Description>
