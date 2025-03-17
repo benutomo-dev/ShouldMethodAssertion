@@ -43,8 +43,11 @@ public class IncrementalGenerator : IIncrementalGenerator
             .Where(v => v.HasValue)
             .Select((v, _) => v!.Value);
 
-        var shouldObjectAndExtensionSource = shouldExtensionWithProvider
+        var shouldExtensionSource = shouldExtensionWithProvider
             .Select(ToShouldObjectAndExtensionInput);
+
+        var shouldObjectSource = shouldExtensionSource
+            .Select((v, _) => new ShouldObjectInput(v.PartialDefinitionType, v.ActualValueType));
 
         var shouldMethodDefinitionSource = shouldMethodDefinitionWithProvider
             .Select(ToShouldMethodDefinitionInput);
@@ -58,10 +61,10 @@ public class IncrementalGenerator : IIncrementalGenerator
             .Where(v => v.PartialDefinitionType is not null);
 
         // ShouldExtension属性を付与した型に対する実装補完partial定義の出力
-        context.RegisterSourceOutput(shouldObjectAndExtensionSource, ShouldObjectEmitter.Emit);
+        context.RegisterSourceOutput(shouldObjectSource, ShouldObjectEmitter.Emit);
 
         // ShouldExtension属性を付与した型を返すxxx.Should()拡張メソッドの実装
-        context.RegisterSourceOutput(shouldObjectAndExtensionSource, ShouldExtensionEmitter.Emit);
+        context.RegisterSourceOutput(shouldExtensionSource, ShouldExtensionEmitter.Emit);
 
         // ShouldExtension属性を付与した型に対するxxx.Should().BeXxxx()メソッドの実装
         context.RegisterSourceOutput(shouldObjectAssertionMethodSource, ShouldObjectAssertionMethodsEmitter.Emit);
@@ -146,7 +149,7 @@ public class IncrementalGenerator : IIncrementalGenerator
         return new(context, declarationProvider, partialDefinitionType, actualValueType);
     }
 
-    private static ShouldObjectAndExtensionInput ToShouldObjectAndExtensionInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
+    private static ShouldExtensionInput ToShouldObjectAndExtensionInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
     {
         var stringType = args.DeclarationProvider.SpecialType.String;
         var callerArgumentExpressionAttributeType = args.DeclarationProvider.GetTypeReferenceByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);

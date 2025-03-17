@@ -14,7 +14,7 @@ internal static class ShouldExtensionEmitter
     /// <summary>
     /// ShouldExtension属性を付与した型を返すxxx.Should()拡張メソッドの実装
     /// </summary>
-    public static void Emit(SourceProductionContext context, ShouldObjectAndExtensionInput args)
+    public static void Emit(SourceProductionContext context, ShouldExtensionInput args)
     {
         string hintName;
 

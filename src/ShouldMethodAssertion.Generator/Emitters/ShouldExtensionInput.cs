@@ -3,7 +3,7 @@ using SourceGeneratorCommons.CSharp.Declarations;
 
 namespace ShouldMethodAssertion.Generator.Emitters;
 
-record struct ShouldObjectAndExtensionInput(
+record struct ShouldExtensionInput(
     CsTypeReference PartialDefinitionType,
     CsTypeRefWithNullability ActualValueType,
     CsTypeRefWithNullability? RawActualValueType,

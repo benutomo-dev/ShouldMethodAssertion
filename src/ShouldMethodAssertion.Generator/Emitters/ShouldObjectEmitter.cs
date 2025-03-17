@@ -16,7 +16,7 @@ internal static class ShouldObjectEmitter
     /// }
     /// </code>
     /// </summary>
-    public static void Emit(SourceProductionContext context, ShouldObjectAndExtensionInput args)
+    public static void Emit(SourceProductionContext context, ShouldObjectInput args)
     {
         var hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
 
