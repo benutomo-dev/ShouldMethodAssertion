@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ShouldMethodAssertion.Generator.Emitters;
 using SourceGeneratorCommons;
 using SourceGeneratorCommons.Collections.Generic;
 using SourceGeneratorCommons.CSharp.Declarations;
@@ -26,38 +26,6 @@ public class IncrementalGenerator : IIncrementalGenerator
         CsTypeReference PartialDefinitionType,
         CsTypeRefWithNullability ActualValueType
         );
-
-
-    record struct ShouldObjectAndExtensionInput(
-        CsTypeReference PartialDefinitionType,
-        CsTypeRefWithNullability ActualValueType,
-        CsTypeRefWithNullability? RawActualValueType,
-        EquatableArray<CsGenericTypeParam> ActualValueTypeGenericTypeParams,
-        CsTypeReference StringType,
-        CsTypeReference CallerArgumentExpressionAttributeType
-        );
-
-    record struct ShouldMethodDefinitionInput(
-        CsTypeReference PartialDefinitionType,
-        CsTypeRefWithNullability ActualValueType,
-        CsTypeReference ShouldAssertionContextType,
-        bool IsGeneratedShouldAssertionContextType
-        );
-
-    record struct ShouldRefStructAssertionContextTypeInput(CsTypeReference ShouldAssertionContextType, CsTypeRefWithNullability ActualValueType);
-
-    record struct ShouldObjectAssertionMethodsInput(
-        CsTypeReference PartialDefinitionType,
-        CsTypeRefWithNullability ShouldObjectActualValueType,
-        CsTypeReference StringType,
-        CsTypeReference CallerArgumentExpressionAttributeType,
-        CsTypeReference ShouldMethodDefinitionType,
-        string? ActualValueConvertMethodName,
-
-        CsTypeRefWithNullability? ShouldMethodDefinitionActualValueType,
-        CsTypeReference? ShouldAssertionContextType,
-        EquatableArray<CsMethod> ShouldMethods,
-        string? WarningMessage);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -97,13 +65,13 @@ public class IncrementalGenerator : IIncrementalGenerator
         //    private string? ActualExpression { get; }
         //    public ShoudXxx(Xxx actual, string? actualExpression) { ... }
         // }
-        context.RegisterSourceOutput(shouldObjectAndExtensionSource, EmitShouldObject);
+        context.RegisterSourceOutput(shouldObjectAndExtensionSource, ShouldObjectEmitter.Emit);
 
         // ShouldExtension属性を付与した型を返すxxx.Should()拡張メソッドの実装
-        context.RegisterSourceOutput(shouldObjectAndExtensionSource, EmitShouldExtension);
+        context.RegisterSourceOutput(shouldObjectAndExtensionSource, ShouldExtensionEmitter.Emit);
 
         // ShouldExtension属性を付与した型に対するxxx.Should().BeXxxx()メソッドの実装
-        context.RegisterSourceOutput(shouldObjectAssertionMethodSource, EmitShouldObjectAssertionMethods);
+        context.RegisterSourceOutput(shouldObjectAssertionMethodSource, ShouldObjectAssertionMethodsEmitter.Emit);
 
         // ShouldMethodDefinition属性を付与した型に対する以下の実装補完
         // 
@@ -116,10 +84,10 @@ public class IncrementalGenerator : IIncrementalGenerator
         //     Context = context;
         //   }
         // }
-        context.RegisterSourceOutput(shouldMethodDefinitionSource, EmitShouldMethodDefinition);
+        context.RegisterSourceOutput(shouldMethodDefinitionSource, ShouldMethodDefinitionEmitter.Emit);
 
         // ref struct用ShouldAssertionContextの出力
-        context.RegisterSourceOutput(shouldRefStructAssertionContextTypeSource, EmitShouldRefStructAssertionContextType);
+        context.RegisterSourceOutput(shouldRefStructAssertionContextTypeSource, ShouldRefStructAssertionContextTypeEmitter.Emit);
 
 
 
@@ -456,328 +424,6 @@ public class IncrementalGenerator : IIncrementalGenerator
             else
                 return (nullableType, null, EquatableArray<CsGenericTypeParam>.Empty);
         }
-    }
-
-    private static void EmitShouldObject(SourceProductionContext context, ShouldObjectAndExtensionInput args)
-    {
-        var hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
-
-        using var sb = new SourceBuilder(context, hintName);
-
-        using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition))
-        {
-            sb.AppendLineWithFirstIndent($"private {args.ActualValueType.GlobalReference} Actual {{ get; }}");
-            sb.AppendLineWithFirstIndent($"private string? ActualExpression {{ get; }}");
-            sb.AppendLine();
-
-            using (sb.BeginBlock($"public {args.PartialDefinitionType.TypeDefinition.Name}({args.ActualValueType.GlobalReference} actual, string? actualExpression)"))
-            {
-                sb.AppendLineWithFirstIndent($"Actual = actual;");
-                sb.AppendLineWithFirstIndent($"ActualExpression = actualExpression;");
-            }
-        }
-
-        sb.Commit();
-    }
-
-    private static void EmitShouldExtension(SourceProductionContext context, ShouldObjectAndExtensionInput args)
-    {
-        const string actualParamName = "actual";
-        const string actualExpressionParamName = "actualExpression";
-
-        string hintName;
-
-        if (args.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.ActualValueType.Type.TypeArgs[0][0].Type.Cref}.cs";
-        else
-            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.ActualValueType.Type.Cref}.cs";
-
-        using var sb = new SourceBuilder(context, hintName);
-
-        using (sb.BeginBlock($"namespace {NameSpaces.ShouldExtensions}"))
-        {
-            using (sb.BeginBlock($"public static partial class ShouldExtension"))
-            {
-                var callerArgumentExpressionAttribute = new CsAttribute(args.CallerArgumentExpressionAttributeType, [actualParamName]);
-
-                writeMethod(sb, args.PartialDefinitionType, args.ActualValueType, args.ActualValueTypeGenericTypeParams, args.StringType, callerArgumentExpressionAttribute);
-
-                if (args.RawActualValueType is not null)
-                    writeMethod(sb, args.PartialDefinitionType, args.RawActualValueType.Value, args.ActualValueTypeGenericTypeParams, args.StringType, callerArgumentExpressionAttribute);
-            }
-        }
-
-        sb.Commit();
-
-
-        static void writeMethod(SourceBuilder sb, CsTypeReference partialDefinitionType, CsTypeRefWithNullability actualValueType, EquatableArray<CsGenericTypeParam> actualValueTypeGenericTypeParams, CsTypeReference stringType, CsAttribute callerArgumentExpressionAttribute)
-        {
-            var method = new CsExtensionMethod(
-                "Should",
-                partialDefinitionType.WithNullability(false),
-                Params: EquatableArray.Create(
-                    new CsMethodParam(actualValueType, actualParamName),
-                    new CsMethodParamWithDefaultValue(stringType.WithNullability(true), actualExpressionParamName, DefaultValue: null, Attributes: EquatableArray.Create(callerArgumentExpressionAttribute))
-                ),
-                GenericTypeParams: actualValueTypeGenericTypeParams,
-                Accessibility: CsAccessibility.Public
-                );
-
-            using (sb.BeginMethodDefinitionBlock(method, isPartial: false))
-            {
-                sb.AppendLineWithFirstIndent($"return new {partialDefinitionType.GlobalReference}({actualParamName}, {actualExpressionParamName});");
-            }
-        }
-    }
-
-    private static void EmitShouldRefStructAssertionContextType(SourceProductionContext context, ShouldRefStructAssertionContextTypeInput args)
-    {
-        using var sb = new SourceBuilder(context, $"{NameSpaceNames.AssertionContextTypes}/{args.ActualValueType.Type.TypeDefinition.MakeStandardHintName()}.cs");
-
-        using (sb.BeginTypeDefinitionBlock(args.ShouldAssertionContextType.TypeDefinition))
-        {
-            sb.AppendLineWithFirstIndent($"public {args.ActualValueType.GlobalReference} Actual {{ get; }}");
-            sb.AppendLineWithFirstIndent($"public string ActualExpression {{ get; }}");
-            sb.AppendLineWithFirstIndent($"");
-            sb.AppendLineWithFirstIndent($"private readonly (string name, string? expression) _param1;");
-            sb.AppendLineWithFirstIndent($"private readonly (string name, string? expression) _param2;");
-            sb.AppendLineWithFirstIndent($"private readonly (string name, string? expression) _param3;");
-            sb.AppendLineWithFirstIndent($"");
-            sb.AppendLineWithFirstIndent($"private readonly global::System.Collections.Generic.Dictionary<string, string?>? _extraParamsExpressions;");
-            sb.AppendLineWithFirstIndent($"");
-            using (sb.BeginBlock($"public {args.ShouldAssertionContextType.TypeDefinition.Name}({args.ActualValueType.GlobalReference} actual, string actualExpression, (string name, string? expression) param1, (string name, string? expression) param2, (string name, string? expression) param3, global::System.Collections.Generic.Dictionary<string, string?>? extraParamsExpressions)"))
-            {
-                sb.AppendLineWithFirstIndent($"Actual = actual;");
-                sb.AppendLineWithFirstIndent($"ActualExpression = actualExpression;");
-                sb.AppendLineWithFirstIndent($"_param1 = param1;");
-                sb.AppendLineWithFirstIndent($"_param2 = param2;");
-                sb.AppendLineWithFirstIndent($"_param3 = param3;");
-                sb.AppendLineWithFirstIndent($"_extraParamsExpressions = extraParamsExpressions;");
-            }
-            sb.AppendLineWithFirstIndent($"");
-            using (sb.BeginBlock($"public string? GetExpressionOf(string paramName)"))
-            {
-                sb.AppendLineWithFirstIndent($"if (_param1.name == paramName)");
-                sb.AppendLineWithFirstIndent($"    return _param1.expression;");
-                sb.AppendLineWithFirstIndent($"");
-                sb.AppendLineWithFirstIndent($"if (_param2.name == paramName)");
-                sb.AppendLineWithFirstIndent($"    return _param2.expression;");
-                sb.AppendLineWithFirstIndent($"");
-                sb.AppendLineWithFirstIndent($"if (_param3.name == paramName)");
-                sb.AppendLineWithFirstIndent($"    return _param3.expression;");
-                sb.AppendLineWithFirstIndent($"");
-                sb.AppendLineWithFirstIndent($"if (_extraParamsExpressions is not null && _extraParamsExpressions.TryGetValue(paramName, out var expression))");
-                sb.AppendLineWithFirstIndent($"    return expression;");
-                sb.AppendLineWithFirstIndent($"");
-                sb.AppendLineWithFirstIndent($"throw new global::System.ArgumentException(null, nameof(paramName));");
-            }
-        }
-
-        sb.Commit();
-    }
-
-    private static void EmitShouldMethodDefinition(SourceProductionContext context, ShouldMethodDefinitionInput args)
-    {
-        using var sb = new SourceBuilder(context, $"{NameSpaceNames.ShouldMethodDefinitions}/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}.cs");
-
-        using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition))
-        {
-            sb.AppendLineWithFirstIndent($"private {args.ShouldAssertionContextType.GlobalReference} Context {{ get; init; }}");
-            sb.AppendLine();
-            sb.AppendLineWithFirstIndent($"public {args.PartialDefinitionType.TypeDefinition.Name}({args.ShouldAssertionContextType.GlobalReference} context)");
-            using (sb.BeginBlock())
-            {
-                sb.AppendLineWithFirstIndent($"Context = context;");
-            }
-        }
-
-        sb.Commit();
-    }
-
-
-    private static void EmitShouldObjectAssertionMethods(SourceProductionContext context, ShouldObjectAssertionMethodsInput args)
-    {
-        const string ExpressionParamSuffix = "CallerArgumentExpression";
-
-        string hintName;
-
-        if (args.ShouldObjectActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
-        else
-            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectActualValueType.Type.Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
-
-        using var sb = new SourceBuilder(context, hintName);
-
-        if (!string.IsNullOrWhiteSpace(args.WarningMessage))
-            sb.AppendLine($"#warning {args.WarningMessage}");
-
-        using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition))
-        {
-            if (args.ShouldAssertionContextType is null)
-            {
-                sb.AppendLine($"#warning ソース生成時の{nameof(args.ShouldAssertionContextType)}がnullです。");
-            }
-            else if (args.ShouldMethodDefinitionActualValueType is null)
-            {
-                sb.AppendLine($"#warning ソース生成時の{nameof(args.ShouldMethodDefinitionActualValueType)}がnullです。");
-            }
-            else
-            {
-                foreach (var shouldMethod in args.ShouldMethods.Values)
-                {
-                    var paramsBuilder = ImmutableArray.CreateBuilder<CsMethodParam>(shouldMethod.Params.Length * 2);
-                    paramsBuilder.AddRange(shouldMethod.Params);
-                    foreach (var param in shouldMethod.Params.Values)
-                    {
-                        // [System.Runtime.CompilerServices.CallerArgumentExpressionAttribute("xxx")]
-                        var callerArgumentExpressionParam = new CsMethodParamWithDefaultValue(
-                            args.StringType.WithNullability(true),
-                            $"{param.Name}{ExpressionParamSuffix}",
-                            DefaultValue: null,
-                            Attributes: ImmutableArray.Create(new CsAttribute(args.CallerArgumentExpressionAttributeType, [param.Name]))
-                            );
-
-                        paramsBuilder.Add(callerArgumentExpressionParam);
-                    }
-
-                    const string ShouldMethodPrefix = "Should";
-
-                    var methodNameInShouldExtensionObjectType = shouldMethod.Name;
-                    if (methodNameInShouldExtensionObjectType.StartsWith(ShouldMethodPrefix, StringComparison.OrdinalIgnoreCase) && methodNameInShouldExtensionObjectType.Length > ShouldMethodPrefix.Length)
-                        methodNameInShouldExtensionObjectType = methodNameInShouldExtensionObjectType.Substring(ShouldMethodPrefix.Length);
-
-                    var extendedShouldMethod = shouldMethod with
-                    {
-                        Name = methodNameInShouldExtensionObjectType,
-                        Params = paramsBuilder.MoveToImmutable(),
-                    };
-
-                    // void ShouldBe(..., [CallerArgumentExpression(..)] ..) のような検証メソッド
-                    sb.AppendLine($"#pragma warning disable CS0693"); // 型定義の型パラメータとメソッド定義の型パラメータの名前の重複に対する警告を抑止
-                    using (sb.BeginMethodDefinitionBlock(extendedShouldMethod, isPartial: false))
-                    {
-                        sb.AppendLine($"#pragma warning restore CS0693");
-
-                        string actualValueRefSymbolName = "Actual";
-
-                        if (args.ShouldMethodDefinitionActualValueType is not { IsNullable: true, Type.TypeDefinition.IsReferenceType: true })
-                        {
-                            // ShouldAssertionContextのActualがnull許容の参照型でない場合は、必要に応じて事前にnullチェックを実施してから、
-                            // 本来の検証内容の呼出しを行う
-
-                            if (args.ShouldObjectActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT) && !args.ShouldMethodDefinitionActualValueType.Value.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-                            {
-                                // ShouldAssertionContextのActualがnull非許容の値型で、検証対象の実際値の型がNullable<T>
-
-                                using (sb.BeginBlock($"if (!Actual.HasValue)"))
-                                {
-                                    sb.AppendLineWithFirstIndent($"throw {GlobalReferences.ExceptionCreateCall}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
-                                }
-                                sb.AppendLineWithFirstIndent($"var rawActualValue = Actual.Value;");
-                                sb.AppendLine();
-
-                                actualValueRefSymbolName = "rawActualValue";
-                            }
-                            else if (args.ShouldObjectActualValueType is { IsNullable: true, Type.TypeDefinition.IsReferenceType: true } && args.ShouldMethodDefinitionActualValueType is { IsNullable: false, Type.TypeDefinition.IsReferenceType: true })
-                            {
-                                // ShouldAssertionContextのActualがnull非許容の参照型で、検証対象の実際値の型がnull許容の参照型
-
-                                using (sb.BeginBlock($"if (Actual is null)"))
-                                {
-                                    sb.AppendLineWithFirstIndent($"throw {GlobalReferences.ExceptionCreateCall}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
-                                }
-                                sb.AppendLine();
-                            }
-                        }
-
-                        if (args.ActualValueConvertMethodName is not null)
-                        {
-                            sb.AppendLineWithFirstIndent($"var __convertedActualValue = {args.ActualValueConvertMethodName}({actualValueRefSymbolName});");
-                            actualValueRefSymbolName = "__convertedActualValue";
-                        }
-
-                        sb.AppendLineWithFirstIndent($"var __context = new {args.ShouldAssertionContextType.GlobalReference}(");
-                        sb.AppendLineWithFirstIndent($"    {actualValueRefSymbolName},");
-                        sb.AppendLineWithFirstIndent($"    ActualExpression ?? {SymbolDisplay.FormatLiteral("Actual", quote: true)},");
-                        for (int i = 0; i < 3; i++)
-                        {
-                            if (!shouldMethod.Params.IsDefaultOrEmpty && i < shouldMethod.Params.Length)
-                            {
-                                var paramNameLiteral = SymbolDisplay.FormatLiteral(shouldMethod.Params[i].Name, quote: true);
-                                sb.AppendLineWithFirstIndent($"    ({paramNameLiteral}, {shouldMethod.Params[i].Name}{ExpressionParamSuffix}),");
-                            }
-                            else
-                            {
-                                sb.AppendLineWithFirstIndent($"    default,");
-                            }
-                        }
-                        if (!shouldMethod.Params.IsDefaultOrEmpty && 3 < shouldMethod.Params.Length)
-                        {
-                            sb.AppendLineWithFirstIndent($"    new global::System.Collection.Generic.Dictionary<string, string>");
-                            sb.AppendLineWithFirstIndent($"    {{");
-                            for (int i = 3; i < shouldMethod.Params.Length; i++)
-                            {
-                                var paramNameLiteral = SymbolDisplay.FormatLiteral(shouldMethod.Params[i].Name, quote: true);
-                                sb.AppendLineWithFirstIndent($"        [{paramNameLiteral}] = {shouldMethod.Params[i].Name}{ExpressionParamSuffix} ?? {paramNameLiteral},");
-                            }
-                            sb.AppendLineWithFirstIndent($"    }}");
-                        }
-                        else
-                        {
-                            sb.AppendLineWithFirstIndent($"    null);");
-                        }
-                        sb.AppendLine();
-                        sb.AppendLineWithFirstIndent($"var __assertMethod = new {args.ShouldMethodDefinitionType.GlobalReference}(__context);");
-                        sb.AppendLine();
-                        sb.PutIndentSpace();
-                        if (!shouldMethod.IsVoidLikeMethod)
-                            sb.Append($"return ");
-                        if (shouldMethod.IsAsync)
-                            sb.Append($"await ");
-                        sb.Append($"__assertMethod.{shouldMethod.Name}");
-                        if (!shouldMethod.GenericTypeParams.IsDefaultOrEmpty)
-                        {
-                            sb.Append($"<");
-                            bool isFirstParam = true;
-                            foreach (var typeParam in shouldMethod.GenericTypeParams.Values)
-                            {
-                                if (!isFirstParam)
-                                    sb.Append(", ");
-
-                                isFirstParam = false;
-
-                                sb.Append(typeParam.Name);
-                            }
-                            sb.Append($">");
-                        }
-                        sb.Append($"(");
-                        {
-                            bool isFirstParam = true;
-                            foreach (var param in shouldMethod.Params.Values)
-                            {
-                                if (!isFirstParam)
-                                    sb.Append(", ");
-
-                                isFirstParam = false;
-
-                                if (param.Modifier == CsParamModifier.Ref)
-                                    sb.Append("ref ");
-                                else if (param.Modifier == CsParamModifier.Out)
-                                    sb.Append("out ");
-
-                                sb.Append(param.Name);
-                            }
-                        }
-                        sb.Append($")");
-                        if (shouldMethod.IsAsync)
-                            sb.Append($".ConfigureAwait(false)");
-                        sb.AppendLine($";");
-                    }
-                }
-            }
-        }
-
-        sb.Commit();
     }
 }
 
