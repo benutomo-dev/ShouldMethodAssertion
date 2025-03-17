@@ -7,17 +7,17 @@ public partial struct ObjectShouldSameReferenceAs
 {
     public void ShouldSameReferenceAs<T>(T expected) where T : class
     {
-        if (ReferenceEquals(Context.Actual, expected))
+        if (ReferenceEquals(Actual, expected))
             return;
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not same as `{Context.GetExpressionOf(nameof(expected))}`.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is not same as {ParamExpressions.expected}.");
     }
 
     public void ShouldNotSameReferenceAs<T>(T expected) where T : class
     {
-        if (!ReferenceEquals(Context.Actual, expected))
+        if (!ReferenceEquals(Actual, expected))
             return;
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is same as `{Context.GetExpressionOf(nameof(expected))}`.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is same as {ParamExpressions.expected}.");
     }
 }

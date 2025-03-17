@@ -32,7 +32,7 @@ public partial class SelfDefinedShoudExtensionTests
     {
         public void ShouldFailIfZero()
         {
-            if (Context.Actual.Value == 0)
+            if (Actual.Value == 0)
                 throw AssertExceptionUtil.Create("custum defined assert");
         }
     }

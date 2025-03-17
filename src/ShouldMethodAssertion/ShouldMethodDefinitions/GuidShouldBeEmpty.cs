@@ -7,17 +7,17 @@ public partial struct GuidShouldBeEmpty
 {
     public void ShouldBeEmpty()
     {
-        if (Context.Actual == Guid.Empty)
+        if (Actual == Guid.Empty)
             return;
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not Empty.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is not Empty.");
     }
 
     public void ShouldNotBeEmpty()
     {
-        if (Context.Actual != Guid.Empty)
+        if (Actual != Guid.Empty)
             return;
         
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is Empty.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is Empty.");
     }
 }

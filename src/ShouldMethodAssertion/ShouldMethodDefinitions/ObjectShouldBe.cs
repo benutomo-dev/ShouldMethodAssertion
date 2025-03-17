@@ -9,25 +9,25 @@ public partial struct ObjectShouldBe
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (Context.Actual is null && expected is null)
+        if (Actual is null && expected is null)
             return;
 
-        if (Context.Actual is T actual && comparer.Equals(actual, expected))
+        if (Actual is T actual && comparer.Equals(actual, expected))
             return;
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not `{Context.GetExpressionOf(nameof(expected))}`.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
     }
 
     public void ShouldNotBe<T>(T? expected, IEqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (Context.Actual is null && expected is null)
-            throw AssertExceptionUtil.Create($"Both `{Context.ActualExpression}` and `{Context.GetExpressionOf(nameof(expected))}` are `null`.");
+        if (Actual is null && expected is null)
+            throw AssertExceptionUtil.Create($"Both {ActualExpression} and {ParamExpressions.expected} are `null`.");
 
-        if (Context.Actual is not T actual || !comparer.Equals(actual, expected))
+        if (Actual is not T actual || !comparer.Equals(actual, expected))
             return;
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is `{Context.GetExpressionOf(nameof(expected))}`.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is {ParamExpressions.expected}.");
     }
 }

@@ -122,41 +122,21 @@ internal static class ShouldObjectAssertionMethodsEmitter
             if (args.ActualValueConvertMethodName is not null)
             {
                 sb.AppendLineWithFirstIndent($"var __convertedActualValue = {args.ActualValueConvertMethodName}({actualValueRefSymbolName});");
+                sb.AppendLine();
                 actualValueRefSymbolName = "__convertedActualValue";
             }
 
-            sb.AppendLineWithFirstIndent($"var __context = new {args.ShouldAssertionContextType.GlobalReference}(");
-            sb.AppendLineWithFirstIndent($"    {actualValueRefSymbolName},");
-            sb.AppendLineWithFirstIndent($"    ActualExpression ?? {SymbolDisplay.FormatLiteral("Actual", quote: true)},");
-            for (int i = 0; i < 3; i++)
+            using (sb.BeginBlock($"var __parameterExpressions = new {args.ShouldMethodDefinitionType.GlobalReference}.{InternalTypeNames.ParameterExpressions}"))
             {
-                if (!shouldMethod.Params.IsDefaultOrEmpty && i < shouldMethod.Params.Length)
+                if (!shouldMethod.Params.IsDefaultOrEmpty)
                 {
-                    var paramNameLiteral = SymbolDisplay.FormatLiteral(shouldMethod.Params[i].Name, quote: true);
-                    sb.AppendLineWithFirstIndent($"    ({paramNameLiteral}, {shouldMethod.Params[i].Name}{ExpressionParamSuffix}),");
-                }
-                else
-                {
-                    sb.AppendLineWithFirstIndent($"    default,");
+                    foreach (var param in shouldMethod.Params.Values)
+                        sb.AppendLineWithFirstIndent($"{param.Name} = {param.Name}{ExpressionParamSuffix}!,");
                 }
             }
-            if (!shouldMethod.Params.IsDefaultOrEmpty && 3 < shouldMethod.Params.Length)
-            {
-                sb.AppendLineWithFirstIndent($"    new global::System.Collection.Generic.Dictionary<string, string>");
-                sb.AppendLineWithFirstIndent($"    {{");
-                for (int i = 3; i < shouldMethod.Params.Length; i++)
-                {
-                    var paramNameLiteral = SymbolDisplay.FormatLiteral(shouldMethod.Params[i].Name, quote: true);
-                    sb.AppendLineWithFirstIndent($"        [{paramNameLiteral}] = {shouldMethod.Params[i].Name}{ExpressionParamSuffix} ?? {paramNameLiteral},");
-                }
-                sb.AppendLineWithFirstIndent($"    }}");
-            }
-            else
-            {
-                sb.AppendLineWithFirstIndent($"    null);");
-            }
+            sb.AppendLineWithFirstIndent($";");
             sb.AppendLine();
-            sb.AppendLineWithFirstIndent($"var __assertMethod = new {args.ShouldMethodDefinitionType.GlobalReference}(__context);");
+            sb.AppendLineWithFirstIndent($"var __assertMethod = new {args.ShouldMethodDefinitionType.GlobalReference}({actualValueRefSymbolName}, ActualExpression ?? \"Actual\", __parameterExpressions);");
             sb.AppendLine();
             sb.PutIndentSpace();
             if (!shouldMethod.IsVoidLikeMethod)

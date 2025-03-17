@@ -15,37 +15,32 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        var expectedExpression = ExpressionUtil.AdjustExpressionIndent(Context.GetExpressionOf(nameof(expected)), withComplementBruckets: true);
-        var comparerExpression = ExpressionUtil.ToOneLineExpression(Context.GetExpressionOf(nameof(comparer)), withComplementBruckets: true);
-
         if (ignoreOrder)
-            MatchWithoutOrdering(expected, comparer, expectedExpression!, comparerExpression);
+            MatchWithoutOrdering(expected, comparer);
         else
-            MatchWithOrdering(expected, comparer, expectedExpression!, comparerExpression);
+            MatchWithOrdering(expected, comparer);
     }
 
     public void ShouldNotEqual(IEnumerable<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (!Context.Actual.SequenceEqual(expected, comparer))
+        if (!Actual.SequenceEqual(expected, comparer))
             return;
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is `{Context.GetExpressionOf(nameof(expected))}`.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is {ParamExpressions.expected}.");
     }
 
 
     [StackTraceHidden]
-    private void MatchWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer, string expectedExpression, string? comparerExpression)
+    private void MatchWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
     {
-        var oneLineActualExpression = ExpressionUtil.ToOneLineExpression(Context.ActualExpression, withComplementBruckets: true);
-
         using var expectedEnumerator = expected.GetEnumerator();
-        using var actualEnumerator = Context.Actual.GetEnumerator();
+        using var actualEnumerator = Actual.GetEnumerator();
 
-        var comparerAnnotation = comparerExpression is null
-            ? ""
-            : $"{comparerExpression}による比較で";
+        var comparerAnnotation = ParamExpressions.comparer.HasValue
+            ? $"{ParamExpressions.comparer}による比較で"
+            : "";
 
         int count = 0;
         while (true)
@@ -66,9 +61,9 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
                 }
 
                 throw AssertExceptionUtil.Create($"""
-                        {oneLineActualExpression}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
+                        {ActualExpression.OneLine}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
 
-                        {expectedExpression}
+                        {ParamExpressions.expected}
                         
                         {count}番目の要素の内容が異なっています。
                         期待値: {ExpressionUtil.ToOneLineValueString(expectedCurrent)}
@@ -82,11 +77,11 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
             else if (expectedHasValue)
             {
                 throw AssertExceptionUtil.Create($"""
-                        {oneLineActualExpression}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
+                        {ActualExpression.OneLine}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
 
-                        {expectedExpression}
+                        {ParamExpressions.expected}
                         
-                        {oneLineActualExpression}の要素数が期待値より不足しています。
+                        {ActualExpression.OneLine}の要素数が期待値より不足しています。
                         """);
             }
             else
@@ -94,22 +89,20 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
                 Debug.Assert(actualHasValue);
 
                 throw AssertExceptionUtil.Create($"""
-                        {oneLineActualExpression}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
+                        {ActualExpression.OneLine}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
 
-                        {expectedExpression}
+                        {ParamExpressions.expected}
                         
-                        {oneLineActualExpression}の要素数が期待値より余分に存在します。
+                        {ActualExpression.OneLine}の要素数が期待値より余分に存在します。
                         """);
             }
         }
     }
 
     [StackTraceHidden]
-    private void MatchWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer, string expectedExpression, string? comparerExpression)
+    private void MatchWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
     {
-        var oneLineActualExpression = ExpressionUtil.ToOneLineExpression(Context.ActualExpression, withComplementBruckets: true);
-
-        var actualValuesHistgram = toValueHistgram(Context.Actual, comparer);
+        var actualValuesHistgram = toValueHistgram(Actual, comparer);
         var expectedValuesHistgram = toValueHistgram(expected, comparer);
 
         var differenceValueList = new List<(T? value, int countInActual, int countInExpected)>();
@@ -140,14 +133,14 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
         if (differenceValueList.Count > maxListingCount)
             differeceListTextBuilder.AppendLine(CultureInfo.InvariantCulture, $"他、{differenceValueList.Count - maxListingCount}個の要素の格納数に相違がありました。");
 
-        var comparingDescription = comparerExpression is null
-            ? "並び順を無視した比較で"
-            : $"`{comparerExpression}`による比較で並び順を無視して";
+        var comparingDescription = ParamExpressions.comparer.HasValue
+            ? $"`{ParamExpressions.comparer}`による比較で並び順を無視して"
+            : "並び順を無視した比較で";
 
         throw AssertExceptionUtil.Create($"""
-                {oneLineActualExpression}は{comparingDescription}以下と一致しなければなりませんが、一致しませんでした。
+                {ActualExpression.OneLine}は{comparingDescription}以下と一致しなければなりませんが、一致しませんでした。
 
-                {expectedExpression}
+                {ParamExpressions.expected}
                 
                 以下にそれぞれのコレクションの差異を同じ項目に対する格納数の違いで表示します。
                 [実際のコレクションに含まれている数, 期待値側のコレクションに含まれている数] : 対象項目

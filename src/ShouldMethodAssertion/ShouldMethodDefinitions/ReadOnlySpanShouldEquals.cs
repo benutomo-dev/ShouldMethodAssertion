@@ -9,19 +9,19 @@ public partial struct ReadOnlySpanShouldEquals<T> // ShouldMethod属性で指定
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (Context.Actual.SequenceEqual(expected, comparer))
+        if (Actual.SequenceEqual(expected, comparer))
             return;
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not `{Context.GetExpressionOf(nameof(expected))}`.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
     }
 
     public void ShouldNotEqual(ReadOnlySpan<T> expected, bool ignoreOrder, IEqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (!Context.Actual.SequenceEqual(expected, comparer))
+        if (!Actual.SequenceEqual(expected, comparer))
             return;
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is `{Context.GetExpressionOf(nameof(expected))}`.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is {ParamExpressions.expected}.");
     }
 }

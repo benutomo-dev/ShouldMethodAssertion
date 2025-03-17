@@ -7,13 +7,13 @@ public partial struct BooleanShouldBe
 {
     public void ShouldBeTrue()
     {
-        if (Context.Actual != true)
-            throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not true.");
+        if (Actual != true)
+            throw AssertExceptionUtil.Create($"{ActualExpression} is not true.");
     }
 
     public void ShouldBeFalse()
     {
-        if (Context.Actual != false)
-            throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not false.");
+        if (Actual != false)
+            throw AssertExceptionUtil.Create($"{ActualExpression} is not false.");
     }
 }

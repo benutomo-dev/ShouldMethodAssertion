@@ -10,7 +10,7 @@ public partial struct ActionShouldThrow
     {
         try
         {
-            Context.Actual.Invoke();
+            Actual.Invoke();
         }
         catch (TException ex) when (includeDerivedType ? true : ex.GetType() == typeof(TException))
         {
@@ -20,20 +20,20 @@ public partial struct ActionShouldThrow
         {
             var self = this;
             return ThrowHandlingHelper.HandleCatchedAggregateException<TException>(ex, includeDerivedType, aggregateExceptionHandling,
-                createFailException: () => AssertExceptionUtil.Create($"`{self.Context.ActualExpression}` is throw {ex.GetType().FullName}.", ex));
+                createFailException: () => AssertExceptionUtil.Create($"{self.ActualExpression} is throw {ex.GetType().FullName}.", ex));
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.Create($"{ActualExpression} is throw {ex.GetType().FullName}.", ex);
         }
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not throw.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is not throw.");
     }
 
     public Exception ShouldThrow(Type expectedExceptionType, bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None)
     {
         try
         {
-            Context.Actual.Invoke();
+            Actual.Invoke();
         }
         catch (Exception ex) when (ThrowHandlingHelper.IsExpectedException(expectedExceptionType, includeDerivedType, ex))
         {
@@ -43,24 +43,24 @@ public partial struct ActionShouldThrow
         {
             var self = this;
             return ThrowHandlingHelper.HandleCatchedAggregateException(expectedExceptionType, ex, includeDerivedType, aggregateExceptionHandling,
-                createFailException: () => AssertExceptionUtil.Create($"`{self.Context.ActualExpression}` is throw {ex.GetType().FullName}.", ex));
+                createFailException: () => AssertExceptionUtil.Create($"{self.ActualExpression} is throw {ex.GetType().FullName}.", ex));
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.Create($"{ActualExpression} is throw {ex.GetType().FullName}.", ex);
         }
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not throw.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is not throw.");
     }
 
     public void ShouldNotThrow()
     {
         try
         {
-            Context.Actual.Invoke();
+            Actual.Invoke();
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.Create($"{ActualExpression} is throw {ex.GetType().FullName}.", ex);
         }
     }
 }

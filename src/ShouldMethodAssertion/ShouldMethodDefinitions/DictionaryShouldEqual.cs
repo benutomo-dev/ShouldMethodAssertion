@@ -15,15 +15,15 @@ public partial struct DictionaryShouldEqual<TKey, TValue>
         {
             expectedKeySet.Add(expectedKeyValuePair.Key);
 
-            if (!Context.Actual.TryGetValue(expectedKeyValuePair.Key, out var actualValue))
-                throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not `{Context.GetExpressionOf(nameof(expected))}`.");
+            if (!Actual.TryGetValue(expectedKeyValuePair.Key, out var actualValue))
+                throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
 
             if (!valueComparer.Equals(expectedKeyValuePair.Value, actualValue))
-                throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not `{Context.GetExpressionOf(nameof(expected))}`.");
+                throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
         }
 
-        if (Context.Actual.Count != expectedKeySet.Count)
-            throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not `{Context.GetExpressionOf(nameof(expected))}`.");
+        if (Actual.Count != expectedKeySet.Count)
+            throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
     }
 
     public void ShouldNotEqual(IEnumerable<KeyValuePair<TKey, TValue>> expected, IEqualityComparer<TValue>? valueComparer = null)
@@ -36,16 +36,16 @@ public partial struct DictionaryShouldEqual<TKey, TValue>
         {
             expectedKeySet.Add(expectedKeyValuePair.Key);
 
-            if (!Context.Actual.TryGetValue(expectedKeyValuePair.Key, out var actualValue))
+            if (!Actual.TryGetValue(expectedKeyValuePair.Key, out var actualValue))
                 return;
 
             if (!valueComparer.Equals(expectedKeyValuePair.Value, actualValue))
                 return;
         }
 
-        if (Context.Actual.Count != expectedKeySet.Count)
+        if (Actual.Count != expectedKeySet.Count)
             return;
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is `{Context.GetExpressionOf(nameof(expected))}`.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is {ParamExpressions.expected}.");
     }
 }

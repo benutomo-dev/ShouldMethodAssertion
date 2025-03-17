@@ -7,14 +7,14 @@ public partial struct ObjectShouldBeNull
 {
     public void ShouldBeNull()
     {
-        if (!IsNull(Context.Actual))
-            throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not null.");
+        if (!IsNull(Actual))
+            throw AssertExceptionUtil.Create($"{ActualExpression} is not null.");
     }
 
     public void ShouldNotBeNull()
     {
-        if (IsNull(Context.Actual))
-            throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is null.");
+        if (IsNull(Actual))
+            throw AssertExceptionUtil.Create($"{ActualExpression} is null.");
     }
 
     private static bool IsNull<T>(T value)

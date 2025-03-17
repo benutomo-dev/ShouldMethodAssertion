@@ -24,6 +24,7 @@ public class IncrementalGenerator : IIncrementalGenerator
         GeneratorAttributeSyntaxContext Context,
         CsDeclarationProvider DeclarationProvider,
         CsTypeReference PartialDefinitionType,
+        EquatableArray<(string Name, bool MayBeNull)> MethodParameters,
         CsTypeRefWithNullability ActualValueType
         );
 
@@ -89,9 +90,9 @@ public class IncrementalGenerator : IIncrementalGenerator
     {
         var (context, declarationProvider) = args;
 
-        var typeSymbol = context.TargetSymbol as ITypeSymbol;
+        var shouldExtentionObjectTypeSymbol = context.TargetSymbol as ITypeSymbol;
 
-        if (typeSymbol is null)
+        if (shouldExtentionObjectTypeSymbol is null)
             return default;
 
         var actualValueTypeSymbol = context.Attributes[0].ConstructorArguments[0].Value as INamedTypeSymbol;
@@ -100,7 +101,7 @@ public class IncrementalGenerator : IIncrementalGenerator
 
         var (actualValueType, rawActualValueType, actualValueTypeGenericTypeParams) = GetActualValueTypeAsNullable(args.declarationProvider, actualValueTypeSymbol);
 
-        var rawPartialDefinitionType = declarationProvider.GetTypeReference(typeSymbol).Type;
+        var rawPartialDefinitionType = declarationProvider.GetTypeReference(shouldExtentionObjectTypeSymbol).Type;
 
         var partialDefinitionType = rawPartialDefinitionType;
 
@@ -123,14 +124,14 @@ public class IncrementalGenerator : IIncrementalGenerator
     {
         var (context, declarationProvider) = args;
 
-        var typeSymbol = context.TargetSymbol as ITypeSymbol;
+        var shouldMethodDefinitionTypeSymbol = context.TargetSymbol as ITypeSymbol;
 
-        if (typeSymbol is null)
+        if (shouldMethodDefinitionTypeSymbol is null)
             return default;
 
         var actualValueType = GetActualValueTypeFromShouldMethodDefinitionAttribute(declarationProvider, context.Attributes[0]);
 
-        var rawPartialDefinitionType = declarationProvider.GetTypeReference(typeSymbol).Type;
+        var rawPartialDefinitionType = declarationProvider.GetTypeReference(shouldMethodDefinitionTypeSymbol).Type;
 
         var partialDefinitionType = rawPartialDefinitionType;
 
@@ -146,7 +147,36 @@ public class IncrementalGenerator : IIncrementalGenerator
             partialDefinitionType = rawPartialDefinitionType.WithTypeDefinition(extensionType);
         }
 
-        return new(context, declarationProvider, partialDefinitionType, actualValueType);
+        var parametersSource = shouldMethodDefinitionTypeSymbol.GetMembers()
+            .WhereShouldMethod()
+            .Select(v => v.Parameters.Select(param => (param.Name, param.HasExplicitDefaultValue)).ToArray())
+            .ToArray();
+
+        var parameterNameSet = parametersSource
+            .SelectMany(v => v)
+            .Select(v => v.Name)
+            .ToHashSet();
+
+        var parameters = ImmutableArray.CreateBuilder<(string Name, bool MayBeNull)>(parameterNameSet.Count);
+
+        foreach (var parameterName in parameterNameSet.OrderBy(v => v))
+        {
+            bool mayBeNull = false;
+            foreach (var parametersSourceItem in parametersSource)
+            {
+                var index = Array.FindIndex(parametersSourceItem, v => v.Name == parameterName);
+
+                if (index < 0 || parametersSourceItem[index].HasExplicitDefaultValue)
+                {
+                    mayBeNull = true;
+                    break;
+                }
+            }
+
+            parameters.Add((parameterName, mayBeNull));
+        }
+
+        return new(context, declarationProvider, partialDefinitionType, parameters.MoveToImmutable(), actualValueType);
     }
 
     private static ShouldExtensionInput ToShouldObjectAndExtensionInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
@@ -163,7 +193,7 @@ public class IncrementalGenerator : IIncrementalGenerator
     {
         var (shouldAssertionContextType, isGenerated) = GetShouldAssertionContextType(args.DeclarationProvider, args.ActualValueType);
 
-        return new(args.PartialDefinitionType, args.ActualValueType, shouldAssertionContextType, isGenerated);
+        return new(args.PartialDefinitionType, args.MethodParameters, args.ActualValueType, shouldAssertionContextType, isGenerated);
     }
 
     private static IEnumerable<ShouldObjectAssertionMethodsInput> EnumerateShouldObjectAssertionMethodsInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
@@ -284,9 +314,7 @@ public class IncrementalGenerator : IIncrementalGenerator
             var (shouldAssertionContextType, isGenerated) = GetShouldAssertionContextType(args.DeclarationProvider, shouldMethodDefinitionActualValueType);
 
             var shouldMethods = shouldMethodDefinitionTypeSymbol.GetMembers()
-                .OfType<IMethodSymbol>()
-                .Where(v => v is { IsStatic: false, MethodKind: MethodKind.Ordinary, DeclaredAccessibility: Accessibility.Public })
-                .Where(v => v.Name.StartsWith("Should", StringComparison.Ordinal))
+                .WhereShouldMethod()
                 .Select(v =>
                 {
                     var method = declarationProvider.GetMethodDeclaration(v);
@@ -412,3 +440,13 @@ public class IncrementalGenerator : IIncrementalGenerator
     }
 }
 
+file static class FileLocalExtensions
+{
+    public static IEnumerable<IMethodSymbol> WhereShouldMethod(this IEnumerable<ISymbol> symbols)
+    {
+        return symbols
+            .OfType<IMethodSymbol>()
+            .Where(v => v is { IsStatic: false, MethodKind: MethodKind.Ordinary, DeclaredAccessibility: Accessibility.Public })
+            .Where(v => v.Name.StartsWith("Should", StringComparison.Ordinal));
+    }
+}

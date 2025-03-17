@@ -11,11 +11,11 @@ public partial struct ObjectShouldBeOneOf
 
         foreach (var expected in expectedList)
         {
-            if (Context.Actual is T actual && comparer.Equals(actual, expected))
+            if (Actual is T actual && comparer.Equals(actual, expected))
                 return;
         }
 
-        throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is not one of `{Context.GetExpressionOf(nameof(expectedList))}`.");
+        throw AssertExceptionUtil.Create($"{ActualExpression} is not one of {ParamExpressions.expectedList}.");
     }
 
     public void ShouldNotBeOneOf<T>(ReadOnlySpan<T> expectedList, IEqualityComparer<T>? comparer = null)
@@ -24,8 +24,8 @@ public partial struct ObjectShouldBeOneOf
 
         foreach (var expected in expectedList)
         {
-            if (Context.Actual is T actual && comparer.Equals(actual, expected))
-                throw AssertExceptionUtil.Create($"`{Context.ActualExpression}` is one of `{Context.GetExpressionOf(nameof(expectedList))}`.");
+            if (Actual is T actual && comparer.Equals(actual, expected))
+                throw AssertExceptionUtil.Create($"{ActualExpression} is one of {ParamExpressions.expectedList}.");
         }
 
         return;
