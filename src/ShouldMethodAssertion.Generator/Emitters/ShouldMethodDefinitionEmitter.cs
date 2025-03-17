@@ -10,11 +10,15 @@ internal static class ShouldMethodDefinitionEmitter
     /// <code>
     /// ref partial struct XxxShouldBeYyy
     /// {
-    ///   private global::ShouldMethodAssertion.ShouldAssertionContexts.ShouldAssertionContext&lt;Xxx&gt; Context { get; init; }
+    ///   private Xxx                    Actual           { get; }
+    ///   private ValueExpression        ActualExpression { get; }
+    ///   private __ParameterExpressions ParamExpressions { get; }
     /// 
-    ///   public XxxShouldBeYyy(global::ShouldMethodAssertion.ShouldAssertionContexts.ShouldAssertionContext&lt;Xxx&gt; context)
+    ///   public XxxShouldBeYyy(Xxx actual, ValueExpression actualExpression, __ParameterExpressions paramExpressions)
     ///   {
-    ///     Context = context;
+    ///     Actual           = actual;
+    ///     ActualExpression = actualExpression;
+    ///     ParamExpressions = paramExpressions;
     ///   }
     /// }
     /// </code>
@@ -26,6 +30,7 @@ internal static class ShouldMethodDefinitionEmitter
         using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition))
         {
             sb.AppendLine("#pragma warning disable CA1707");
+            sb.AppendLineWithFirstIndent($"[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
             using (sb.BeginBlock("public struct __ParameterExpressions"))
             {
                 sb.AppendLine("#pragma warning restore CA1707");
@@ -42,7 +47,7 @@ internal static class ShouldMethodDefinitionEmitter
             sb.AppendLineWithFirstIndent($"public {args.ActualValueType.GlobalReference} Actual {{ get; }}");
             sb.AppendLineWithFirstIndent($"public {GlobalReferences.ValueExpression} ActualExpression {{ get; }}");
             sb.AppendLine();
-            sb.AppendLineWithFirstIndent($"private __ParameterExpressions ParamExpressions {{ get; init; }}");
+            sb.AppendLineWithFirstIndent($"private __ParameterExpressions ParamExpressions {{ get; }}");
             sb.AppendLine();
             sb.AppendLineWithFirstIndent($"public {args.PartialDefinitionType.TypeDefinition.Name}({args.ActualValueType.GlobalReference} actual, {GlobalReferences.ValueExpression} actualExpression, __ParameterExpressions parameterExpressions)");
             using (sb.BeginBlock())
