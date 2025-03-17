@@ -26,14 +26,14 @@ public class ObjectShouldBeAssignableToTests
     [Fact]
     public void ShouldBeAssignableToT_Fail()
     {
-        Assert.ThrowsAny<Exception>(() => new object().Should().BeAssignableTo<int>());
-        Assert.ThrowsAny<Exception>(() => new object().Should().BeAssignableTo<int?>());
-        Assert.ThrowsAny<Exception>(() => new object().Should().BeAssignableTo<string>());
-        Assert.ThrowsAny<Exception>(() => new object().Should().BeAssignableTo<INotifyPropertyChanged>());
-        Assert.ThrowsAny<Exception>(() => 1.Should().BeAssignableTo<string>());
-        Assert.ThrowsAny<Exception>(() => 1.Should().BeAssignableTo<INotifyPropertyChanged>());
-        Assert.ThrowsAny<Exception>(() => ((int?)1).Should().BeAssignableTo<string>());
-        Assert.ThrowsAny<Exception>(() => ((int?)1).Should().BeAssignableTo<INotifyPropertyChanged>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo<int>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo<int?>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo<string>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo<INotifyPropertyChanged>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeAssignableTo<string>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeAssignableTo<INotifyPropertyChanged>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeAssignableTo<string>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeAssignableTo<INotifyPropertyChanged>());
     }
     [Fact]
     public void ShouldBeAssignableTo_NotFail()
@@ -56,13 +56,13 @@ public class ObjectShouldBeAssignableToTests
     [Fact]
     public void ShouldBeAssignableTo_Fail()
     {
-        Assert.ThrowsAny<Exception>(() => new object().Should().BeAssignableTo(typeof(int)));
-        Assert.ThrowsAny<Exception>(() => new object().Should().BeAssignableTo(typeof(int?)));
-        Assert.ThrowsAny<Exception>(() => new object().Should().BeAssignableTo(typeof(string)));
-        Assert.ThrowsAny<Exception>(() => new object().Should().BeAssignableTo(typeof(INotifyPropertyChanged)));
-        Assert.ThrowsAny<Exception>(() => 1.Should().BeAssignableTo(typeof(string)));
-        Assert.ThrowsAny<Exception>(() => 1.Should().BeAssignableTo(typeof(INotifyPropertyChanged)));
-        Assert.ThrowsAny<Exception>(() => ((int?)1).Should().BeAssignableTo(typeof(string)));
-        Assert.ThrowsAny<Exception>(() => ((int?)1).Should().BeAssignableTo(typeof(INotifyPropertyChanged)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo(typeof(int)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo(typeof(int?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo(typeof(string)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo(typeof(INotifyPropertyChanged)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeAssignableTo(typeof(string)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeAssignableTo(typeof(INotifyPropertyChanged)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeAssignableTo(typeof(string)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeAssignableTo(typeof(INotifyPropertyChanged)));
     }
 }

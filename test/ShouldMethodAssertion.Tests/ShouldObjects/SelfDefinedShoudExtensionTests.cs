@@ -43,9 +43,9 @@ public partial class SelfDefinedShoudExtensionTests
         var m1 = new MixIn(1);
         var m2 = new MixIn(2);
 
-        Assert.ThrowsAny<Exception>(() => m1.Should().BeOneOf([m2]));
-        Assert.ThrowsAny<Exception>(() => new [] { m1, m2 }.Should().Equal([m1, m1], ignoreOrder: true));
-        Assert.ThrowsAny<Exception>(() => m2.Should().LessThan(m1));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => m1.Should().BeOneOf([m2]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new [] { m1, m2 }.Should().Equal([m1, m1], ignoreOrder: true));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => m2.Should().LessThan(m1));
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public partial class SelfDefinedShoudExtensionTests
     [Fact]
     public void UserDefinedShould_Fail()
     {
-        Assert.ThrowsAny<Exception>(() => new MixIn(0).Should().FailIfZero());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new MixIn(0).Should().FailIfZero());
     }
 
     [Fact]

@@ -18,7 +18,7 @@ public class BooleanShouldBeTests
     [CombinatorialData]
     public void ShouldBeXxx_Fail(bool value)
     {
-        Assert.ThrowsAny<Exception>(() =>
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
         {
             if (value)
                 value.Should().BeFalse();

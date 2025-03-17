@@ -11,7 +11,7 @@ public class ActionShouldThrowTests
     {
         var actionMock = new Mock<Action>();
 
-        Assert.ThrowsAny<Exception>(() =>
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
         {
             actionMock.Object.Should().Throw<Exception>(includeDerivedType, aggregateExceptionHandling);
         });
@@ -23,7 +23,7 @@ public class ActionShouldThrowTests
     [CombinatorialData]
     public void ShouldThrowT_ThrowUnexpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        Assert.ThrowsAny<Exception>(() =>
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
         {
             new Action(() => throw new ArgumentException("xxx")).Should().Throw<IOException>(includeDerivedType, aggregateExceptionHandling);
         });
@@ -48,7 +48,7 @@ public class ActionShouldThrowTests
         }
         else
         {
-            Assert.ThrowsAny<Exception>(() =>
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
             {
                 taskFunc.Should().Throw<IOException>(includeDerivedType, aggregateExceptionHandling);
             });
@@ -68,7 +68,7 @@ public class ActionShouldThrowTests
         }
         else
         {
-            Assert.ThrowsAny<Exception>(() =>
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
             {
                 taskFunc.Should().Throw<IOException>(includeDerivedType, aggregateExceptionHandling);
             });
@@ -94,7 +94,7 @@ public class ActionShouldThrowTests
         }
         else
         {
-            Assert.ThrowsAny<Exception>(() =>
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
             {
                 taskFunc.Should().Throw<IOException>(includeDerivedType, aggregateExceptionHandling);
             });
@@ -120,7 +120,7 @@ public class ActionShouldThrowTests
         }
         else
         {
-            Assert.ThrowsAny<Exception>(() =>
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
             {
                 taskFunc.Should().Throw<IOException>(includeDerivedType, aggregateExceptionHandling);
             });
@@ -133,7 +133,7 @@ public class ActionShouldThrowTests
     {
         var actionMock = new Mock<Action>();
 
-        Assert.ThrowsAny<Exception>(() =>
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
         {
             actionMock.Object.Should().Throw(typeof(Exception), includeDerivedType, aggregateExceptionHandling);
         });
@@ -145,7 +145,7 @@ public class ActionShouldThrowTests
     [CombinatorialData]
     public void ShouldThrow_ThrowUnexpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        Assert.ThrowsAny<Exception>(() =>
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
         {
             new Action(() => throw new ArgumentException("xxx")).Should().Throw(typeof(IOException), includeDerivedType, aggregateExceptionHandling);
         });
@@ -170,7 +170,7 @@ public class ActionShouldThrowTests
         }
         else
         {
-            Assert.ThrowsAny<Exception>(() =>
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
             {
                 taskFunc.Should().Throw(typeof(IOException), includeDerivedType, aggregateExceptionHandling);
             });
@@ -190,7 +190,7 @@ public class ActionShouldThrowTests
         }
         else
         {
-            Assert.ThrowsAny<Exception>(() =>
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
             {
                 taskFunc.Should().Throw(typeof(IOException), includeDerivedType, aggregateExceptionHandling);
             });
@@ -216,7 +216,7 @@ public class ActionShouldThrowTests
         }
         else
         {
-            Assert.ThrowsAny<Exception>(() =>
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
             {
                 taskFunc.Should().Throw(typeof(IOException), includeDerivedType, aggregateExceptionHandling);
             });
@@ -242,7 +242,7 @@ public class ActionShouldThrowTests
         }
         else
         {
-            Assert.ThrowsAny<Exception>(() =>
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
             {
                 taskFunc.Should().Throw(typeof(IOException), includeDerivedType, aggregateExceptionHandling);
             });
@@ -253,7 +253,7 @@ public class ActionShouldThrowTests
     [Fact]
     public void ShouldNotThrow()
     {
-        var exception = Assert.ThrowsAny<Exception>(() =>
+        var exception = Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
         {
             new Action(() => throw new Exception()).Should().NotThrow();
         });

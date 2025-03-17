@@ -42,21 +42,21 @@ public partial class ObjectShouldBeOneOfTests
 
         var s1 = new Struct(1);
 
-        Assert.ThrowsAny<Exception>(() => 1.Should().BeOneOf(ReadOnlySpan<int>.Empty));
-        Assert.ThrowsAny<Exception>(() => 1.Should().BeOneOf([2]));
-        Assert.ThrowsAny<Exception>(() => 1.Should().BeOneOf(["1"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeOneOf(ReadOnlySpan<int>.Empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeOneOf([2]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeOneOf(["1"]));
 
-        Assert.ThrowsAny<Exception>(() => "1".Should().BeOneOf(ReadOnlySpan<string>.Empty));
-        Assert.ThrowsAny<Exception>(() => "1".Should().BeOneOf(["2"]));
-        Assert.ThrowsAny<Exception>(() => "1".Should().BeOneOf([1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().BeOneOf(ReadOnlySpan<string>.Empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().BeOneOf(["2"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().BeOneOf([1]));
 
-        Assert.ThrowsAny<Exception>(() => c1.Should().BeOneOf(ReadOnlySpan<Class>.Empty));
-        Assert.ThrowsAny<Exception>(() => c1.Should().BeOneOf(["2"]));
-        Assert.ThrowsAny<Exception>(() => c1.Should().BeOneOf([1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().BeOneOf(ReadOnlySpan<Class>.Empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().BeOneOf(["2"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().BeOneOf([1]));
 
-        Assert.ThrowsAny<Exception>(() => s1.Should().BeOneOf(ReadOnlySpan<Struct>.Empty));
-        Assert.ThrowsAny<Exception>(() => s1.Should().BeOneOf(["2"]));
-        Assert.ThrowsAny<Exception>(() => s1.Should().BeOneOf([1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().BeOneOf(ReadOnlySpan<Struct>.Empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().BeOneOf(["2"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().BeOneOf([1]));
     }
 
     [Fact]
@@ -92,21 +92,21 @@ public partial class ObjectShouldBeOneOfTests
         var s1 = new Struct(1);
         var s2 = new Struct(2);
 
-        Assert.ThrowsAny<Exception>(() => 1.Should().NotBeOneOf([1]));
-        Assert.ThrowsAny<Exception>(() => 1.Should().NotBeOneOf([2, 1]));
-        Assert.ThrowsAny<Exception>(() => 1.Should().NotBeOneOf<object>(["1", c1, s1, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().NotBeOneOf([1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().NotBeOneOf([2, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().NotBeOneOf<object>(["1", c1, s1, 1]));
 
-        Assert.ThrowsAny<Exception>(() => "1".Should().NotBeOneOf(["1"]));
-        Assert.ThrowsAny<Exception>(() => "1".Should().NotBeOneOf(["2", "1"]));
-        Assert.ThrowsAny<Exception>(() => "1".Should().NotBeOneOf<object>(["1", c1, s1, 1]));
-        Assert.ThrowsAny<Exception>(() => "abcd".Should().NotBeOneOf(["2", "ABCD"], StringComparer.OrdinalIgnoreCase));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().NotBeOneOf(["1"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().NotBeOneOf(["2", "1"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().NotBeOneOf<object>(["1", c1, s1, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "abcd".Should().NotBeOneOf(["2", "ABCD"], StringComparer.OrdinalIgnoreCase));
 
-        Assert.ThrowsAny<Exception>(() => c1.Should().NotBeOneOf([c1]));
-        Assert.ThrowsAny<Exception>(() => c1.Should().NotBeOneOf([c2, c1]));
-        Assert.ThrowsAny<Exception>(() => c1.Should().NotBeOneOf<object>(["1", c1, s1, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().NotBeOneOf([c1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().NotBeOneOf([c2, c1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().NotBeOneOf<object>(["1", c1, s1, 1]));
 
-        Assert.ThrowsAny<Exception>(() => s1.Should().NotBeOneOf([s1]));
-        Assert.ThrowsAny<Exception>(() => s1.Should().NotBeOneOf([s2, s1]));
-        Assert.ThrowsAny<Exception>(() => s1.Should().NotBeOneOf<object>(["1", c1, s1, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().NotBeOneOf([s1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().NotBeOneOf([s2, s1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().NotBeOneOf<object>(["1", c1, s1, 1]));
     }
 }
