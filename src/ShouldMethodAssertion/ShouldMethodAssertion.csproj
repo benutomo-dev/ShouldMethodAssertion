@@ -6,6 +6,28 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- NuGet -->
+  <PropertyGroup>
+    <PackageVersion>1.0.0-preview1</PackageVersion>
+
+    <PackageId>ShouldMethodAssertion</PackageId>
+    <Description>ShouldMethodAssertion is an assertion framework.</Description>
+    <Authors>benutomo</Authors>
+    <Copyright>© benutomo.</Copyright>
+    <PackageTags>assertion;unittest</PackageTags>
+    <PackageProjectUrl>https://github.com/benutomo-dev/ShouldMethodAssertion</PackageProjectUrl>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>nuget.readme.md</PackageReadmeFile>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="$(OutputPath)\..\..\..\ShouldMethodAssertion.Generator\$(Configuration)\netstandard2.0\ShouldMethodAssertion.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.0/cs" Visible="false" />
+    <None Update="nuget.readme.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\ShouldMethodAssertion.Generator\ShouldMethodAssertion.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>

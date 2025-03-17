@@ -1,12 +1,12 @@
-# Memo
+ï»¿# Memo
 
-## å—v‚ÈŒ^
+## ä¸»è¦ãªå‹
 
-### ShouldAssertionContext(‰¼)
+### ShouldAssertionContext(ä»®)
 
 ```csharp
-// ShouldAssertionContext<T>‚ÌT‚ÍÀÛ’l‚ÌŒ^
-// Span<T>‚È‚ÇƒWƒFƒlƒŠƒbƒNŒ^‚É‚Å‚«‚È‚¢ref\‘¢‘Ì‚ÍShouldAssertionContextSpan<T>‚Ì‚æ‚¤‚ÈShouldAssertionContext<T>‚Æ“™‰¿‚É‚È‚éê—p‚ÌŒ^‚ğƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‚Å¶¬
+// ShouldAssertionContext<T>ã®Tã¯å®Ÿéš›å€¤ã®å‹
+// Span<T>ãªã©ã‚¸ã‚§ãƒãƒªãƒƒã‚¯å‹ã«ã§ããªã„refæ§‹é€ ä½“ã¯ShouldAssertionContextSpan<T>ã®ã‚ˆã†ãªShouldAssertionContext<T>ã¨ç­‰ä¾¡ã«ãªã‚‹å°‚ç”¨ã®å‹ã‚’ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ã§ç”Ÿæˆ
 public readonly ref struct ShouldAssertionContext<T>
 {
     public T Actual { get; }
@@ -48,7 +48,7 @@ public readonly ref struct ShouldAssertionContext<T>
 }
 ```
 
-### ŒŸØƒƒ\ƒbƒh‚Ì’è‹`\‘¢‘ÌŒ^‚Å‚ ‚é‚±‚Æ‚ğéŒ¾‚·‚é‘®«
+### æ¤œè¨¼ãƒ¡ã‚½ãƒƒãƒ‰ã®å®šç¾©æ§‹é€ ä½“å‹ã§ã‚ã‚‹ã“ã¨ã‚’å®£è¨€ã™ã‚‹å±æ€§
 ```csharp
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = false, Inherited = false)]
 public class ShouldMethodDefinitionAttribute : Attribute
@@ -90,16 +90,16 @@ public class ShouldMethodAttribute : Attribute
 }
 ```
 
-## ŒŸØƒƒ\ƒbƒh‚Ì’è‹`
+## æ¤œè¨¼ãƒ¡ã‚½ãƒƒãƒ‰ã®å®šç¾©
 
 ```csharp
-[ShouldMethodDefinition(typeof(object))] // ‘®«‚ÅobjectŒ^‚ÌŒŸØƒƒ\ƒbƒh‚Ì’è‹`‚Å‚ ‚é‚±‚ÆéŒ¾
+[ShouldMethodDefinition(typeof(object))] // å±æ€§ã§objectå‹ã®æ¤œè¨¼ãƒ¡ã‚½ãƒƒãƒ‰ã®å®šç¾©ã§ã‚ã‚‹ã“ã¨å®£è¨€
 struct ObjectShouldBe
 {
-    // public‚Å"Should"‚©‚çŠJn‚·‚éƒCƒ“ƒXƒ^ƒ“ƒXƒƒ\ƒbƒh‚ğ’è‹`‚·‚é
-    // ƒWƒFƒlƒŠƒbƒNƒƒ\ƒbƒh‚Å‚à—Ç‚¢(Œ^§–ñ‚à‰Â)
-    // ƒfƒtƒHƒ‹ƒgˆø”‚à‰Â
-    // ©“®¶¬•İ’è‚³‚ê‚éContext‚ÅŠeˆø”‚ÌŒÄ‚Ño‚µ‚Ì®‚ğQÆ‰Â
+    // publicã§"Should"ã‹ã‚‰é–‹å§‹ã™ã‚‹ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®šç¾©ã™ã‚‹
+    // ã‚¸ã‚§ãƒãƒªãƒƒã‚¯ãƒ¡ã‚½ãƒƒãƒ‰ã§ã‚‚è‰¯ã„(å‹åˆ¶ç´„ã‚‚å¯)
+    // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå¼•æ•°ã‚‚å¯
+    // è‡ªå‹•ç”Ÿæˆï¼†è¨­å®šã•ã‚Œã‚‹Contextã§å„å¼•æ•°ã®å‘¼ã³å‡ºã—æ™‚ã®å¼ã‚’å‚ç…§å¯
     public void ShouldBe<T>(T expected, IEqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
@@ -110,7 +110,7 @@ struct ObjectShouldBe
         throw AssertExceptionUtil.Create($"{ActualExpression} is not {ParamExpressions.expected}.");
     }
 
-    // •¡”’è‹`‰Â
+    // è¤‡æ•°å®šç¾©å¯
     public void ShouldNotBe<T>(T expected, IEqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
@@ -122,7 +122,7 @@ struct ObjectShouldBe
     }
 }
 
-#region ShouldMethodDefinition‘®«‚É‘Î‚µ‚Äƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‚ª¶¬
+#region ShouldMethodDefinitionå±æ€§ã«å¯¾ã—ã¦ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãŒç”Ÿæˆ
 public readonly ref partial struct ObjectShouldBe
 {
     private ShouldAssertionContext<object> Context { get; init; }
@@ -156,7 +156,7 @@ public readonly ref struct ObjectShouldSameReferenceAs
     }
 }
 
-#region [ShouldMethodDefinition(typeof(object))]‚É‘Î‚µ‚Äƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‚ª¶¬
+#region [ShouldMethodDefinition(typeof(object))]ã«å¯¾ã—ã¦ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãŒç”Ÿæˆ
 public readonly ref struct ObjectShouldSameReferenceAs
 {
     private ShouldAssertionContext<object> Context { get; init; }
@@ -169,17 +169,17 @@ public readonly ref struct ObjectShouldSameReferenceAs
 #endregion
 ```
 
-## ShouldŠg’£ƒƒ\ƒbƒh‚Ì’è‹`
+## Shouldæ‹¡å¼µãƒ¡ã‚½ãƒƒãƒ‰ã®å®šç¾©
 
 ### object
 
 ```csharp
-[ShouldExtension(typeof(object))]                   // Should()Šg’£ƒƒ\ƒbƒh‚Ì‘ÎÛ‚Æ‚·‚éŒ^‚Íobject
-[ShouldMethod(typeof(ObjectShouldBe))]              // ObjectShouldBe‚ÌŒŸØƒƒ\ƒbƒh‚ğÀ‘•‚·‚é
-[ShouldMethod(typeof(ObjectShouldSameReferenceAs))] // ObjectShouldSameReferenceAs‚ÌŒŸØƒƒ\ƒbƒh‚ğÀ‘•‚·‚é
+[ShouldExtension(typeof(object))]                   // Should()æ‹¡å¼µãƒ¡ã‚½ãƒƒãƒ‰ã®å¯¾è±¡ã¨ã™ã‚‹å‹ã¯object
+[ShouldMethod(typeof(ObjectShouldBe))]              // ObjectShouldBeã®æ¤œè¨¼ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®Ÿè£…ã™ã‚‹
+[ShouldMethod(typeof(ObjectShouldSameReferenceAs))] // ObjectShouldSameReferenceAsã®æ¤œè¨¼ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®Ÿè£…ã™ã‚‹
 partial struct ShouldObject {}
 
-#region [ShouldExtension(typeof(object))]‚É‘Î‚µ‚Äƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‚ª¶¬
+#region [ShouldExtension(typeof(object))]ã«å¯¾ã—ã¦ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãŒç”Ÿæˆ
 public readonly ref partial struct ShouldObject
 {
     private object Actual { get; }
@@ -195,7 +195,7 @@ public readonly ref partial struct ShouldObject
 #endregion
 
 
-#region [ShouldMethod(typeof(ObjectShouldBe))]‚É‘Î‚µ‚Äƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‚ª¶¬
+#region [ShouldMethod(typeof(ObjectShouldBe))]ã«å¯¾ã—ã¦ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãŒç”Ÿæˆ
 partial struct ShouldObject
 {
     public void Be<T>(T expected, IEqualityComparer<T>? comparer = null, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null, [CallerArgumentExpression(nameof(comparer))] string? comparerExpression = null)
@@ -230,10 +230,10 @@ partial struct ShouldObject
 }
 #endregion
 
-#region [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]‚É‘Î‚µ‚Äƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‚ª¶¬
+#region [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]ã«å¯¾ã—ã¦ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãŒç”Ÿæˆ
 partial struct ShouldObject
 {
-    public void SameReferenceAs<T>(T expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null) where T : class // ObjectShouldSameAs‚Å’è‹`‚³‚ê‚éƒƒ\ƒbƒh‚Æ“¯‚¶Œ^§–ñ
+    public void SameReferenceAs<T>(T expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null) where T : class // ObjectShouldSameAsã§å®šç¾©ã•ã‚Œã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ã¨åŒã˜å‹åˆ¶ç´„
     {
         var context = new ShouldAssertionContext<object>(
             Actual,
@@ -248,7 +248,7 @@ partial struct ShouldObject
         assertMethod.ShouldSameReferenceAs(expected);
     }
 
-    public void NotSameReferenceAs<T>(T expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null) where T : class // ObjectShouldSameAs‚Å’è‹`‚³‚ê‚éƒƒ\ƒbƒh‚Æ“¯‚¶Œ^§–ñ
+    public void NotSameReferenceAs<T>(T expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null) where T : class // ObjectShouldSameAsã§å®šç¾©ã•ã‚Œã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ã¨åŒã˜å‹åˆ¶ç´„
     {
         var context = new ShouldAssertionContext<object>(
             Actual,
@@ -269,16 +269,16 @@ partial struct ShouldObject
 ### IEnumerable&lt;T&gt;
 
 ```csharp
-[ShouldExtension(typeof(IEnumerable<>))]            // Should()Šg’£ƒƒ\ƒbƒh‚Ì‘ÎÛ‚Æ‚·‚éŒ^‚ÍIEnumerable<T>
-[ShouldMethod(typeof(EnumerableShouldEquals<>))]    // EnumerableShouldEquals<T>‚ÌŒŸØƒƒ\ƒbƒh‚ğÀ‘•‚·‚é
-[ShouldMethod(typeof(ObjectShouldSameReferenceAs))] // ObjectShouldSameReferenceAs‚ÌŒŸØƒƒ\ƒbƒh‚ğÀ‘•‚·‚é(ObjectShouldSameReferenceAs‚ÌÀÛ’l‚ÌŒ^‚Íobject‚¾‚ªAIEnuemerable<T>‚Íobject‚ÉŒp³ŠÖŒW‚Å‘ã“ü‰Â”\‚È‚Ì‚ÅOK)
+[ShouldExtension(typeof(IEnumerable<>))]            // Should()æ‹¡å¼µãƒ¡ã‚½ãƒƒãƒ‰ã®å¯¾è±¡ã¨ã™ã‚‹å‹ã¯IEnumerable<T>
+[ShouldMethod(typeof(EnumerableShouldEquals<>))]    // EnumerableShouldEquals<T>ã®æ¤œè¨¼ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®Ÿè£…ã™ã‚‹
+[ShouldMethod(typeof(ObjectShouldSameReferenceAs))] // ObjectShouldSameReferenceAsã®æ¤œè¨¼ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®Ÿè£…ã™ã‚‹(ObjectShouldSameReferenceAsã®å®Ÿéš›å€¤ã®å‹ã¯objectã ãŒã€IEnuemerable<T>ã¯objectã«ç¶™æ‰¿é–¢ä¿‚ã§ä»£å…¥å¯èƒ½ãªã®ã§OK)
 public readonly ref partial struct ShouldEnumerable<T>
 {
 }
 
-#region [ShouldExtension(typeof(IEnumerable<>))]‚É‘Î‚µ‚Äƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‚ª¶¬
-// ShouldExtension‘®«‚ÉƒI[ƒvƒ“ƒWƒFƒlƒŠƒbƒNŒ^‚ªw’è‚·‚éê‡‚Í\‘¢‘Ì‚Ì’è‹`‚àƒWƒFƒlƒŠƒbƒNŒ^‚É‚·‚éB
-// ShouldExtension‘®«‚ÌƒI[ƒvƒ“ƒWƒFƒlƒŠƒbƒNŒ^‚ÌŒ^ƒpƒ‰ƒ[ƒ^‚Í\‘¢‘Ì‚Ì“¯‚¶ˆÊ’u‚ÌŒ^ƒpƒ‰ƒ[ƒ^‚É‘Î‰‚·‚éB
+#region [ShouldExtension(typeof(IEnumerable<>))]ã«å¯¾ã—ã¦ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãŒç”Ÿæˆ
+// ShouldExtensionå±æ€§ã«ã‚ªãƒ¼ãƒ—ãƒ³ã‚¸ã‚§ãƒãƒªãƒƒã‚¯å‹ãŒæŒ‡å®šã™ã‚‹å ´åˆã¯æ§‹é€ ä½“ã®å®šç¾©ã‚‚ã‚¸ã‚§ãƒãƒªãƒƒã‚¯å‹ã«ã™ã‚‹ã€‚
+// ShouldExtensionå±æ€§ã®ã‚ªãƒ¼ãƒ—ãƒ³ã‚¸ã‚§ãƒãƒªãƒƒã‚¯å‹ã®å‹ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¯æ§‹é€ ä½“ã®åŒã˜ä½ç½®ã®å‹ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã«å¯¾å¿œã™ã‚‹ã€‚
 public readonly ref partial struct ShouldEnumerable<T>
 {
     private IEnumerable<T> Actual { get; }
@@ -293,7 +293,7 @@ public readonly ref partial struct ShouldEnumerable<T>
 }
 #endregion
 
-#region [ShouldMethod(typeof(EnumerableShouldEquals<>))]‚É‘Î‚µ‚Äƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‚ª¶¬
+#region [ShouldMethod(typeof(EnumerableShouldEquals<>))]ã«å¯¾ã—ã¦ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãŒç”Ÿæˆ
 partial struct ShouldEnumerable<T>
 {
     public void Equal(IEnumerable<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null, [CallerArgumentExpression(nameof(ignoreOrder))] string? ignoreOrderExpression = null, [CallerArgumentExpression(nameof(comparer))] string? comparerExpression = null)
@@ -328,10 +328,10 @@ partial struct ShouldEnumerable<T>
 }
 #endregion
 
-#region [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]‚É‘Î‚µ‚Äƒ\[ƒXƒWƒFƒlƒŒ[ƒ^‚ª¶¬
+#region [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]ã«å¯¾ã—ã¦ã‚½ãƒ¼ã‚¹ã‚¸ã‚§ãƒãƒ¬ãƒ¼ã‚¿ãŒç”Ÿæˆ
 partial struct ShouldEnumerable<T>
 {
-    public void SameReferenceAs<TExpected>(TExpected expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null) where TExpected : class // ObjectShouldSameAs‚Å’è‹`‚³‚ê‚éƒƒ\ƒbƒh‚Æ“¯‚¶Œ^§–ñ(–¼‘O‚Ìd•¡‚ÍT->TExpected‚É©“®‰ñ”ğ‚ª•K—v)
+    public void SameReferenceAs<TExpected>(TExpected expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null) where TExpected : class // ObjectShouldSameAsã§å®šç¾©ã•ã‚Œã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ã¨åŒã˜å‹åˆ¶ç´„(åå‰ã®é‡è¤‡ã¯T->TExpectedã«è‡ªå‹•å›é¿ãŒå¿…è¦)
     {
         var context = new ShouldAssertionContext<object>(
             Actual,
@@ -346,7 +346,7 @@ partial struct ShouldEnumerable<T>
         assertMethod.ShouldNotSameReferenceAs(expected);
     }
 
-    public void NotSameReferenceAs<TExpected>(TExpected expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null) where TExpected : class // ObjectShouldSameAs‚Å’è‹`‚³‚ê‚éƒƒ\ƒbƒh‚Æ“¯‚¶Œ^§–ñ(–¼‘O‚Ìd•¡‚ÍT->TExpected‚É©“®‰ñ”ğ‚ª•K—v)
+    public void NotSameReferenceAs<TExpected>(TExpected expected, [CallerArgumentExpression(nameof(expected))] string? expectedExpression = null) where TExpected : class // ObjectShouldSameAsã§å®šç¾©ã•ã‚Œã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ã¨åŒã˜å‹åˆ¶ç´„(åå‰ã®é‡è¤‡ã¯T->TExpectedã«è‡ªå‹•å›é¿ãŒå¿…è¦)
     {
         var context = new ShouldAssertionContext<object>(
             Actual,
