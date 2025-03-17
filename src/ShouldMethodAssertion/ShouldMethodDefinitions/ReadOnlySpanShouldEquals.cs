@@ -1,9 +1,10 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
+using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
 [ShouldMethodDefinition(typeof(ReadOnlySpan<>))]
-public partial struct ReadOnlySpanShouldEquals<T> // ShouldMethod属性で指定した型と同じ数と制約の型引数
+public partial struct ReadOnlySpanShouldEqual<T> // ShouldMethod属性で指定した型と同じ数と制約の型引数
 {
     public void ShouldEqual(ReadOnlySpan<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null)
     {

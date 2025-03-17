@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace ShouldMethodAssertion.ExpressionUtils;
+namespace ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 public static partial class ExpressionUtil
 {

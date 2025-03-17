@@ -94,7 +94,7 @@ internal static class ShouldObjectAssertionMethodsEmitter
 
                     using (sb.BeginBlock($"if (!Actual.HasValue)"))
                     {
-                        sb.AppendLineWithFirstIndent($"throw {GlobalReferences.ExceptionCreateCall}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
+                        sb.AppendLineWithFirstIndent($"throw {GlobalReferences.ExceptionCreateMethod}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
                     }
                     sb.AppendLineWithFirstIndent($"var rawActualValue = Actual.Value;");
                     sb.AppendLine();
@@ -107,7 +107,7 @@ internal static class ShouldObjectAssertionMethodsEmitter
 
                     using (sb.BeginBlock($"if (Actual is null)"))
                     {
-                        sb.AppendLineWithFirstIndent($"throw {GlobalReferences.ExceptionCreateCall}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
+                        sb.AppendLineWithFirstIndent($"throw {GlobalReferences.ExceptionCreateMethod}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
                     }
                     sb.AppendLine();
                 }

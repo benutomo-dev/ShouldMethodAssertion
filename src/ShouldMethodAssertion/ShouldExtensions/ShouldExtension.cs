@@ -1,5 +1,4 @@
-﻿using ShouldMethodAssertion.ExpressionUtils;
-using ShouldMethodAssertion.ShouldMethodDefinitions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 using System.Runtime.CompilerServices;
 
 namespace ShouldMethodAssertion.ShouldExtensions;

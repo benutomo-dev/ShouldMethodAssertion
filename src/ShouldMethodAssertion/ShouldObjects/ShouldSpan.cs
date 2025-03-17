@@ -4,7 +4,7 @@ using ShouldMethodAssertion.ShouldMethodDefinitions;
 namespace ShouldMethodAssertion.ShouldObjects;
 
 [ShouldExtension(typeof(Span<>))]
-[ShouldMethod(typeof(ReadOnlySpanShouldEquals<>))]
+[ShouldMethod(typeof(ReadOnlySpanShouldEqual<>))]
 public partial struct ShouldSpan<T>
 {
 }

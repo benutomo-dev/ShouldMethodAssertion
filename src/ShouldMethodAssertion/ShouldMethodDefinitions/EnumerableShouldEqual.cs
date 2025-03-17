@@ -1,14 +1,12 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
-using ShouldMethodAssertion.ExpressionUtils;
+using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
 [ShouldMethodDefinition(typeof(IEnumerable<>))]
-[StructLayout(LayoutKind.Auto)]
 public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定した型と同じ数と制約の型引数
 {
     public void ShouldEqual(IEnumerable<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null)
@@ -224,7 +222,7 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
 
             valueCountTable[value] = valueCount;
 #else
-            ref var valueCountRef = ref CollectionsMarshal.GetValueRefOrAddDefault(valueCountTable, value, out var exists);
+            ref var valueCountRef = ref System.Runtime.InteropServices.CollectionsMarshal.GetValueRefOrAddDefault(valueCountTable, value, out var exists);
             valueCountRef++;
 #endif
         }

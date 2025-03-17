@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ShouldMethodAssertion.ShouldMethodDefinitions;
+namespace ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 internal static class ThrowHandlingHelper
 {
@@ -98,7 +98,7 @@ internal static class ThrowHandlingHelper
     public static bool IsExpectedException(Type expectedExceptionType, bool includeDerivedType, Exception? exception)
     {
         return includeDerivedType
-            ? (exception?.GetType().IsAssignableTo(expectedExceptionType) ?? false)
+            ? exception?.GetType().IsAssignableTo(expectedExceptionType) ?? false
             : exception?.GetType() == expectedExceptionType;
     }
 }

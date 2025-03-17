@@ -1,4 +1,4 @@
-﻿namespace ShouldMethodAssertion.ShouldMethodDefinitions;
+﻿namespace ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 public static class AssertExceptionUtil
 {

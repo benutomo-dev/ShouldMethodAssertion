@@ -1,4 +1,5 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
+using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
