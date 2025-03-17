@@ -11,16 +11,9 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 [StructLayout(LayoutKind.Auto)]
 public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定した型と同じ数と制約の型引数
 {
-    NullableValueExpression IgnoreOrder { get; }
-
     public void ShouldEqual(IEnumerable<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
-
-        if (IgnoreOrder.HasValue)
-        {
-            string v = IgnoreOrder.OneLine;
-        }
 
         var expectedExpression = ExpressionUtil.AdjustExpressionIndent(Context.GetExpressionOf(nameof(expected)), withComplementBruckets: true);
         var comparerExpression = ExpressionUtil.ToOneLineExpression(Context.GetExpressionOf(nameof(comparer)), withComplementBruckets: true);

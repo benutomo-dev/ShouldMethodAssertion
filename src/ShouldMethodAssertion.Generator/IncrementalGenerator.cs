@@ -11,18 +11,6 @@ namespace ShouldMethodAssertion.Generator;
 [Generator(LanguageNames.CSharp)]
 public class IncrementalGenerator : IIncrementalGenerator
 {
-    private const string ShouldAssertionContextMetadataName = "ShouldMethodAssertion.ShouldAssertionContexts.ShouldAssertionContext`1";
-
-    private const string ShouldExtensionAttributeMetadataName = "ShouldMethodAssertion.DataAnnotations.ShouldExtensionAttribute";
-
-    private const string ShouldMethodAttributeMetadataName = "ShouldMethodAssertion.DataAnnotations.ShouldMethodAttribute";
-
-    private const string ShouldMethodDefinitionAttributeMetadataName = "ShouldMethodAssertion.DataAnnotations.ShouldMethodDefinitionAttribute";
-
-    private const string CallerArgumentExpressionAttributeMetadataName = "System.Runtime.CompilerServices.CallerArgumentExpressionAttribute";
-
-    private const string ExceptionCreateCall = "global::ShouldMethodAssertion.ShouldMethodDefinitions.AssertExceptionUtil.Create";
-
     record struct ShouldExtensionWithProvider(
         GeneratorAttributeSyntaxContext Context,
         CsDeclarationProvider DeclarationProvider,
@@ -75,13 +63,13 @@ public class IncrementalGenerator : IIncrementalGenerator
     {
         var csDeclarationProvider = context.CreateCsDeclarationProvider();
 
-        var shouldExtensionWithProvider = context.SyntaxProvider.ForAttributeWithMetadataName(ShouldExtensionAttributeMetadataName, isTypeDeclarationSyntax, (v, _) => v)
+        var shouldExtensionWithProvider = context.SyntaxProvider.ForAttributeWithMetadataName(MetadataNames.ShouldExtensionAttribute, isTypeDeclarationSyntax, (v, _) => v)
             .Combine(csDeclarationProvider)
             .Select(toShouldExtensionWithProvider)
             .Where(v => v.HasValue)
             .Select((v, _) => v!.Value);
 
-        var shouldMethodDefinitionWithProvider = context.SyntaxProvider.ForAttributeWithMetadataName(ShouldMethodDefinitionAttributeMetadataName, isTypeDeclarationSyntax, (v, _) => v)
+        var shouldMethodDefinitionWithProvider = context.SyntaxProvider.ForAttributeWithMetadataName(MetadataNames.ShouldMethodDefinitionAttribute, isTypeDeclarationSyntax, (v, _) => v)
             .Combine(csDeclarationProvider)
             .Select(toShouldMethodDefinitionWithProvider)
             .Where(v => v.HasValue)
@@ -210,7 +198,7 @@ public class IncrementalGenerator : IIncrementalGenerator
         static ShouldObjectAndExtensionInput toShouldObjectAndExtensionInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
         {
             var stringType = args.DeclarationProvider.SpecialType.String;
-            var callerArgumentExpressionAttributeType = args.DeclarationProvider.GetTypeReferenceByMetadataName(CallerArgumentExpressionAttributeMetadataName);
+            var callerArgumentExpressionAttributeType = args.DeclarationProvider.GetTypeReferenceByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
 
             DebugSGen.AssertIsNotNull(callerArgumentExpressionAttributeType);
 
@@ -233,14 +221,14 @@ public class IncrementalGenerator : IIncrementalGenerator
             if (typeSymbol is null)
                 yield break;
 
-            var shouldMethodAttributeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(ShouldMethodAttributeMetadataName);
+            var shouldMethodAttributeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(MetadataNames.ShouldMethodAttribute);
 
-            var shouldMethodDefinitionAttributeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(ShouldMethodDefinitionAttributeMetadataName);
+            var shouldMethodDefinitionAttributeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(MetadataNames.ShouldMethodDefinitionAttribute);
 
             var shouldMethodAttributes = typeSymbol.GetAttributes().Where(v => SymbolEqualityComparer.Default.Equals(v.AttributeClass, shouldMethodAttributeSymbol));
 
             var stringType = declarationProvider.SpecialType.String;
-            var callerArgumentExpressionAttribute = declarationProvider.GetTypeReferenceByMetadataName(CallerArgumentExpressionAttributeMetadataName);
+            var callerArgumentExpressionAttribute = declarationProvider.GetTypeReferenceByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
 
             DebugSGen.AssertIsNotNull(callerArgumentExpressionAttribute);
 
@@ -248,9 +236,9 @@ public class IncrementalGenerator : IIncrementalGenerator
             {
                 var shouldMethodDefinitionTypeSymbol = shouldMethodAttributeData.ConstructorArguments[0].Value as INamedTypeSymbol;
 
-                var convertMethodName = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == "ConvertBy").Value.Value as string;
+                var convertMethodName = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.ConvertBy).Value.Value as string;
 
-                var typeArgsTypedConstant = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == "TypeArgs").Value;
+                var typeArgsTypedConstant = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.TypeArgs).Value;
 
                 var explicitTypeArgs = typeArgsTypedConstant.Kind == TypedConstantKind.Array
                     ? typeArgsTypedConstant.Values.Select(v => args.DeclarationProvider.GetTypeReference((ITypeSymbol)v.Value!)).ToImmutableArray().ToEquatableArray()
@@ -281,7 +269,7 @@ public class IncrementalGenerator : IIncrementalGenerator
                 {
                     yield return failedDefaultValue with
                     {
-                        WarningMessage = $"{shouldMethodDefinitionTypeSymbol.Name}に{ShouldMethodDefinitionAttributeMetadataName}属性が付与されていません。",
+                        WarningMessage = $"{shouldMethodDefinitionTypeSymbol.Name}に{HintingAttributeSymbolNames.ShouldMethodDefinitionAttribute}が付与されていません。",
                     };
                     continue;
                 }
@@ -296,7 +284,7 @@ public class IncrementalGenerator : IIncrementalGenerator
                     {
                         yield return failedDefaultValue with
                         {
-                            WarningMessage = $"TypeArgsの数が適用対象の型の型パラメータの数と一致しません。",
+                            WarningMessage = $"{HintingAttributeSymbolNames.TypeArgs}の数が適用対象の型の型パラメータの数と一致しません。",
                         };
                         continue;
                     }
@@ -321,7 +309,7 @@ public class IncrementalGenerator : IIncrementalGenerator
                     {
                         yield return failedDefaultValue with
                         {
-                            WarningMessage = $"型パラメータの数が一致しないため、型パラメータを継承出来ません。ShouldMethod属性にTypeArgsの指定が必要です。",
+                            WarningMessage = $"型パラメータの数が一致しないため、型パラメータを継承出来ません。{HintingAttributeSymbolNames.ShouldMethodAttribute}にTypeArgsの指定が必要です。",
                         };
                         continue;
                     }
@@ -402,7 +390,7 @@ public class IncrementalGenerator : IIncrementalGenerator
     private static CsTypeRefWithNullability GetActualValueTypeFromShouldMethodDefinitionAttribute(CsDeclarationProvider declarationProvider, AttributeData attributeData)
     {
         DebugSGen.AssertIsNotNull(attributeData.AttributeClass);
-        DebugSGen.Assert(attributeData.AttributeClass.Name == "ShouldMethodDefinitionAttribute");
+        DebugSGen.Assert(attributeData.AttributeClass.Name == HintingAttributeSymbolNames.ShouldMethodDefinitionAttribute);
 
         var actualValueTypeSymbol = attributeData.ConstructorArguments[0].Value as INamedTypeSymbol;
 
@@ -410,7 +398,7 @@ public class IncrementalGenerator : IIncrementalGenerator
 
         var actualValueType = declarationProvider.GetTypeReference(actualValueTypeSymbol);
 
-        var acceptNullReference = (bool)(attributeData.NamedArguments.FirstOrDefault(v => v.Key == "AcceptNullReference").Value.Value ?? false);
+        var acceptNullReference = (bool)(attributeData.NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.AcceptNullReference).Value.Value ?? false);
 
         return acceptNullReference ? actualValueType.ToNullableIfReferenceType() : actualValueType;
     }
@@ -421,7 +409,7 @@ public class IncrementalGenerator : IIncrementalGenerator
         {
             var shouldAssertionContextType = new CsTypeReference(
                 new CsStruct(
-                    new CsNameSpace("ShouldMethodAssertion.ShouldAssertionContexts"),
+                    new CsNameSpace(NameSpaces.AssertionContextTypes),
                     $"ShouldAssertionContext{actualValueType.Type.TypeDefinition.Name}",
                     actualValueType.Type.TypeDefinition.GenericTypeParams,
                     accessibility: CsAccessibility.Public,
@@ -435,7 +423,7 @@ public class IncrementalGenerator : IIncrementalGenerator
         }
         else
         {
-            var shouldAssertionContextType = declarationProvider.GetTypeReferenceByMetadataName(ShouldAssertionContextMetadataName);
+            var shouldAssertionContextType = declarationProvider.GetTypeReferenceByMetadataName(MetadataNames.ShouldAssertionContext);
 
             DebugSGen.AssertIsNotNull(shouldAssertionContextType);
 
@@ -472,9 +460,9 @@ public class IncrementalGenerator : IIncrementalGenerator
 
     private static void EmitShouldObject(SourceProductionContext context, ShouldObjectAndExtensionInput args)
     {
-        var hintName = $"ShouldObjects/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
+        var hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
 
-        using var sb = new SourceBuilder(context, $"{hintName}.cs");
+        using var sb = new SourceBuilder(context, hintName);
 
         using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition))
         {
@@ -500,13 +488,13 @@ public class IncrementalGenerator : IIncrementalGenerator
         string hintName;
 
         if (args.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"ShouldExtensions/{args.ActualValueType.Type.TypeArgs[0][0].Type.Cref}.cs";
+            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.ActualValueType.Type.TypeArgs[0][0].Type.Cref}.cs";
         else
-            hintName = $"ShouldExtensions/{args.ActualValueType.Type.Cref}.cs";
+            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.ActualValueType.Type.Cref}.cs";
 
-        using var sb = new SourceBuilder(context, $"{hintName}.cs");
+        using var sb = new SourceBuilder(context, hintName);
 
-        using (sb.BeginBlock($"namespace {nameof(ShouldMethodAssertion)}.ShouldExtensions"))
+        using (sb.BeginBlock($"namespace {NameSpaces.ShouldExtensions}"))
         {
             using (sb.BeginBlock($"public static partial class ShouldExtension"))
             {
@@ -544,7 +532,7 @@ public class IncrementalGenerator : IIncrementalGenerator
 
     private static void EmitShouldRefStructAssertionContextType(SourceProductionContext context, ShouldRefStructAssertionContextTypeInput args)
     {
-        using var sb = new SourceBuilder(context, $"AssertionContextTypes/{args.ActualValueType.Type.TypeDefinition.MakeStandardHintName()}");
+        using var sb = new SourceBuilder(context, $"{NameSpaceNames.AssertionContextTypes}/{args.ActualValueType.Type.TypeDefinition.MakeStandardHintName()}.cs");
 
         using (sb.BeginTypeDefinitionBlock(args.ShouldAssertionContextType.TypeDefinition))
         {
@@ -555,9 +543,9 @@ public class IncrementalGenerator : IIncrementalGenerator
             sb.AppendLineWithFirstIndent($"private readonly (string name, string? expression) _param2;");
             sb.AppendLineWithFirstIndent($"private readonly (string name, string? expression) _param3;");
             sb.AppendLineWithFirstIndent($"");
-            sb.AppendLineWithFirstIndent($"private readonly Dictionary<string, string?>? _extraParamsExpressions;");
+            sb.AppendLineWithFirstIndent($"private readonly global::System.Collections.Generic.Dictionary<string, string?>? _extraParamsExpressions;");
             sb.AppendLineWithFirstIndent($"");
-            using (sb.BeginBlock($"public {args.ShouldAssertionContextType.TypeDefinition.Name}({args.ActualValueType.GlobalReference} actual, string actualExpression, (string name, string? expression) param1, (string name, string? expression) param2, (string name, string? expression) param3, Dictionary<string, string?>? extraParamsExpressions)"))
+            using (sb.BeginBlock($"public {args.ShouldAssertionContextType.TypeDefinition.Name}({args.ActualValueType.GlobalReference} actual, string actualExpression, (string name, string? expression) param1, (string name, string? expression) param2, (string name, string? expression) param3, global::System.Collections.Generic.Dictionary<string, string?>? extraParamsExpressions)"))
             {
                 sb.AppendLineWithFirstIndent($"Actual = actual;");
                 sb.AppendLineWithFirstIndent($"ActualExpression = actualExpression;");
@@ -581,7 +569,7 @@ public class IncrementalGenerator : IIncrementalGenerator
                 sb.AppendLineWithFirstIndent($"if (_extraParamsExpressions is not null && _extraParamsExpressions.TryGetValue(paramName, out var expression))");
                 sb.AppendLineWithFirstIndent($"    return expression;");
                 sb.AppendLineWithFirstIndent($"");
-                sb.AppendLineWithFirstIndent($"throw new ArgumentException(null, nameof(paramName));");
+                sb.AppendLineWithFirstIndent($"throw new global::System.ArgumentException(null, nameof(paramName));");
             }
         }
 
@@ -590,7 +578,7 @@ public class IncrementalGenerator : IIncrementalGenerator
 
     private static void EmitShouldMethodDefinition(SourceProductionContext context, ShouldMethodDefinitionInput args)
     {
-        using var sb = new SourceBuilder(context, $"ShouldMethodDefinitions/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}");
+        using var sb = new SourceBuilder(context, $"{NameSpaceNames.ShouldMethodDefinitions}/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}.cs");
 
         using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition))
         {
@@ -601,7 +589,6 @@ public class IncrementalGenerator : IIncrementalGenerator
             {
                 sb.AppendLineWithFirstIndent($"Context = context;");
             }
-
         }
 
         sb.Commit();
@@ -615,11 +602,11 @@ public class IncrementalGenerator : IIncrementalGenerator
         string hintName;
 
         if (args.ShouldObjectActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
+            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
         else
-            hintName = $"ShouldObjects/{args.ShouldObjectActualValueType.Type.Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
+            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectActualValueType.Type.Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
 
-        using var sb = new SourceBuilder(context, $"{hintName}.cs");
+        using var sb = new SourceBuilder(context, hintName);
 
         if (!string.IsNullOrWhiteSpace(args.WarningMessage))
             sb.AppendLine($"#warning {args.WarningMessage}");
@@ -684,7 +671,7 @@ public class IncrementalGenerator : IIncrementalGenerator
 
                                 using (sb.BeginBlock($"if (!Actual.HasValue)"))
                                 {
-                                    sb.AppendLineWithFirstIndent($"throw {ExceptionCreateCall}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
+                                    sb.AppendLineWithFirstIndent($"throw {GlobalReferences.ExceptionCreateCall}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
                                 }
                                 sb.AppendLineWithFirstIndent($"var rawActualValue = Actual.Value;");
                                 sb.AppendLine();
@@ -697,7 +684,7 @@ public class IncrementalGenerator : IIncrementalGenerator
 
                                 using (sb.BeginBlock($"if (Actual is null)"))
                                 {
-                                    sb.AppendLineWithFirstIndent($"throw {ExceptionCreateCall}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
+                                    sb.AppendLineWithFirstIndent($"throw {GlobalReferences.ExceptionCreateCall}($\"`{{ActualExpression ?? \"Actual\"}}` is null.\");");
                                 }
                                 sb.AppendLine();
                             }
