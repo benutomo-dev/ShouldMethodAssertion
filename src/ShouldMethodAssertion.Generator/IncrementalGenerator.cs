@@ -57,14 +57,7 @@ public class IncrementalGenerator : IIncrementalGenerator
             .SelectMany(EnumerateShouldObjectAssertionMethodsInput)
             .Where(v => v.PartialDefinitionType is not null);
 
-        // ShouldExtension属性を付与した型に対する以下の実装補完
-        // 
-        // readonly ref partial struct ShoudXxx
-        // {
-        //    private Xxx     Actual           { get; }
-        //    private string? ActualExpression { get; }
-        //    public ShoudXxx(Xxx actual, string? actualExpression) { ... }
-        // }
+        // ShouldExtension属性を付与した型に対する実装補完partial定義の出力
         context.RegisterSourceOutput(shouldObjectAndExtensionSource, ShouldObjectEmitter.Emit);
 
         // ShouldExtension属性を付与した型を返すxxx.Should()拡張メソッドの実装
@@ -73,22 +66,11 @@ public class IncrementalGenerator : IIncrementalGenerator
         // ShouldExtension属性を付与した型に対するxxx.Should().BeXxxx()メソッドの実装
         context.RegisterSourceOutput(shouldObjectAssertionMethodSource, ShouldObjectAssertionMethodsEmitter.Emit);
 
-        // ShouldMethodDefinition属性を付与した型に対する以下の実装補完
-        // 
-        // ref partial struct XxxShouldBeYyy
-        // {
-        //   private global::ShouldMethodAssertion.ShouldAssertionContexts.ShouldAssertionContext<Xxx> Context { get; init; }
-        // 
-        //   public XxxShouldBeYyy(global::ShouldMethodAssertion.ShouldAssertionContexts.ShouldAssertionContext<Xxx> context)
-        //   {
-        //     Context = context;
-        //   }
-        // }
+        // ShouldMethodDefinition属性を付与した型に対する実装補完partial定義の出力
         context.RegisterSourceOutput(shouldMethodDefinitionSource, ShouldMethodDefinitionEmitter.Emit);
 
         // ref struct用ShouldAssertionContextの出力
         context.RegisterSourceOutput(shouldRefStructAssertionContextTypeSource, ShouldRefStructAssertionContextTypeEmitter.Emit);
-
     }
 
 

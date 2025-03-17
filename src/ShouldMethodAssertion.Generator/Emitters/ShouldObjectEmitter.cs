@@ -5,6 +5,17 @@ namespace ShouldMethodAssertion.Generator.Emitters;
 
 internal static class ShouldObjectEmitter
 {
+    /// <summary>
+    /// ShouldExtension属性を付与した型に対する以下の実装補完
+    /// <code>
+    /// readonly ref partial struct ShoudXxx
+    /// {
+    ///     private Xxx Actual { get; }
+    ///     private string? ActualExpression { get; }
+    ///     public ShoudXxx(Xxx actual, string? actualExpression) { ... }
+    /// }
+    /// </code>
+    /// </summary>
     public static void Emit(SourceProductionContext context, ShouldObjectAndExtensionInput args)
     {
         var hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";

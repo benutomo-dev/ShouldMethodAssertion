@@ -5,6 +5,9 @@ namespace ShouldMethodAssertion.Generator.Emitters;
 
 internal static class ShouldRefStructAssertionContextTypeEmitter
 {
+    /// <summary>
+    /// ref struct用ShouldAssertionContextの出力
+    /// </summary>
     public static void Emit(SourceProductionContext context, ShouldRefStructAssertionContextTypeInput args)
     {
         using var sb = new SourceBuilder(context, $"{NameSpaceNames.AssertionContextTypes}/{args.ActualValueType.Type.TypeDefinition.MakeStandardHintName()}.cs");
