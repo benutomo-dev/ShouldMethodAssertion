@@ -1,5 +1,4 @@
 ﻿using ShouldMethodAssertion.ShouldExtensions;
-using Xunit.Sdk;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 

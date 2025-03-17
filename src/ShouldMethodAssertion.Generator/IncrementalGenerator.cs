@@ -45,17 +45,13 @@ public class IncrementalGenerator : IIncrementalGenerator
             .Select((v, _) => v!.Value);
 
         var shouldExtensionSource = shouldExtensionWithProvider
-            .Select(ToShouldObjectAndExtensionInput);
+            .Select(ToShouldExtensionInput);
 
-        var shouldObjectSource = shouldExtensionSource
-            .Select((v, _) => new ShouldObjectInput(v.PartialDefinitionType, v.ActualValueType));
+        var shouldObjectSource = shouldExtensionWithProvider
+            .Select(ToShouldObjectInput);
 
         var shouldMethodDefinitionSource = shouldMethodDefinitionWithProvider
             .Select(ToShouldMethodDefinitionInput);
-
-        var shouldRefStructAssertionContextTypeSource = shouldMethodDefinitionSource
-            .Collect()
-            .SelectMany(EnumerateShouldRefStructAssertionContextTypeInput);
 
         var shouldObjectAssertionMethodSource = shouldExtensionWithProvider
             .SelectMany(EnumerateShouldObjectAssertionMethodsInput)
@@ -72,9 +68,6 @@ public class IncrementalGenerator : IIncrementalGenerator
 
         // ShouldMethodDefinition属性を付与した型に対する実装補完partial定義の出力
         context.RegisterSourceOutput(shouldMethodDefinitionSource, ShouldMethodDefinitionEmitter.Emit);
-
-        // ref struct用ShouldAssertionContextの出力
-        context.RegisterSourceOutput(shouldRefStructAssertionContextTypeSource, ShouldRefStructAssertionContextTypeEmitter.Emit);
     }
 
 
@@ -179,7 +172,7 @@ public class IncrementalGenerator : IIncrementalGenerator
         return new(context, declarationProvider, partialDefinitionType, parameters.MoveToImmutable(), actualValueType);
     }
 
-    private static ShouldExtensionInput ToShouldObjectAndExtensionInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
+    private static ShouldExtensionInput ToShouldExtensionInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
     {
         var stringType = args.DeclarationProvider.SpecialType.String;
         var callerArgumentExpressionAttributeType = args.DeclarationProvider.GetTypeReferenceByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
@@ -189,11 +182,14 @@ public class IncrementalGenerator : IIncrementalGenerator
         return new(args.PartialDefinitionType, args.ActualValueType, args.RawActualValueType, args.ActualValueTypeGenericTypeParams, stringType, callerArgumentExpressionAttributeType);
     }
 
+    static ShouldObjectInput ToShouldObjectInput(ShouldExtensionWithProvider args, CancellationToken _)
+    {
+        return new(args.PartialDefinitionType, args.ActualValueType);
+    }
+
     private static ShouldMethodDefinitionInput ToShouldMethodDefinitionInput(ShouldMethodDefinitionWithProvider args, CancellationToken cancellationToken)
     {
-        var (shouldAssertionContextType, isGenerated) = GetShouldAssertionContextType(args.DeclarationProvider, args.ActualValueType);
-
-        return new(args.PartialDefinitionType, args.MethodParameters, args.ActualValueType, shouldAssertionContextType, isGenerated);
+        return new(args.PartialDefinitionType, args.MethodParameters, args.ActualValueType);
     }
 
     private static IEnumerable<ShouldObjectAssertionMethodsInput> EnumerateShouldObjectAssertionMethodsInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
@@ -244,7 +240,6 @@ public class IncrementalGenerator : IIncrementalGenerator
                     callerArgumentExpressionAttribute,
                     shouldMethodDefinitionType.Type,
                     convertMethodName,
-                    null,
                     null,
                     EquatableArray<CsMethod>.Empty,
                     $"ソース生成に失敗しました。");
@@ -311,8 +306,6 @@ public class IncrementalGenerator : IIncrementalGenerator
                 shouldMethodDefinitionActualValueType = shouldMethodDefinitionActualValueType.WithTypeArgs(shouldMethodDefinitionType.Type.TypeArgs);
             }
 
-            var (shouldAssertionContextType, isGenerated) = GetShouldAssertionContextType(args.DeclarationProvider, shouldMethodDefinitionActualValueType);
-
             var shouldMethods = shouldMethodDefinitionTypeSymbol.GetMembers()
                 .WhereShouldMethod()
                 .Select(v =>
@@ -354,17 +347,8 @@ public class IncrementalGenerator : IIncrementalGenerator
                 shouldMethodDefinitionType.Type,
                 convertMethodName,
                 shouldMethodDefinitionActualValueType,
-                shouldAssertionContextType,
                 shouldMethods,
                 null);
-        }
-    }
-
-    private static IEnumerable<ShouldRefStructAssertionContextTypeInput> EnumerateShouldRefStructAssertionContextTypeInput(ImmutableArray<ShouldMethodDefinitionInput> v, CancellationToken _)
-    {
-        foreach (var item in v.Where(v => v.IsGeneratedShouldAssertionContextType).DistinctBy(v => v.ShouldAssertionContextType))
-        {
-            yield return new(item.ShouldAssertionContextType, item.ActualValueType);
         }
     }
 
@@ -382,39 +366,6 @@ public class IncrementalGenerator : IIncrementalGenerator
         var acceptNullReference = (bool)(attributeData.NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.AcceptNullReference).Value.Value ?? false);
 
         return acceptNullReference ? actualValueType.ToNullableIfReferenceType() : actualValueType;
-    }
-
-    private static (CsTypeReference Type, bool IsGenerated) GetShouldAssertionContextType(CsDeclarationProvider declarationProvider, CsTypeRefWithNullability actualValueType)
-    {
-        if (actualValueType is { Type: { TypeDefinition: CsStruct { IsRef: true } } })
-        {
-            var shouldAssertionContextType = new CsTypeReference(
-                new CsStruct(
-                    new CsNameSpace(NameSpaces.AssertionContextTypes),
-                    $"ShouldAssertionContext{actualValueType.Type.TypeDefinition.Name}",
-                    actualValueType.Type.TypeDefinition.GenericTypeParams,
-                    accessibility: CsAccessibility.Public,
-                    isReadOnly: true,
-                    isRef: true
-                ),
-                actualValueType.Type.TypeArgs
-                );
-
-            return (shouldAssertionContextType, true);
-        }
-        else
-        {
-            var shouldAssertionContextType = declarationProvider.GetTypeReferenceByMetadataName(MetadataNames.ShouldAssertionContext);
-
-            DebugSGen.AssertIsNotNull(shouldAssertionContextType);
-
-            shouldAssertionContextType = shouldAssertionContextType
-                .WithTypeArgs(EquatableArray.Create(
-                    EquatableArray.Create(actualValueType)
-                ));
-
-            return (shouldAssertionContextType, false);
-        }
     }
 
     private static (CsTypeRefWithNullability Type, CsTypeRefWithNullability? RawType, EquatableArray<CsGenericTypeParam> GenericTypeParams) GetActualValueTypeAsNullable(CsDeclarationProvider declarationProvider, INamedTypeSymbol actualValueTypeSymbol)

@@ -1,5 +1,4 @@
-﻿using ShouldMethodAssertion.DataAnnotations;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;

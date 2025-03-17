@@ -1,5 +1,4 @@
 ﻿using ShouldMethodAssertion.ShouldExtensions;
-using System.Collections;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 

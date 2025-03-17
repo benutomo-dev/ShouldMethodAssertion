@@ -12,6 +12,5 @@ record struct ShouldObjectAssertionMethodsInput(
     string? ActualValueConvertMethodName,
 
     CsTypeRefWithNullability? ShouldMethodDefinitionActualValueType,
-    CsTypeReference? ShouldAssertionContextType,
     EquatableArray<CsMethod> ShouldMethods,
     string? WarningMessage);

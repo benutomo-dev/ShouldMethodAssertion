@@ -1,7 +1,4 @@
-using ShouldMethodAssertion.DataAnnotations;
 using ShouldMethodAssertion.ShouldExtensions;
-using ShouldMethodAssertion.ShouldMethodDefinitions;
-using System.Collections;
 using System.Runtime.CompilerServices;
 
 namespace ShouldMethodAssertion.Tests;

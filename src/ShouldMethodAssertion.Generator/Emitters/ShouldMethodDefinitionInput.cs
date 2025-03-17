@@ -6,8 +6,5 @@ namespace ShouldMethodAssertion.Generator.Emitters;
 record struct ShouldMethodDefinitionInput(
     CsTypeReference PartialDefinitionType,
     EquatableArray<(string Name, bool MayBeNull)> MethodParameters,
-    CsTypeRefWithNullability ActualValueType,
-    [property: Obsolete]
-    CsTypeReference ShouldAssertionContextType,
-    bool IsGeneratedShouldAssertionContextType
+    CsTypeRefWithNullability ActualValueType
     );

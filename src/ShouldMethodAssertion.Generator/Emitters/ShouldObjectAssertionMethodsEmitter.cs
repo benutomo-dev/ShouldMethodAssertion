@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using SourceGeneratorCommons;
 using SourceGeneratorCommons.CSharp.Declarations;
 using System.Collections.Immutable;
@@ -29,11 +28,7 @@ internal static class ShouldObjectAssertionMethodsEmitter
 
         using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition))
         {
-            if (args.ShouldAssertionContextType is null)
-            {
-                sb.AppendLine($"#warning ソース生成時の{nameof(args.ShouldAssertionContextType)}がnullです。");
-            }
-            else if (args.ShouldMethodDefinitionActualValueType is null)
+            if (args.ShouldMethodDefinitionActualValueType is null)
             {
                 sb.AppendLine($"#warning ソース生成時の{nameof(args.ShouldMethodDefinitionActualValueType)}がnullです。");
             }
@@ -51,7 +46,6 @@ internal static class ShouldObjectAssertionMethodsEmitter
 
     private static void EmitMethod(SourceBuilder sb, ShouldObjectAssertionMethodsInput args, CsMethod shouldMethod)
     {
-        DebugSGen.AssertIsNotNull(args.ShouldAssertionContextType);
         DebugSGen.AssertIsNotNull(args.ShouldMethodDefinitionActualValueType);
 
         var paramsBuilder = ImmutableArray.CreateBuilder<CsMethodParam>(shouldMethod.Params.Length * 2);
