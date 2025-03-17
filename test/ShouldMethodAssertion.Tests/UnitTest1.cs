@@ -35,7 +35,7 @@ public class UnitTest1
         {
             ["apple"] = 1,
             ["banana"] = 2,
-        }.Should().Equal([new("apple", 1), new("banana", 2)]);
+        }.Should().Equal([("apple", 1), ("banana", 2)]);
 
         MethodImplOptions.Synchronized.Should().Be(MethodImplOptions.Synchronized);
 

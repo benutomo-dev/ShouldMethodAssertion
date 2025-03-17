@@ -6,6 +6,11 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 [ShouldMethodDefinition(typeof(IReadOnlyDictionary<,>))]
 public partial struct DictionaryShouldEqual<TKey, TValue>
 {
+    public void ShouldEqual(IEnumerable<(TKey Key, TValue Value)> expected, IEqualityComparer<TValue>? valueComparer = null)
+    {
+        ShouldEqual(expected.Select(v => new KeyValuePair<TKey, TValue>(v.Key, v.Value)), valueComparer);
+    }
+
     public void ShouldEqual(IEnumerable<KeyValuePair<TKey, TValue>> expected, IEqualityComparer<TValue>? valueComparer = null)
     {
         valueComparer ??= EqualityComparer<TValue>.Default;
@@ -25,6 +30,11 @@ public partial struct DictionaryShouldEqual<TKey, TValue>
 
         if (Actual.Count != expectedKeySet.Count)
             throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not {ParamExpressions.expected.OneLine}.");
+    }
+
+    public void ShouldNotEqual(IEnumerable<(TKey Key, TValue Value)> expected, IEqualityComparer<TValue>? valueComparer = null)
+    {
+        ShouldNotEqual(expected.Select(v => new KeyValuePair<TKey, TValue>(v.Key, v.Value)), valueComparer);
     }
 
     public void ShouldNotEqual(IEnumerable<KeyValuePair<TKey, TValue>> expected, IEqualityComparer<TValue>? valueComparer = null)
