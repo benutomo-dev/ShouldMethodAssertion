@@ -92,7 +92,7 @@ public class IncrementalGenerator : IIncrementalGenerator
 
         DebugSGen.AssertIsNotNull(actualValueTypeSymbol);
 
-        var (actualValueType, rawActualValueType, actualValueTypeGenericTypeParams) = GetActualValueTypeAsNullable(args.declarationProvider, actualValueTypeSymbol);
+        var (actualValueType, actualValueTypeGenericTypeParams) = GetActualValueTypeWithTurnOnNullableReference(args.declarationProvider, actualValueTypeSymbol);
 
         var rawPartialDefinitionType = declarationProvider.GetTypeReference(shouldExtentionObjectTypeSymbol).Type;
 
@@ -110,7 +110,7 @@ public class IncrementalGenerator : IIncrementalGenerator
             partialDefinitionType = rawPartialDefinitionType.WithTypeDefinition(extensionType);
         }
 
-        return new(context, declarationProvider, partialDefinitionType, actualValueType, rawActualValueType, actualValueTypeGenericTypeParams);
+        return new(context, declarationProvider, partialDefinitionType, actualValueType, null, actualValueTypeGenericTypeParams);
     }
 
     private static ShouldMethodDefinitionWithProvider? ToShouldMethodDefinitionWithProvider((GeneratorAttributeSyntaxContext context, CsDeclarationProvider declarationProvider) args, CancellationToken cancellationToken)
@@ -368,7 +368,29 @@ public class IncrementalGenerator : IIncrementalGenerator
 
         return acceptNullReference ? actualValueType.ToNullableIfReferenceType() : actualValueType;
     }
+    private static (CsTypeRefWithNullability Type, EquatableArray<CsGenericTypeParam> GenericTypeParams) GetActualValueTypeWithTurnOnNullableReference(CsDeclarationProvider declarationProvider, INamedTypeSymbol actualValueTypeSymbol)
+    {
+        var rawActualValueType = declarationProvider.GetTypeReference(actualValueTypeSymbol);
 
+        if (rawActualValueType.Type.TypeDefinition.IsValueType)
+        {
+            if (actualValueTypeSymbol.IsUnboundGenericType)
+                return (rawActualValueType, rawActualValueType.Type.TypeDefinition.GenericTypeParams);
+            else
+                return (rawActualValueType, EquatableArray<CsGenericTypeParam>.Empty);
+        }
+        else
+        {
+            var nullableType = rawActualValueType.ToNullableIfReferenceType();
+
+            if (actualValueTypeSymbol.IsUnboundGenericType)
+                return (nullableType, rawActualValueType.Type.TypeDefinition.GenericTypeParams);
+            else
+                return (nullableType, EquatableArray<CsGenericTypeParam>.Empty);
+        }
+    }
+
+    [Obsolete("今はNullable<T>は専用のShouldのみを用意し、値型に対するNullable<T>版の拡張メソッドは生やさないことにしたので一旦非推奨")]
     private static (CsTypeRefWithNullability Type, CsTypeRefWithNullability? RawType, EquatableArray<CsGenericTypeParam> GenericTypeParams) GetActualValueTypeAsNullable(CsDeclarationProvider declarationProvider, INamedTypeSymbol actualValueTypeSymbol)
     {
         var rawActualValueType = declarationProvider.GetTypeReference(actualValueTypeSymbol);
@@ -404,6 +426,6 @@ file static class FileLocalExtensions
         return symbols
             .OfType<IMethodSymbol>()
             .Where(v => v is { IsStatic: false, MethodKind: MethodKind.Ordinary, DeclaredAccessibility: Accessibility.Public })
-            .Where(v => v.Name.StartsWith("Should", StringComparison.Ordinal));
+            .Where(v => v.Name.StartsWith(AssertMethodNames.Should, StringComparison.Ordinal));
     }
 }

@@ -5,6 +5,11 @@ namespace ShouldMethodAssertion.Tests;
 
 public class UnitTest1
 {
+    struct StructA
+    {
+        public int value;
+    }
+
     [Fact]
     public async Task Test1()
     {
@@ -41,15 +46,19 @@ public class UnitTest1
 
         (MethodImplOptions.PreserveSig | MethodImplOptions.Synchronized).Should().HaveFlag(MethodImplOptions.Synchronized);
 
-        0.Should().NotBeNull();
+        ((int?)0).Should().NotBeNull();
 
         0.Should().BeAssignableTo<object>();
 
         default(int?).Should().BeNull();
         default(Guid?).Should().BeNull();
 
+        default(StructA).Should().BeDefault();
+        new StructA{ value = 1}.Should().NotBeDefault();
+
         var guid = Guid.NewGuid();
-        guid.Should().NotBeNull();
+        guid.Should().NotBeDefault();
+        default(Guid).Should().BeDefault();
 
         var exception1 = new Action(() => throw new FileNotFoundException("hogehoge")).Should().Throw<IOException>(includeDerivedType: true);
         exception1.Message.Should().Be("hogehoge");

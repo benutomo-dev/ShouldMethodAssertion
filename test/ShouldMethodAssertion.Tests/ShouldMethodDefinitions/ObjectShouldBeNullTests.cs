@@ -17,8 +17,11 @@ public class ObjectShouldBeNullTests
     {
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeNull() );
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "asdf".Should().BeNull());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeNull());
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeNull());
+
+#pragma warning disable SMAssertion0001 // Inappropriate use of BeNull on value types
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeNull());
+#pragma warning restore SMAssertion0001 // Inappropriate use of BeNull on value types
     }
 
     [Fact]
@@ -26,8 +29,11 @@ public class ObjectShouldBeNullTests
     {
         new object().Should().NotBeNull();
         "asdf".Should().NotBeNull();
-        1.Should().NotBeNull();
         ((int?)1).Should().NotBeNull();
+
+#pragma warning disable SMAssertion0002 // Inappropriate use of NotBeNull on value types
+        1.Should().NotBeNull();
+#pragma warning restore SMAssertion0002 // Inappropriate use of NotBeNull on value types
     }
 
     [Fact]

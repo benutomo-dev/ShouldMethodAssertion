@@ -4,7 +4,6 @@ using ShouldMethodAssertion.ShouldMethodDefinitions;
 namespace ShouldMethodAssertion.ShouldObjects;
 
 [ShouldExtension(typeof(Func<Task>))]
-[ShouldMethod(typeof(ObjectShouldBe))]
 [ShouldMethod(typeof(ObjectShouldBeNull))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
 [ShouldMethod(typeof(TaskFuncShouldThrow))]

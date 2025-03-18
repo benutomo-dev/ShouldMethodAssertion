@@ -5,6 +5,7 @@ namespace ShouldMethodAssertion.ShouldObjects;
 
 [ShouldExtension(typeof(IReadOnlyDictionary<,>))]
 [ShouldMethod(typeof(ObjectShouldBeNull))]
+[ShouldMethod(typeof(ObjectShouldBeDefault))]
 [ShouldMethod(typeof(DictionaryShouldEqual<,>))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
 [ShouldMethod(typeof(ObjectShouldBeAssignableTo))]
