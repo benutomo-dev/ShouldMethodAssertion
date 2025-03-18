@@ -32,7 +32,7 @@ public class UnitTest1
 
         //Guid.NewGuid().Should().Be(Guid.NewGuid());
         
-        1.Should().Be(1);
+        1.Should().Be(1, EqualityComparer<int>.Default);
 
         //"banana".Should().Be("");
 

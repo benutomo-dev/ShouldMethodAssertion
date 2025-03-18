@@ -2,6 +2,8 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
+using SourceGeneratorCommons;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -63,113 +65,168 @@ internal class Analyzer : DiagnosticAnalyzer
         isEnabledByDefault: true
         );
 
+    /// <summary>
+    /// CallerArgumentExpression属性が付与されたパラメータに引数が割り当てられてしまっています
+    /// <para>An argument has been assigned to a parameter with the CallerArgumentExpression attribute.</para>
+    /// </summary>
+    internal static DiagnosticDescriptor s_diagnosticDescriptor_0005 = new DiagnosticDescriptor(
+        "SMAssertion0005",
+        "An argument has been assigned to a parameter with the CallerArgumentExpression attribute",
+        "An argument has been assigned to a parameter with the CallerArgumentExpression attribute",
+        "Usage",
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+        );
+
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(
         s_diagnosticDescriptor_0001,
         s_diagnosticDescriptor_0002,
         s_diagnosticDescriptor_0003,
-        s_diagnosticDescriptor_0004
+        s_diagnosticDescriptor_0004,
+        s_diagnosticDescriptor_0005
         );
 
     public override void Initialize(AnalysisContext context)
     {
 #if DEBUG
-        if (Debugger.IsAttached)
+        if (!Debugger.IsAttached)
             context.EnableConcurrentExecution();
 #else
         context.EnableConcurrentExecution();
 #endif
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
 
-        context.RegisterSyntaxNodeAction(InvocationAction, SyntaxKind.InvocationExpression);
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+
+        context.RegisterCompilationStartAction(DetectInvalidArgumentExpressionArgUsingAnalysis);
+
+        context.RegisterSyntaxNodeAction(DetectInappropriateIsNullOrIsDefaultCallAnalysys, SyntaxKind.InvocationExpression);
     }
 
-    private void InvocationAction(SyntaxNodeAnalysisContext context)
+    private void DetectInvalidArgumentExpressionArgUsingAnalysis(CompilationStartAnalysisContext context)
     {
-        if (context.Node is not InvocationExpressionSyntax assertMethodInvocationExpressionSyntax)
+        var callerArgumentExpressionAttributeSymbol = context.Compilation.GetTypeByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
+
+        if (callerArgumentExpressionAttributeSymbol is null)
             return;
 
-        if (assertMethodInvocationExpressionSyntax.Expression is not MemberAccessExpressionSyntax assertMethodAccessExpressionSyntax)
-            return;
+        context.RegisterSyntaxNodeAction((context) =>
+        {
+            if (!TryGetActualValueExpression(context.Node, out var assertMethodInvocationExpressionSyntax, out var assertMethodName, out var actualValueExpressionSyntax))
+                return; // 通常のメソッドチェインによるShoud()メソッドからの呼出しでない
 
-        if (assertMethodAccessExpressionSyntax.Name is not IdentifierNameSyntax assertMethodIdentifierNameSyntax)
-            return;
 
-        var assertMethodName = assertMethodIdentifierNameSyntax.Identifier.Text;
+            if (assertMethodInvocationExpressionSyntax.ArgumentList.Arguments.Count == 0)
+                return;
+
+            var invocationOperation = context.SemanticModel.GetOperation(assertMethodInvocationExpressionSyntax) as IInvocationOperation;
+
+            if (invocationOperation is null)
+                return;
+
+            foreach (var argumentOperation in invocationOperation.Arguments)
+            {
+                if (argumentOperation.Parameter is null)
+                    continue;
+
+                if (argumentOperation.IsImplicit)
+                    continue;
+
+                if (!argumentOperation.Parameter.GetAttributes().Any(v => SymbolEqualityComparer.Default.Equals(v.AttributeClass, callerArgumentExpressionAttributeSymbol)))
+                    continue;
+
+                context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptor_0005, argumentOperation.Syntax.GetLocation()));
+            }
+
+        }, SyntaxKind.InvocationExpression);
+    }
+
+    private void DetectInappropriateIsNullOrIsDefaultCallAnalysys(SyntaxNodeAnalysisContext context)
+    {
+        if (!TryGetActualValueExpression(context.Node, out var assertMethodInvocationExpressionSyntax, out var assertMethodName, out var actualValueExpressionSyntax))
+            return; // 通常のメソッドチェインによるShoud()メソッドからの呼出しでない
+
 
         if (assertMethodName is AssertMethodNames.BeNull)
         {
-            if (!tryGetActualValueTypeAndExpression(context, assertMethodAccessExpressionSyntax, out var typeSymbol, out var expressionSyntax))
-                return;
+            var actualValueType = context.SemanticModel.GetTypeInfo(actualValueExpressionSyntax, context.CancellationToken).Type;
 
-            if (typeSymbol.IsValueType && typeSymbol.OriginalDefinition.SpecialType != SpecialType.System_Nullable_T)
+            if (actualValueType is { IsValueType: true, OriginalDefinition.SpecialType: not SpecialType.System_Nullable_T })
             {
                 // 値型に対するBeNullは不適当
-                var expressionText = expressionSyntax.ToString().Replace("\r", "").Replace("\n", "");
-                context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptor_0001, assertMethodIdentifierNameSyntax.GetLocation(), [expressionText]));
+                var expressionText = actualValueExpressionSyntax.ToString().Replace("\r", "").Replace("\n", "");
+                context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptor_0001, assertMethodInvocationExpressionSyntax.GetLocation(), [expressionText]));
             }
         }
         else if (assertMethodName is AssertMethodNames.NotBeNull)
         {
-            if (!tryGetActualValueTypeAndExpression(context, assertMethodAccessExpressionSyntax, out var typeSymbol, out var expressionSyntax))
-                return;
+            var actualValueType = context.SemanticModel.GetTypeInfo(actualValueExpressionSyntax, context.CancellationToken).Type;
 
-            if (typeSymbol.IsValueType && typeSymbol.OriginalDefinition.SpecialType != SpecialType.System_Nullable_T)
+            if (actualValueType is { IsValueType: true, OriginalDefinition.SpecialType: not SpecialType.System_Nullable_T })
             {
                 // 値型に対するNotBeNullは不適当
-                var expressionText = expressionSyntax.ToString().Replace("\r", "").Replace("\n", "");
-                context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptor_0002, assertMethodIdentifierNameSyntax.GetLocation(), [expressionText]));
+                var expressionText = actualValueExpressionSyntax.ToString().Replace("\r", "").Replace("\n", "");
+                context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptor_0002, assertMethodInvocationExpressionSyntax.GetLocation(), [expressionText]));
             }
         }
         else if (assertMethodName is AssertMethodNames.BeDefault)
         {
-            if (!tryGetActualValueTypeAndExpression(context, assertMethodAccessExpressionSyntax, out var typeSymbol, out var expressionSyntax))
-                return;
+            var actualValueType = context.SemanticModel.GetTypeInfo(actualValueExpressionSyntax, context.CancellationToken).Type;
 
-            if (typeSymbol.IsReferenceType || typeSymbol.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T)
+            if (actualValueType is { IsReferenceType: true } or { OriginalDefinition.SpecialType: SpecialType.System_Nullable_T })
             {
                 // 参照型(Nullable<T>も含む)に対するBeDefaultは不適当
-                var expressionText = expressionSyntax.ToString().Replace("\r", "").Replace("\n", "");
-                context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptor_0003, assertMethodIdentifierNameSyntax.GetLocation(), [expressionText]));
+                var expressionText = actualValueExpressionSyntax.ToString().Replace("\r", "").Replace("\n", "");
+                context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptor_0003, assertMethodInvocationExpressionSyntax.GetLocation(), [expressionText]));
             }
         }
         else if (assertMethodName is AssertMethodNames.NotBeDefault)
         {
-            if (!tryGetActualValueTypeAndExpression(context, assertMethodAccessExpressionSyntax, out var typeSymbol, out var expressionSyntax))
-                return;
+            var actualValueType = context.SemanticModel.GetTypeInfo(actualValueExpressionSyntax, context.CancellationToken).Type;
 
-            if (typeSymbol.IsReferenceType || typeSymbol.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T)
+            if (actualValueType is { IsReferenceType: true } or { OriginalDefinition.SpecialType: SpecialType.System_Nullable_T })
             {
                 // 参照型(Nullable<T>も含む)に対するBeNotDefaultは不適当
-                var expressionText = expressionSyntax.ToString().Replace("\r", "").Replace("\n", "");
-                context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptor_0004, assertMethodIdentifierNameSyntax.GetLocation(), [expressionText]));
+                var expressionText = actualValueExpressionSyntax.ToString().Replace("\r", "").Replace("\n", "");
+                context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptor_0004, assertMethodInvocationExpressionSyntax.GetLocation(), [expressionText]));
             }
         }
+    }
 
+    private static bool TryGetActualValueExpression(
+        SyntaxNode invocationExpressionSyntax,
+        [MaybeNullWhen(false)] out InvocationExpressionSyntax assertMethodInvocationExpressionSyntax,
+        [MaybeNullWhen(false)] out string assertMethodName,
+        [MaybeNullWhen(false)] out ExpressionSyntax expressionSyntax)
+    {
+        assertMethodName = null;
+        expressionSyntax = default;
 
-        static bool tryGetActualValueTypeAndExpression(SyntaxNodeAnalysisContext context, MemberAccessExpressionSyntax assertMethodAccessExpressionSyntax, [MaybeNullWhen(false)] out ITypeSymbol typeSymbol, [MaybeNullWhen(false)] out ExpressionSyntax expressionSyntax)
-        {
-            typeSymbol = default;
-            expressionSyntax = default;
+        assertMethodInvocationExpressionSyntax = invocationExpressionSyntax as InvocationExpressionSyntax;
 
-            if (assertMethodAccessExpressionSyntax.Expression is not InvocationExpressionSyntax shouldMethodInvocationExpressionSyntax)
-                return false;
+        if (assertMethodInvocationExpressionSyntax is null)
+            return false;
 
-            if (shouldMethodInvocationExpressionSyntax.Expression is not MemberAccessExpressionSyntax shouldMethodAccessExpressionSyntax)
-                return false;
+        if (assertMethodInvocationExpressionSyntax.Expression is not MemberAccessExpressionSyntax assertMethodAccessExpressionSyntax)
+            return false;
 
-            if (shouldMethodAccessExpressionSyntax.Name is not IdentifierNameSyntax shouldMethodIdentifierNameSyntax)
-                return false;
+        if (assertMethodAccessExpressionSyntax.Name is not IdentifierNameSyntax assertMethodIdentifierNameSyntax)
+            return false;
 
-            if (shouldMethodIdentifierNameSyntax.Identifier.Text != AssertMethodNames.Should)
-                return false;
+        assertMethodName = assertMethodIdentifierNameSyntax.Identifier.Text;
 
-            expressionSyntax = shouldMethodAccessExpressionSyntax.Expression;
+        if (assertMethodAccessExpressionSyntax.Expression is not InvocationExpressionSyntax shouldMethodInvocationExpressionSyntax)
+            return false;
 
-            var typeInfo = context.SemanticModel.GetTypeInfo(shouldMethodAccessExpressionSyntax.Expression);
+        if (shouldMethodInvocationExpressionSyntax.Expression is not MemberAccessExpressionSyntax shouldMethodAccessExpressionSyntax)
+            return false;
 
-            typeSymbol = typeInfo.Type;
+        if (shouldMethodAccessExpressionSyntax.Name is not IdentifierNameSyntax shouldMethodIdentifierNameSyntax)
+            return false;
 
-            return typeSymbol is not null;
-        }
+        if (shouldMethodIdentifierNameSyntax.Identifier.Text != AssertMethodNames.Should)
+            return false;
+
+        expressionSyntax = shouldMethodAccessExpressionSyntax.Expression;
+        return true;
     }
 }
