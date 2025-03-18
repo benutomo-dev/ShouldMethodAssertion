@@ -7,6 +7,8 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(ObjectShouldBeNull))]
 [ShouldMethod(typeof(ObjectShouldBeDefault))]
 [ShouldMethod(typeof(DictionaryShouldEqual<,>))]
+[ShouldMethod(typeof(DictionaryShouldContainKey<,>))]
+[ShouldMethod(typeof(DictionaryShouldContain<,>))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
 [ShouldMethod(typeof(ObjectShouldBeAssignableTo))]
 #pragma warning disable CA1711 // 識別子は、不適切なサフィックスを含むことはできません
