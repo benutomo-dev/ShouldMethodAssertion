@@ -9,5 +9,6 @@ record struct ShouldExtensionInput(
     CsTypeRefWithNullability? RawActualValueType,
     EquatableArray<CsGenericTypeParam> ActualValueTypeGenericTypeParams,
     CsTypeReference StringType,
+    CsTypeReference? NotNullAttributeType,
     CsTypeReference CallerArgumentExpressionAttributeType
     );

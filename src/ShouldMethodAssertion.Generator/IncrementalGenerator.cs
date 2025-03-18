@@ -175,11 +175,12 @@ public class IncrementalGenerator : IIncrementalGenerator
     private static ShouldExtensionInput ToShouldExtensionInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
     {
         var stringType = args.DeclarationProvider.SpecialType.String;
+        var notNullAttributeType = args.DeclarationProvider.GetTypeReferenceByMetadataName(MetadataNames.NotNullAttribute);
         var callerArgumentExpressionAttributeType = args.DeclarationProvider.GetTypeReferenceByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
 
         DebugSGen.AssertIsNotNull(callerArgumentExpressionAttributeType);
 
-        return new(args.PartialDefinitionType, args.ActualValueType, args.RawActualValueType, args.ActualValueTypeGenericTypeParams, stringType, callerArgumentExpressionAttributeType);
+        return new(args.PartialDefinitionType, args.ActualValueType, args.RawActualValueType, args.ActualValueTypeGenericTypeParams, stringType, notNullAttributeType, callerArgumentExpressionAttributeType);
     }
 
     static ShouldObjectInput ToShouldObjectInput(ShouldExtensionWithProvider args, CancellationToken _)
@@ -208,9 +209,9 @@ public class IncrementalGenerator : IIncrementalGenerator
         var shouldMethodAttributes = typeSymbol.GetAttributes().Where(v => SymbolEqualityComparer.Default.Equals(v.AttributeClass, shouldMethodAttributeSymbol));
 
         var stringType = declarationProvider.SpecialType.String;
-        var callerArgumentExpressionAttribute = declarationProvider.GetTypeReferenceByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
+        var callerArgumentExpressionAttributeType = declarationProvider.GetTypeReferenceByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
 
-        DebugSGen.AssertIsNotNull(callerArgumentExpressionAttribute);
+        DebugSGen.AssertIsNotNull(callerArgumentExpressionAttributeType);
 
         foreach (var shouldMethodAttributeData in shouldMethodAttributes)
         {
@@ -237,7 +238,7 @@ public class IncrementalGenerator : IIncrementalGenerator
                     extensionType,
                     actualValueType,
                     stringType,
-                    callerArgumentExpressionAttribute,
+                    callerArgumentExpressionAttributeType,
                     shouldMethodDefinitionType.Type,
                     convertMethodName,
                     null,
@@ -343,7 +344,7 @@ public class IncrementalGenerator : IIncrementalGenerator
                 extensionType,
                 actualValueType,
                 stringType,
-                callerArgumentExpressionAttribute,
+                callerArgumentExpressionAttributeType,
                 shouldMethodDefinitionType.Type,
                 convertMethodName,
                 shouldMethodDefinitionActualValueType,
@@ -375,6 +376,11 @@ public class IncrementalGenerator : IIncrementalGenerator
         if (rawActualValueType.Type.TypeDefinition is CsStruct { IsRef: true })
         {
             // ref structはNullable<T>にできない
+            return (rawActualValueType, null, rawActualValueType.Type.TypeDefinition.GenericTypeParams);
+        }
+        else if (rawActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
+        {
+            // 元の型自体がNullable<T>
             return (rawActualValueType, null, rawActualValueType.Type.TypeDefinition.GenericTypeParams);
         }
         else

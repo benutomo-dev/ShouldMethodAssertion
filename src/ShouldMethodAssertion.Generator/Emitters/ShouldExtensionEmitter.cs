@@ -31,24 +31,30 @@ internal static class ShouldExtensionEmitter
             {
                 var callerArgumentExpressionAttribute = new CsAttribute(args.CallerArgumentExpressionAttributeType, [ActualParamName]);
 
-                EmitMethod(sb, args.PartialDefinitionType, args.ActualValueType, args.ActualValueTypeGenericTypeParams, args.StringType, callerArgumentExpressionAttribute);
+                EmitMethod(sb, args.PartialDefinitionType, args.ActualValueType, args.ActualValueTypeGenericTypeParams, args.StringType, args.NotNullAttributeType, callerArgumentExpressionAttribute);
 
                 if (args.RawActualValueType is not null)
-                    EmitMethod(sb, args.PartialDefinitionType, args.RawActualValueType.Value, args.ActualValueTypeGenericTypeParams, args.StringType, callerArgumentExpressionAttribute);
+                    EmitMethod(sb, args.PartialDefinitionType, args.RawActualValueType.Value, args.ActualValueTypeGenericTypeParams, args.StringType, args.NotNullAttributeType, callerArgumentExpressionAttribute);
             }
         }
 
         sb.Commit();
     }
 
-
-    private static void EmitMethod(SourceBuilder sb, CsTypeReference partialDefinitionType, CsTypeRefWithNullability actualValueType, EquatableArray<CsGenericTypeParam> actualValueTypeGenericTypeParams, CsTypeReference stringType, CsAttribute callerArgumentExpressionAttribute)
+    private static void EmitMethod(SourceBuilder sb, CsTypeReference partialDefinitionType, CsTypeRefWithNullability actualValueType, EquatableArray<CsGenericTypeParam> actualValueTypeGenericTypeParams, CsTypeReference stringType, CsTypeReference? notNullAttributeType, CsAttribute callerArgumentExpressionAttribute)
     {
+        var actualValueParamAttributes = EquatableArray<CsAttribute>.Empty;
+
+        // Should拡張メソッドが呼び出された時点でnullの可能性はなくなったものとして扱わせる。
+        // (明示的にnullであることが確認されたか、null検証に失敗するかのどちらかとなる)
+        if (notNullAttributeType is not null && (actualValueType.IsNullable || actualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT)))
+            actualValueParamAttributes = EquatableArray.Create(new CsAttribute(notNullAttributeType));
+
         var method = new CsExtensionMethod(
             "Should",
             partialDefinitionType.WithNullability(false),
             Params: EquatableArray.Create(
-                new CsMethodParam(actualValueType, ActualParamName),
+                new CsMethodParam(actualValueType, ActualParamName, Attributes: actualValueParamAttributes),
                 new CsMethodParamWithDefaultValue(stringType.WithNullability(true), ActualExpressionParamName, DefaultValue: null, Attributes: EquatableArray.Create(callerArgumentExpressionAttribute))
             ),
             GenericTypeParams: actualValueTypeGenericTypeParams,
@@ -57,7 +63,9 @@ internal static class ShouldExtensionEmitter
 
         using (sb.BeginMethodDefinitionBlock(method, isPartial: false))
         {
+            sb.AppendLine($"#pragma warning disable CS8777"); // null許容性のチェックに対して発生する警告をもみ消す
             sb.AppendLineWithFirstIndent($"return new {partialDefinitionType.GlobalReference}({ActualParamName}, {ActualExpressionParamName});");
+            sb.AppendLine($"#pragma warning restore CS8777");
         }
     }
 }

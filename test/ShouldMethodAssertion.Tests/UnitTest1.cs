@@ -49,7 +49,7 @@ public class UnitTest1
         default(Guid?).Should().BeNull();
 
         var guid = Guid.NewGuid();
-        guid.Should().Be(guid);
+        guid.Should().NotBeNull();
 
         var exception1 = new Action(() => throw new FileNotFoundException("hogehoge")).Should().Throw<IOException>(includeDerivedType: true);
         exception1.Message.Should().Be("hogehoge");
@@ -64,5 +64,17 @@ public class UnitTest1
         "asdf".ShouldSatisfy(v => v.Length == 4);
 
         "asdf".Should().BeOneOf(["23456", "457", "asdf", "srt"]);
+
+        int? nullInt = null;
+        nullInt.Should().BeNull();
+
+        int? nullableInt = 1;
+        nullableInt.Should().NotBeNull();
+        nullableInt.Value.Should().BeGreaterThan(0);
+        nullableInt.Should().BeAssignableTo<int>();
+
+
+
+        var x = nullableInt.Value;
     }
 }

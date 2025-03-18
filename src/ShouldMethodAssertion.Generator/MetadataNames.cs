@@ -7,4 +7,5 @@ internal static class MetadataNames
     internal const string ShouldMethodDefinitionAttribute = $"{NameSpaces.DataAnnotations}.{HintingAttributeSymbolNames.ShouldMethodDefinitionAttribute}";
 
     internal const string CallerArgumentExpressionAttribute = $"System.Runtime.CompilerServices.CallerArgumentExpressionAttribute";
+    internal const string NotNullAttribute                  = $"System.Diagnostics.CodeAnalysis.NotNullAttribute";
 }
