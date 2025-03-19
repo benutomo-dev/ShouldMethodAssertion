@@ -2,8 +2,8 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.NullableShouldBeNull<StructTypeArg>)])]
-public class NullableShouldBeNullTests
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.NullableStructShouldBeNull<StructTypeArg>)])]
+public class NullableStructShouldBeNullTests
 {
     [Fact]
     public void ShouldBeNull_NotFail()

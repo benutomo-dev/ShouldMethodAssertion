@@ -4,7 +4,7 @@ using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
 [ShouldMethodDefinition(typeof(Nullable<>), AcceptNullReference = true)]
-public partial struct NullableShouldBeNull<T> where T : struct
+public partial struct NullableStructShouldBeNull<T> where T : struct
 {
     public void ShouldBeNull()
     {

@@ -3,8 +3,8 @@ using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
-[ShouldMethodDefinition(typeof(TypeArg1), AcceptNullReference = true)]
-public partial struct ObjectShouldBe<T>
+[ShouldMethodDefinition(typeof(IComparable<>), AcceptNullReference = true)]
+public partial struct ComparableShouldBe<T>
 {
     public void ShouldBe(T? expected, IEqualityComparer<T>? comparer = null)
     {

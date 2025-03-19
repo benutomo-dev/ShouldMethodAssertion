@@ -19,15 +19,15 @@ internal static class ShouldExtensionEmitter
         string hintName;
 
         if (args.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.ActualValueType.Type.TypeArgs[0][0].Type.Cref}.cs";
+            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.PartialDefinitionType.TypeDefinition.Name}/{args.ActualValueType.Type.TypeArgs[0][0].Type.Cref}.cs";
         else
-            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.ActualValueType.Type.Cref}.cs";
+            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.PartialDefinitionType.TypeDefinition.Name}/{args.ActualValueType.Type.Cref}.cs";
 
         using var sb = new SourceBuilder(context, hintName);
 
         using (sb.BeginBlock($"namespace {NameSpaces.ShouldExtensions}"))
         {
-            using (sb.BeginBlock($"public static partial class ShouldExtension"))
+            using (sb.BeginBlock($"public static partial class {args.PartialDefinitionType.TypeDefinition.Name}Extension"))
             {
                 var callerArgumentExpressionAttribute = new CsAttribute(args.CallerArgumentExpressionAttributeType, [ActualParamName]);
 

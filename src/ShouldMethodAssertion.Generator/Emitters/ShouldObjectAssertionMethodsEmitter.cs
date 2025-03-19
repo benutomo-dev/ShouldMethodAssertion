@@ -17,9 +17,9 @@ internal static class ShouldObjectAssertionMethodsEmitter
         string hintName;
 
         if (args.ShouldObjectActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
+            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Cref}/{args.ShouldMethodDefinitionType.Cref}.cs";
         else
-            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectActualValueType.Type.Cref}/{args.ShouldMethodDefinitionType.TypeDefinition.Name}.cs";
+            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectActualValueType.Type.Cref}/{args.ShouldMethodDefinitionType.Cref}.cs";
 
         using var sb = new SourceBuilder(context, hintName);
 

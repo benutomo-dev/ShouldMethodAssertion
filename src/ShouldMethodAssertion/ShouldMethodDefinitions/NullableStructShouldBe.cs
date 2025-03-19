@@ -3,8 +3,8 @@ using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
-[ShouldMethodDefinition(typeof(TypeArg1), AcceptNullReference = true)]
-public partial struct ObjectShouldBe<T>
+[ShouldMethodDefinition(typeof(Nullable<>))]
+public partial struct NullableStructShouldBe<T> where T : struct
 {
     public void ShouldBe(T? expected, IEqualityComparer<T>? comparer = null)
     {
@@ -13,8 +13,11 @@ public partial struct ObjectShouldBe<T>
         if (Actual is null && expected is null)
             return;
 
-        if (Actual is T actual && comparer.Equals(actual, expected!))
-            return;
+        if (Actual is T actual && expected is T notNullExpected)
+        {
+            if (comparer.Equals(actual, notNullExpected))
+                return;
+        }
 
         throw AssertExceptionUtil.CreateSimpleIsStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
     }
@@ -26,9 +29,10 @@ public partial struct ObjectShouldBe<T>
         if (Actual is null && expected is null)
             throw AssertExceptionUtil.Create($"Both {ActualExpression.OneLine} and {ParamExpressions.expected.OneLine} are null.");
 
-        if (Actual is not T actual || !comparer.Equals(actual, expected!))
-            return;
-
-        throw AssertExceptionUtil.CreateSimpleIsNotStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
+        if (Actual is T actual && expected is T notNullExpected)
+        {
+            if (comparer.Equals(actual, notNullExpected!))
+                throw AssertExceptionUtil.CreateSimpleIsNotStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
+        }
     }
 }
