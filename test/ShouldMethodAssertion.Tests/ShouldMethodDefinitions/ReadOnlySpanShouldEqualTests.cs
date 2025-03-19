@@ -2,6 +2,7 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ReadOnlySpanShouldEqual<TypeArg>)])]
 public class ReadOnlySpanShouldEqualTests
 {
     [Fact]

@@ -2,6 +2,7 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeDefault)])]
 public class ObjectShouldBeDefaultTests
 {
     private struct RawStruct(int value)

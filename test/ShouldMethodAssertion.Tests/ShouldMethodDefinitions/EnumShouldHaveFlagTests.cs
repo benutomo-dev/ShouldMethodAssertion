@@ -2,6 +2,7 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.EnumShouldHaveFlag)])]
 public class EnumShouldHaveFlagTests
 {
     [Flags]

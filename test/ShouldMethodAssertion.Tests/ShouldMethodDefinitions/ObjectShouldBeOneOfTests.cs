@@ -2,6 +2,7 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeOneOf)])]
 public partial class ObjectShouldBeOneOfTests
 {
     sealed record class Class(int Value);

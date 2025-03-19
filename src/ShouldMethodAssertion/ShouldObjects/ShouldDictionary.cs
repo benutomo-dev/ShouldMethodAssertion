@@ -7,6 +7,7 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(ObjectShouldBeNull))]
 [ShouldMethod(typeof(ObjectShouldBeDefault))]
 [ShouldMethod(typeof(DictionaryShouldEqual<,>))]
+[ShouldMethod(typeof(DictionaryShouldBeEmpty<,>))]
 [ShouldMethod(typeof(DictionaryShouldContainKey<,>))]
 [ShouldMethod(typeof(DictionaryShouldContain<,>))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]

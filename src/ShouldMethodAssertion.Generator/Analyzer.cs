@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
-using SourceGeneratorCommons;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -11,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace ShouldMethodAssertion.Generator;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-internal class Analyzer : DiagnosticAnalyzer
+internal sealed class Analyzer : DiagnosticAnalyzer
 {
     /// <summary>
     /// 値型に対するBeNullの使用は不適当
@@ -99,7 +98,7 @@ internal class Analyzer : DiagnosticAnalyzer
 
         context.RegisterCompilationStartAction(DetectInvalidArgumentExpressionArgUsingAnalysis);
 
-        context.RegisterSyntaxNodeAction(DetectInappropriateIsNullOrIsDefaultCallAnalysys, SyntaxKind.InvocationExpression);
+        context.RegisterSyntaxNodeAction(InappropriateIsNullOrIsDefaultCallAnalysys, SyntaxKind.InvocationExpression);
     }
 
     private void DetectInvalidArgumentExpressionArgUsingAnalysis(CompilationStartAnalysisContext context)
@@ -140,7 +139,7 @@ internal class Analyzer : DiagnosticAnalyzer
         }, SyntaxKind.InvocationExpression);
     }
 
-    private void DetectInappropriateIsNullOrIsDefaultCallAnalysys(SyntaxNodeAnalysisContext context)
+    private void InappropriateIsNullOrIsDefaultCallAnalysys(SyntaxNodeAnalysisContext context)
     {
         if (!TryGetActualValueExpression(context.Node, out var assertMethodInvocationExpressionSyntax, out var assertMethodName, out var actualValueExpressionSyntax))
             return; // 通常のメソッドチェインによるShoud()メソッドからの呼出しでない

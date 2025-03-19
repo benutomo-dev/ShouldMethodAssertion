@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
+
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeAssignableTo)])]
 public class ObjectShouldBeAssignableToTests
 {
     [Fact]

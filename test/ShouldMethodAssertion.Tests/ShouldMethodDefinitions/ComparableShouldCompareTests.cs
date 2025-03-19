@@ -2,6 +2,7 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ComparableShouldCompare<TypeArg>)])]
 public class ComparableShouldCompareTests
 {
     sealed class ReverseComparer<T> : IComparer<T>

@@ -7,6 +7,8 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(ObjectShouldBeNull))]
 [ShouldMethod(typeof(ObjectShouldBeDefault))]
 [ShouldMethod(typeof(EnumerableShouldEqual<>))]
+[ShouldMethod(typeof(EnumerableShouldBeEmpty<>))]
+[ShouldMethod(typeof(EnumerableShouldContain<>))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
 [ShouldMethod(typeof(ObjectShouldBeAssignableTo))]
 public partial struct ShouldEnumerable<T>

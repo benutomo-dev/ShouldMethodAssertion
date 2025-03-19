@@ -6,10 +6,8 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 [ShouldMethodDefinition(typeof(IReadOnlyDictionary<,>))]
 public partial struct DictionaryShouldContainKey<TKey, TValue>
 {
-    public void ShouldContainKey(TKey key, IEqualityComparer<TValue>? valueComparer = null)
+    public void ShouldContainKey(TKey key)
     {
-        valueComparer ??= EqualityComparer<TValue>.Default;
-
         if (!Actual.TryGetValue(key, out var actualValue))
         {
             throw AssertExceptionUtil.Create($"""
@@ -21,10 +19,8 @@ public partial struct DictionaryShouldContainKey<TKey, TValue>
         }
     }
 
-    public void ShouldNotContainKey(TKey key, IEqualityComparer<TValue>? valueComparer = null)
+    public void ShouldNotContainKey(TKey key)
     {
-        valueComparer ??= EqualityComparer<TValue>.Default;
-
         if (Actual.ContainsKey(key))
         {
             throw AssertExceptionUtil.Create($"""

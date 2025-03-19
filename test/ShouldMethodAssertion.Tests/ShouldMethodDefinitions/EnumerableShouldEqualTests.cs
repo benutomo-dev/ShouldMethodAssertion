@@ -2,6 +2,7 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.EnumerableShouldEqual<TypeArg>)])]
 public class EnumerableShouldEqualTests
 {
     [Fact]

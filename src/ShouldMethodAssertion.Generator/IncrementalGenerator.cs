@@ -9,7 +9,7 @@ using System.Collections.Immutable;
 namespace ShouldMethodAssertion.Generator;
 
 [Generator(LanguageNames.CSharp)]
-public class IncrementalGenerator : IIncrementalGenerator
+internal sealed class IncrementalGenerator : IIncrementalGenerator
 {
     record struct ShouldExtensionWithProvider(
         GeneratorAttributeSyntaxContext Context,

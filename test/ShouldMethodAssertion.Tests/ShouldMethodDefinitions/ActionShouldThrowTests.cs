@@ -3,6 +3,7 @@ using ShouldMethodAssertion.ShouldExtensions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ActionShouldThrow)])]
 public class ActionShouldThrowTests
 {
     [Theory]

@@ -2,6 +2,7 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.DictionaryShouldEqual<TypeArg, TypeArg>)])]
 public class DictionaryShouldEqualTests
 {
     [Fact]
