@@ -5,7 +5,7 @@ namespace ShouldMethodAssertion.ShouldObjects;
 
 [ShouldExtension(typeof(Guid))]
 [ShouldMethod(typeof(ObjectShouldBeDefault))]
-[ShouldMethod(typeof(StructShouldBe<>), TypeArgs = [typeof(ActualValueType)])]
+[ShouldMethod(typeof(StructShouldBe<>),         TypeArgs = [typeof(ActualValueType)])]
 [ShouldMethod(typeof(NullableStructShouldBe<>), TypeArgs = [typeof(ActualValueType)])]
 [ShouldMethod(typeof(ObjectShouldBeOneOf))]
 [ShouldMethod(typeof(GuidShouldBeEmpty))]

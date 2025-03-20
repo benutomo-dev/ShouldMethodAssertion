@@ -3,7 +3,7 @@ using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
-[ShouldMethodDefinition(typeof(TypeArg1), AcceptNullReference = true)]
+[ShouldMethodDefinition(typeof(object), AcceptNullReference = true)]
 public partial struct ObjectShouldBe<T>
 {
     public void ShouldBe(T? expected, IEqualityComparer<T>? comparer = null)

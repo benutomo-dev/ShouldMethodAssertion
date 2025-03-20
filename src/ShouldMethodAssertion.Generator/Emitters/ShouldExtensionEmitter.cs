@@ -31,17 +31,14 @@ internal static class ShouldExtensionEmitter
             {
                 var callerArgumentExpressionAttribute = new CsAttribute(args.CallerArgumentExpressionAttributeType, [ActualParamName]);
 
-                EmitMethod(sb, args.PartialDefinitionType, args.ActualValueType, args.ActualValueTypeGenericTypeParams, args.StringType, args.NotNullAttributeType, callerArgumentExpressionAttribute);
-
-                if (args.RawActualValueType is not null)
-                    EmitMethod(sb, args.PartialDefinitionType, args.RawActualValueType.Value, args.ActualValueTypeGenericTypeParams, args.StringType, args.NotNullAttributeType, callerArgumentExpressionAttribute);
+                EmitMethod(sb, args.PartialDefinitionType, args.ActualValueType, args.StringType, args.NotNullAttributeType, callerArgumentExpressionAttribute);
             }
         }
 
         sb.Commit();
     }
 
-    private static void EmitMethod(SourceBuilder sb, CsTypeReference partialDefinitionType, CsTypeRefWithNullability actualValueType, EquatableArray<CsGenericTypeParam> actualValueTypeGenericTypeParams, CsTypeReference stringType, CsTypeReference? notNullAttributeType, CsAttribute callerArgumentExpressionAttribute)
+    private static void EmitMethod(SourceBuilder sb, CsTypeReference partialDefinitionType, CsTypeRefWithNullability actualValueType, CsTypeReference stringType, CsTypeReference? notNullAttributeType, CsAttribute callerArgumentExpressionAttribute)
     {
         var actualValueParamAttributes = EquatableArray<CsAttribute>.Empty;
 
@@ -57,7 +54,7 @@ internal static class ShouldExtensionEmitter
                 new CsMethodParam(actualValueType, ActualParamName, Attributes: actualValueParamAttributes),
                 new CsMethodParamWithDefaultValue(stringType.WithNullability(true), ActualExpressionParamName, DefaultValue: null, Attributes: EquatableArray.Create(callerArgumentExpressionAttribute))
             ),
-            GenericTypeParams: actualValueTypeGenericTypeParams,
+            GenericTypeParams: partialDefinitionType.TypeDefinition.GenericTypeParams,
             Accessibility: CsAccessibility.Public
             );
 

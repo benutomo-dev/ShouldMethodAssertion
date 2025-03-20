@@ -18,9 +18,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         CsTypeReference ActualValueTypeRedicertType,
         EquatableArray<CsTypeReference> TypeArgRedirectTypes,
         CsTypeReference PartialDefinitionType,
-        CsTypeRefWithNullability ActualValueType,
-        CsTypeRefWithNullability? RawActualValueType,
-        EquatableArray<CsGenericTypeParam> ActualValueTypeGenericTypeParams
+        CsTypeRefWithNullability ActualValueType
         );
 
     record struct ShouldMethodDefinitionWithProvider(
@@ -122,21 +120,54 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
         DebugSGen.AssertIsNotNull(actualValueTypeSymbol);
 
-        var rawPartialDefinitionType = declarationProvider.GetTypeReference(shouldExtentionObjectTypeSymbol).Type;
+        var rawExtensionType = declarationProvider.GetTypeReference(shouldExtentionObjectTypeSymbol).Type;
 
-        var actualValueTypeGenericTypeParams = rawPartialDefinitionType.TypeDefinition.GenericTypeParams;
-
+        // TypeArg1,.. をShouldExtension型の型パラメータに置き換えるための辞書を作成
         Dictionary<CsTypeReference, CsTypeReference>? actualValueTypeArgsRedirectDictionary = null;
-        AddTypeArgsRedirect(ref actualValueTypeArgsRedirectDictionary, rawPartialDefinitionType, typeArgRedirectTypes);
+        AddTypeArgsRedirect(ref actualValueTypeArgsRedirectDictionary, rawExtensionType, typeArgRedirectTypes);
 
+        // ShouldExtension属性のTypeArgsからActualValue用の型引数を作成
+        var typeArgsTypedConstant = context.Attributes[0].NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.TypeArgs).Value;
+        var explicitTypeArgs = typeArgsTypedConstant.Kind == TypedConstantKind.Array
+            ? typeArgsTypedConstant.Values
+                .Select(v => declarationProvider.GetTypeReference((ITypeSymbol)v.Value!))
+                .Select(v => actualValueTypeArgsRedirectDictionary is null ? v : v.WithTypeRedirection(actualValueTypeArgsRedirectDictionary))
+                .ToImmutableArray()
+                .ToEquatableArray()
+            : default;
+
+        // ShouldExtension属性で指定されたママのActualValueの型を作成
+        // ※ この時点のActualValueの型はまだtype(bool)などの他に、type(IComparable<>)やtype(TypeArg1)など型パラメータが仮の状態
         var actualValueType = declarationProvider.GetTypeReference(actualValueTypeSymbol);
 
+        // ActualValueの型の型引数をShouldExtension属性で指定されていた型に置換
+        // ・型引数なしの場合(typeof(TypeArg1)などを含む)
+        // 　　⇒ 影響なし
+        // ・属性の指定が"typeof(IComparable<>), TypeArgs=[typeof(TypaArgs1)]"でShouldExtensionの型がXxx<TSomeType>の場合
+        // 　　⇒ ActualValueの型はIComparable<TSomeType>
+        if (!explicitTypeArgs.IsDefaultOrEmpty)
+            actualValueType = actualValueType.WithTypeArgs(EquatableArray.Create(explicitTypeArgs));
+
+        // ActualValueの型に残る型引数置換用の型(TypeArg1など)を実際の型パラメータに置換
+        // ・ActualValueの型自体や型パラメータにTypeArg1などが既に含まれていない
+        // 　　⇒ 影響なし
+        // ・属性の指定が"typeof(TypeArg1)でShouldExtensionの型がXxx<TSomeType>の場合
+        // 　　⇒ ActualValueの型はTSomeType
         if (actualValueTypeArgsRedirectDictionary is not null)
             actualValueType = actualValueType.WithTypeRedirection(actualValueTypeArgsRedirectDictionary);
 
+        // ActualValueの型が参照型とみなされる場合、null許容の参照型とする
+        // ・ActualValueの型がclass
+        // 　　⇒ null許容にする
+        // ・ActualValueの型がstruct
+        // 　　⇒ 影響なし
+        // ・ActualValueの型がstruct制約付きの型パラメータ
+        // 　　⇒ 影響なし
+        // ・ActualValueの型がそのほかの型パラメータ
+        // 　　⇒ null許容にする
         if (actualValueType.Type.TypeDefinition is CsTypeParameterDeclaration)
         {
-            var genericTypeParam = actualValueTypeGenericTypeParams.Values.FirstOrDefault(v => v.Name == actualValueType.Type.TypeDefinition.Name);
+            var genericTypeParam = rawExtensionType.TypeDefinition.GenericTypeParams.Values.FirstOrDefault(v => v.Name == actualValueType.Type.TypeDefinition.Name);
 
             DebugSGen.AssertIsNotNull(genericTypeParam.Name);
 
@@ -148,21 +179,22 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
             actualValueType = actualValueType.ToNullableIfReferenceType();
         }
 
-        var partialDefinitionType = rawPartialDefinitionType;
+        var extensionType = rawExtensionType;
 
+        // ActualValueの型がref structの場合は、ShouldExtensionの型もref structにすることを強制する
         if (actualValueType is { Type.TypeDefinition: CsStruct { IsRef: true } })
         {
-            var extensionType = new CsStruct(
-                rawPartialDefinitionType.TypeDefinition.Container,
-                rawPartialDefinitionType.TypeDefinition.Name,
-                (rawPartialDefinitionType.TypeDefinition as CsGenericDefinableTypeDeclaration)?.GenericTypeParams ?? EquatableArray<CsGenericTypeParam>.Empty,
+            var refStructConvertedExtensionType = new CsStruct(
+                rawExtensionType.TypeDefinition.Container,
+                rawExtensionType.TypeDefinition.Name,
+                (rawExtensionType.TypeDefinition as CsGenericDefinableTypeDeclaration)?.GenericTypeParams ?? EquatableArray<CsGenericTypeParam>.Empty,
                 isRef: true
                 );
 
-            partialDefinitionType = rawPartialDefinitionType.WithTypeDefinition(extensionType);
+            extensionType = rawExtensionType.WithTypeDefinition(refStructConvertedExtensionType);
         }
 
-        return new(context, declarationProvider, actualValueTypeRedirectType, typeArgRedirectTypes, partialDefinitionType, actualValueType, null, actualValueTypeGenericTypeParams);
+        return new(context, declarationProvider, actualValueTypeRedirectType, typeArgRedirectTypes, extensionType, actualValueType);
     }
 
     private static ShouldMethodDefinitionWithProvider? ToShouldMethodDefinitionWithProvider((GeneratorAttributeSyntaxContext, CsDeclarationProviderWithExtraInfo) args, CancellationToken cancellationToken)
@@ -235,7 +267,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
         DebugSGen.AssertIsNotNull(callerArgumentExpressionAttributeType);
 
-        return new(args.PartialDefinitionType, args.ActualValueType, args.RawActualValueType, args.ActualValueTypeGenericTypeParams, stringType, notNullAttributeType, callerArgumentExpressionAttributeType);
+        return new(args.PartialDefinitionType, args.ActualValueType, stringType, notNullAttributeType, callerArgumentExpressionAttributeType);
     }
 
     static ShouldObjectInput ToShouldObjectInput(ShouldExtensionWithProvider args, CancellationToken _)
@@ -250,12 +282,18 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
     private static IEnumerable<ShouldObjectAssertionMethodsInput> EnumerateShouldObjectAssertionMethodsInput(ShouldExtensionWithProvider args, CancellationToken cancellationToken)
     {
-        var (context, declarationProvider, actualValueTypeRedicertType, typeArgRedirectTypes, extensionType, actualValueType, rawActualValueType, actualValueTypeGenericTypeParams) = args;
+        var (context, declarationProvider, actualValueTypeRedirectType, typeArgRedirectTypes, extensionType, actualValueType) = args;
 
         var typeSymbol = context.TargetSymbol as ITypeSymbol;
 
         if (typeSymbol is null)
             yield break;
+
+        if (extensionType.TypeDefinition.Name == "ShouldComparable")
+        {
+#warning DEBUG
+            ;
+        }
 
         var shouldMethodAttributeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(MetadataNames.ShouldMethodAttribute);
 
@@ -266,28 +304,26 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         var stringType = declarationProvider.SpecialType.String;
         var callerArgumentExpressionAttributeType = declarationProvider.GetTypeReferenceByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
 
+        var shouldMethodDefinitionTypeTypeArgsRedirectDictionary = new Dictionary<CsTypeReference, CsTypeReference>
+            {
+                {actualValueTypeRedirectType, actualValueType.Type}
+            };
+        AddTypeArgsRedirect(ref shouldMethodDefinitionTypeTypeArgsRedirectDictionary, extensionType, typeArgRedirectTypes);
+
         DebugSGen.AssertIsNotNull(callerArgumentExpressionAttributeType);
 
         foreach (var shouldMethodAttributeData in shouldMethodAttributes)
         {
             var shouldMethodDefinitionTypeSymbol = shouldMethodAttributeData.ConstructorArguments[0].Value as INamedTypeSymbol;
+            DebugSGen.AssertIsNotNull(shouldMethodDefinitionTypeSymbol);
 
             var convertMethodName = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.ConvertBy).Value.Value as string;
 
             var typeArgsTypedConstant = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.TypeArgs).Value;
 
-
-            var shouldMethodDefinitionTypeTypeArgsRedirectDictionary = new Dictionary<CsTypeReference, CsTypeReference>
-            {
-                {actualValueTypeRedicertType, actualValueType.Type}
-            };
-            AddTypeArgsRedirect(ref shouldMethodDefinitionTypeTypeArgsRedirectDictionary, extensionType, typeArgRedirectTypes);
-
             var explicitTypeArgs = typeArgsTypedConstant.Kind == TypedConstantKind.Array
                 ? typeArgsTypedConstant.Values.Select(v => args.DeclarationProvider.GetTypeReference((ITypeSymbol)v.Value!).WithTypeRedirection(shouldMethodDefinitionTypeTypeArgsRedirectDictionary)).ToImmutableArray().ToEquatableArray()
                 : default;
-
-            DebugSGen.AssertIsNotNull(shouldMethodDefinitionTypeSymbol);
 
             if (shouldMethodDefinitionTypeSymbol.IsUnboundGenericType)
                 shouldMethodDefinitionTypeSymbol = shouldMethodDefinitionTypeSymbol.OriginalDefinition;
@@ -361,12 +397,11 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
             var shouldMethodDefinitionActualValueTypeArgsRedirectDictionary = new Dictionary<CsTypeReference, CsTypeReference>
             {
-                {actualValueTypeRedicertType, actualValueType.Type}
+                {actualValueTypeRedirectType, actualValueType.Type}
             };
             AddTypeArgsRedirect(ref shouldMethodDefinitionActualValueTypeArgsRedirectDictionary, shouldMethodDefinitionType.Type, typeArgRedirectTypes);
 
             var shouldMethodDefinitionActualValueType = GetActualValueTypeFromShouldMethodDefinitionAttribute(args.DeclarationProvider, shouldMethodDefinitionAttribute, shouldMethodDefinitionActualValueTypeArgsRedirectDictionary);
-
 
             var shouldMethods = shouldMethodDefinitionTypeSymbol.GetMembers()
                 .WhereShouldMethod()
@@ -414,16 +449,16 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         }
     }
 
-    private static void AddTypeArgsRedirect([NotNullIfNotNull(nameof(typeRedirectDictionary))] ref Dictionary<CsTypeReference, CsTypeReference>? typeRedirectDictionary, CsTypeReference csTypeReference, EquatableArray<CsTypeReference> typeArgs)
+    private static void AddTypeArgsRedirect([NotNullIfNotNull(nameof(typeRedirectDictionary))] ref Dictionary<CsTypeReference, CsTypeReference>? typeRedirectDictionary, CsTypeReference typeArgsRefereceType, EquatableArray<CsTypeReference> typeArgs)
     {
-        if (!csTypeReference.TypeArgs.IsDefaultOrEmpty && !csTypeReference.TypeArgs[0].IsDefaultOrEmpty)
+        if (!typeArgsRefereceType.TypeArgs.IsDefaultOrEmpty && !typeArgsRefereceType.TypeArgs[0].IsDefaultOrEmpty)
         {
-            typeRedirectDictionary ??= new Dictionary<CsTypeReference, CsTypeReference>(csTypeReference.TypeArgs[0].Length);
+            typeRedirectDictionary ??= new Dictionary<CsTypeReference, CsTypeReference>(typeArgsRefereceType.TypeArgs[0].Length);
 
-            DebugSGen.Assert(csTypeReference.TypeArgs[0].Length <= typeArgs.Length);
-            for (int i = 0; i < csTypeReference.TypeArgs[0].Length && i < typeArgs.Length; i++)
+            DebugSGen.Assert(typeArgsRefereceType.TypeArgs[0].Length <= typeArgs.Length);
+            for (int i = 0; i < typeArgsRefereceType.TypeArgs[0].Length && i < typeArgs.Length; i++)
             {
-                typeRedirectDictionary[typeArgs[i]] = csTypeReference.TypeArgs[0][i].Type;
+                typeRedirectDictionary[typeArgs[i]] = typeArgsRefereceType.TypeArgs[0][i].Type;
             }
         }
     }

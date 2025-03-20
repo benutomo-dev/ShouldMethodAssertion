@@ -4,7 +4,7 @@ using ShouldMethodAssertion.ShouldMethodDefinitions;
 namespace ShouldMethodAssertion.ShouldObjects;
 
 [ShouldExtension(typeof(TypeArg1))]
-[ShouldMethod(typeof(StructShouldBe<>), TypeArgs = [typeof(ActualValueType)])]
+[ShouldMethod(typeof(StructShouldBe<>),         TypeArgs = [typeof(ActualValueType)])]
 [ShouldMethod(typeof(NullableStructShouldBe<>), TypeArgs = [typeof(ActualValueType)])]
 [ShouldMethod(typeof(ObjectShouldBeDefault))]
 [ShouldMethod(typeof(ObjectShouldBeOneOf))]
