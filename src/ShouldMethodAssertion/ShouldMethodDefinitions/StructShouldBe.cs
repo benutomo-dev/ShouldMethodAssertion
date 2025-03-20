@@ -10,7 +10,7 @@ public partial struct StructShouldBe<T> where T : struct
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (Actual is T actual && comparer.Equals(actual, expected!))
+        if (comparer.Equals(Actual, expected))
             return;
 
         throw AssertExceptionUtil.CreateSimpleIsStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
@@ -20,7 +20,7 @@ public partial struct StructShouldBe<T> where T : struct
     {
         comparer ??= EqualityComparer<T>.Default;
 
-        if (!comparer.Equals(Actual, expected!))
+        if (!comparer.Equals(Actual, expected))
             return;
 
         throw AssertExceptionUtil.CreateSimpleIsNotStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);

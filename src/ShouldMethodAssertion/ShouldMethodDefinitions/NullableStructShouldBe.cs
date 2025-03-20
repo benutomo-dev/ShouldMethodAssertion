@@ -31,7 +31,7 @@ public partial struct NullableStructShouldBe<T> where T : struct
 
         if (Actual is T actual && expected is T notNullExpected)
         {
-            if (comparer.Equals(actual, notNullExpected!))
+            if (comparer.Equals(actual, notNullExpected))
                 throw AssertExceptionUtil.CreateSimpleIsNotStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
         }
     }
