@@ -289,12 +289,6 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         if (typeSymbol is null)
             yield break;
 
-        if (extensionType.TypeDefinition.Name == "ShouldComparable")
-        {
-#warning DEBUG
-            ;
-        }
-
         var shouldMethodAttributeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(MetadataNames.ShouldMethodAttribute);
 
         var shouldMethodDefinitionAttributeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(MetadataNames.ShouldMethodDefinitionAttribute);
