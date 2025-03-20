@@ -2,8 +2,8 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.BooleanShouldBe)])]
-public class BooleanShouldBeTests
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.BooleanShouldBeTrue)])]
+public class BooleanShouldBeTrueTests
 {
     [Theory]
     [CombinatorialData]

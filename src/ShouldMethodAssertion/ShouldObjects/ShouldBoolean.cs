@@ -7,7 +7,7 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(ObjectShouldBeDefault))]
 [ShouldMethod(typeof(StructShouldBe<>),         TypeArgs = [typeof(ActualValueType)])]
 [ShouldMethod(typeof(NullableStructShouldBe<>), TypeArgs = [typeof(ActualValueType)])]
-[ShouldMethod(typeof(BooleanShouldBe))]
+[ShouldMethod(typeof(BooleanShouldBeTrue))]
 public partial struct ShouldBoolean
 {
 }

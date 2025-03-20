@@ -4,7 +4,7 @@ using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
 [ShouldMethodDefinition(typeof(bool))]
-public partial struct BooleanShouldBe
+public partial struct BooleanShouldBeTrue
 {
     public void ShouldBeTrue()
     {
