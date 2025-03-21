@@ -1,5 +1,4 @@
-﻿using SourceGeneratorCommons.Collections.Generic;
-using SourceGeneratorCommons.CSharp.Declarations;
+﻿using SourceGeneratorCommons.CSharp.Declarations;
 
 namespace ShouldMethodAssertion.Generator.Emitters;
 

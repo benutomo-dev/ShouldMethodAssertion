@@ -1,16 +1,17 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
+using ShouldMethodAssertion.ShouldExtensions;
 using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
-[ShouldMethodDefinition(typeof(Func<Task>))]
-public partial struct TaskFuncShouldThrow
+[ShouldMethodDefinition(typeof(InvokeAsync))]
+public partial struct InvokeAsyncShouldThrow
 {
     public async Task<TException> ShouldThrowAsync<TException>(bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None) where TException : Exception
     {
         try
         {
-            await Actual.Invoke();
+            await Actual.AsyncAction().ConfigureAwait(false);
         }
         catch (TException ex) when (includeDerivedType ? true : ex.GetType() == typeof(TException))
         {
@@ -19,21 +20,23 @@ public partial struct TaskFuncShouldThrow
         catch (AggregateException ex) when (aggregateExceptionHandling != AggregateExceptionHandling.None)
         {
             var self = this;
+            var actualExpression = ActualExpression;
             return ThrowHandlingHelper.HandleCatchedAggregateException<TException>(ex, includeDerivedType, aggregateExceptionHandling,
-                createFailException: () => AssertExceptionUtil.Create($"{self.ActualExpression} is throw {ex.GetType().FullName}.", ex));
+                createFailException: () => AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, typeof(TException), actualExpression));
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, typeof(TException), ActualExpression);
         }
-        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not throw.");
+
+        throw AssertExceptionUtil.CreateBasicShouldThrowFailByNoThrownMessage(ActualExpression);
     }
 
     public async Task<Exception> ShouldThrowAsync(Type expectedExceptionType, bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling  = AggregateExceptionHandling.None)
     {
         try
         {
-            await Actual.Invoke();
+            await Actual.AsyncAction().ConfigureAwait(false);
         }
         catch (Exception ex) when (ThrowHandlingHelper.IsExpectedException(expectedExceptionType, includeDerivedType, ex))
         {
@@ -42,25 +45,27 @@ public partial struct TaskFuncShouldThrow
         catch (AggregateException ex) when (aggregateExceptionHandling != AggregateExceptionHandling.None)
         {
             var self = this;
+            var actualExpression = ActualExpression;
             return ThrowHandlingHelper.HandleCatchedAggregateException(expectedExceptionType,ex, includeDerivedType, aggregateExceptionHandling,
-                createFailException: () => AssertExceptionUtil.Create($"{self.ActualExpression} is throw {ex.GetType().FullName}.", ex));
+                createFailException: () => AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, expectedExceptionType, actualExpression));
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, expectedExceptionType, ActualExpression);
         }
-        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not throw.");
+
+        throw AssertExceptionUtil.CreateBasicShouldThrowFailByNoThrownMessage(ActualExpression);
     }
 
     public async Task ShouldNotThrowAsync()
     {
         try
         {
-            await Actual.Invoke();
+            await Actual.AsyncAction().ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is throw {ex.GetType().FullName}.", ex);
+            throw AssertExceptionUtil.CreateBasicShouldNotThrowFailByUnexpectedExceptionThrownMessage(ex, ActualExpression);
         }
     }
 }

@@ -10,9 +10,22 @@ public class UnitTest1
         public int value;
     }
 
+    private static void X()
+    {
+    }
+
+    private static async ValueTask<int> XAsync()
+    {
+        await Task.CompletedTask.ConfigureAwait(true);
+        throw new Exception();
+    }
+
     [Fact]
     public async Task Test1()
     {
+        Invoke.That(() => { }).Should().NotThrow();
+
+
         new[] {
             1,
             2,
@@ -63,7 +76,7 @@ public class UnitTest1
         var exception1 = new Action(() => throw new FileNotFoundException("hogehoge")).Should().Throw<IOException>(includeDerivedType: true);
         exception1.Message.Should().Be("hogehoge");
 
-        var exception2 = await new Func<Task>(async () =>
+        var exception2 = await InvokeAsync.That(async () =>
         {
             await Task.Delay(1).ConfigureAwait(true);
             throw new FileNotFoundException("fugafuga");

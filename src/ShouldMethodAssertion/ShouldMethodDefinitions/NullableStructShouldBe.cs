@@ -19,7 +19,7 @@ public partial struct NullableStructShouldBe<T> where T : struct
                 return;
         }
 
-        throw AssertExceptionUtil.CreateSimpleIsStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
+        throw AssertExceptionUtil.CreateBasicShouleBeFailMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
     }
 
     public void ShouldNotBe(T? expected, IEqualityComparer<T>? comparer = null)
@@ -32,7 +32,7 @@ public partial struct NullableStructShouldBe<T> where T : struct
         if (Actual is T actual && expected is T notNullExpected)
         {
             if (comparer.Equals(actual, notNullExpected))
-                throw AssertExceptionUtil.CreateSimpleIsNotStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
+                throw AssertExceptionUtil.CreateBasicShouldNotBeFailMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
         }
     }
 }

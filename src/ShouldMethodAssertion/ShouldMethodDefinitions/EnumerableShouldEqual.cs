@@ -12,9 +12,9 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
         comparer ??= EqualityComparer<T>.Default;
 
         if (ignoreOrder)
-            MatchWithoutOrdering(expected, comparer);
+            ShouldEqualWithoutOrdering(expected, comparer);
         else
-            MatchWithOrdering(expected, comparer);
+            ShouldEqualWithOrdering(expected, comparer);
     }
 
     public void ShouldNotEqual(IEnumerable<T> expected, bool ignoreOrder = false, IEqualityComparer<T>? comparer = null)
@@ -22,19 +22,19 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
         comparer ??= EqualityComparer<T>.Default;
 
         if (ignoreOrder)
-            NotMatchWithoutOrdering(expected, comparer);
+            ShouldNotEqualWithoutOrdering(expected, comparer);
         else
-            NotMatchWithOrdering(expected, comparer);
+            ShouldNotEqualWithOrdering(expected, comparer);
     }
 
 
     [StackTraceHidden]
-    private void MatchWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    private void ShouldEqualWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
     {
         using var expectedEnumerator = expected.GetEnumerator();
         using var actualEnumerator = Actual.GetEnumerator();
 
-        SequenceHelper.MatchWithOrderingCore(
+        SequenceHelper.ShouldEqualWithOrderingCore(
             new CommonEnumerator<T>(actualEnumerator),
             new CommonEnumerator<T>(expectedEnumerator),
             comparer,
@@ -44,12 +44,12 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
     }
 
     [StackTraceHidden]
-    private void MatchWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    private void ShouldEqualWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
     {
         var actualValuesHistgram = ToValueHistgram(Actual, comparer);
         var expectedValuesHistgram = ToValueHistgram(expected, comparer);
 
-        SequenceHelper.MatchWithoutOrderingCore(
+        SequenceHelper.ShouldEqualWithoutOrderingCore(
             actualValuesHistgram,
             expectedValuesHistgram,
             ActualExpression,
@@ -57,23 +57,23 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
             ParamExpressions.comparer);
     }
 
-    private void NotMatchWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    private void ShouldNotEqualWithOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
     {
         if (!Actual.SequenceEqual(expected, comparer))
             return;
 
-        SequenceHelper.NotMatchWithOrderingCore(
+        SequenceHelper.ShouldNotEqualWithOrderingCore(
             ActualExpression,
             ParamExpressions.expected,
             ParamExpressions.comparer);
     }
 
-    private void NotMatchWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
+    private void ShouldNotEqualWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
     {
         var actualValuesHistgram = ToValueHistgram(Actual, comparer);
         var expectedValuesHistgram = ToValueHistgram(expected, comparer);
 
-        SequenceHelper.NotMatchWithoutOrderingCore(
+        SequenceHelper.ShouldNotEqualWithoutOrderingCore(
             actualValuesHistgram,
             expectedValuesHistgram,
             ActualExpression,

@@ -33,7 +33,7 @@ public partial struct ReadOnlySpanShouldEqual<T> // ShouldMethod属性で指定�
         var expectedEnumerator = expected.GetEnumerator();
         var actualEnumerator = Actual.GetEnumerator();
 
-        SequenceHelper.MatchWithOrderingCore(
+        SequenceHelper.ShouldEqualWithOrderingCore(
             new CommonEnumerator<T>(actualEnumerator),
             new CommonEnumerator<T>(expectedEnumerator),
             comparer,
@@ -48,7 +48,7 @@ public partial struct ReadOnlySpanShouldEqual<T> // ShouldMethod属性で指定�
         var actualValuesHistgram = ToValueHistgram(Actual, comparer);
         var expectedValuesHistgram = ToValueHistgram(expected, comparer);
 
-        SequenceHelper.MatchWithoutOrderingCore(
+        SequenceHelper.ShouldEqualWithoutOrderingCore(
             actualValuesHistgram,
             expectedValuesHistgram,
             ActualExpression,
@@ -61,7 +61,7 @@ public partial struct ReadOnlySpanShouldEqual<T> // ShouldMethod属性で指定�
         if (!SequenceEqual(Actual, expected, comparer))
             return;
 
-        SequenceHelper.NotMatchWithOrderingCore(
+        SequenceHelper.ShouldNotEqualWithOrderingCore(
             ActualExpression,
             ParamExpressions.expected,
             ParamExpressions.comparer);
@@ -72,7 +72,7 @@ public partial struct ReadOnlySpanShouldEqual<T> // ShouldMethod属性で指定�
         var actualValuesHistgram = ToValueHistgram(Actual, comparer);
         var expectedValuesHistgram = ToValueHistgram(expected, comparer);
 
-        SequenceHelper.NotMatchWithoutOrderingCore(
+        SequenceHelper.ShouldNotEqualWithoutOrderingCore(
             actualValuesHistgram,
             expectedValuesHistgram,
             ActualExpression,

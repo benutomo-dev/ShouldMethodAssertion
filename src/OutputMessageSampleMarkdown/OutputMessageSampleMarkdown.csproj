@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <Version>1.0.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShouldMethodAssertion\ShouldMethodAssertion.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="samples\" />
+  </ItemGroup>
+
+</Project>

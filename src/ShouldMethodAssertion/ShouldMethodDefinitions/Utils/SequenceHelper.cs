@@ -1,6 +1,5 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using System.Text;
+﻿using System.CodeDom;
+using System.Diagnostics;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
@@ -8,22 +7,15 @@ internal static class SequenceHelper
 {
     public const int MaxListingCount = 10;
 
-    public static void MatchWithOrderingCore<T>(CommonEnumerator<T> actualEnumerator, CommonEnumerator<T> expectedEnumerator, IEqualityComparer<T> comparer, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
+    public static void ShouldEqualWithOrderingCore<T>(CommonEnumerator<T> actualEnumerator, CommonEnumerator<T> expectedEnumerator, IEqualityComparer<T> comparer, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
     {
-        var comparerAnnotation = comparerExpression.HasValue
-            ? $"{comparerExpression}による比較で"
-            : "";
-
-        int count = 0;
-        while (true)
+        for (int i = 0; true; i++)
         {
             var expectedHasValue = expectedEnumerator.MoveNext();
             var actualHasValue = actualEnumerator.MoveNext();
 
             if (expectedHasValue && actualHasValue)
             {
-                count++;
-
                 var expectedCurrent = expectedEnumerator.Current;
                 var actualCurrent = actualEnumerator.Current;
 
@@ -32,15 +24,13 @@ internal static class SequenceHelper
                     continue;
                 }
 
-                throw AssertExceptionUtil.Create($"""
-                        {actualExpression.OneLine}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
-
-                        {expectedExpression}
-                        
-                        {count}番目の要素の内容が異なっています。
-                        期待値: {ExpressionUtil.ToOneLineValueString(expectedCurrent)}
-                        実際値: {ExpressionUtil.ToOneLineValueString(actualCurrent)}
-                        """);
+                throw AssertExceptionUtil.CreateBasicShouldEqualFailMessageByDifferentNthElement(
+                    i,
+                    actualCurrent,
+                    expectedCurrent,
+                    actualExpression,
+                    expectedExpression,
+                    comparerExpression);
             }
             else if (!expectedHasValue && !actualHasValue)
             {
@@ -48,31 +38,29 @@ internal static class SequenceHelper
             }
             else if (expectedHasValue)
             {
-                throw AssertExceptionUtil.Create($"""
-                        {actualExpression.OneLine}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
-
-                        {expectedExpression}
-                        
-                        {actualExpression.OneLine}の要素数が期待値より不足しています。
-                        """);
+                throw AssertExceptionUtil.CreateBasicShouldEqualFailMessageByDifferentOfCount(
+                    AssertExceptionUtil.CountNotMatchReason.ActualCountLessThanExpectedCount,
+                    actualExpression,
+                    expectedExpression,
+                    isIncludingTheOrder: true,
+                    comparerExpression);
             }
             else
             {
                 Debug.Assert(actualHasValue);
 
-                throw AssertExceptionUtil.Create($"""
-                        {actualExpression.OneLine}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
-
-                        {expectedExpression}
-                        
-                        {actualExpression.OneLine}の要素数が期待値より余分に存在します。
-                        """);
+                throw AssertExceptionUtil.CreateBasicShouldEqualFailMessageByDifferentOfCount(
+                    AssertExceptionUtil.CountNotMatchReason.ActualCountMoreThanExpectedCount,
+                    actualExpression,
+                    expectedExpression,
+                    isIncludingTheOrder: true,
+                    comparerExpression);
             }
         }
     }
 
 #nullable disable warnings
-    public static void MatchWithoutOrderingCore<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistgram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistgram, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
+    public static void ShouldEqualWithoutOrderingCore<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistgram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistgram, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
 #nullable restore
     {
         var differenceValueList = SequenceHelper.MakeDifferenceValueList(actualValuesHistgram, expectedValuesHistgram);
@@ -80,58 +68,22 @@ internal static class SequenceHelper
         if (differenceValueList.Count == 0)
             return;
 
-        var differeceListTextBuilder = new StringBuilder();
-
-        foreach (var entry in differenceValueList.Take(SequenceHelper.MaxListingCount))
-            differeceListTextBuilder.AppendLine(CultureInfo.InvariantCulture, $"[{entry.countInActual}, {entry.countInExpected}] : {ExpressionUtil.ToOneLineValueString(entry.value)}");
-
-        if (differenceValueList.Count > SequenceHelper.MaxListingCount)
-            differeceListTextBuilder.AppendLine(CultureInfo.InvariantCulture, $"他、{differenceValueList.Count - SequenceHelper.MaxListingCount}個の要素の格納数に相違がありました。");
-
-        var comparingDescription = comparerExpression.HasValue
-            ? $"{comparerExpression}による比較で並び順を無視して"
-            : "並び順を無視した比較で";
-
-        throw AssertExceptionUtil.Create($"""
-                {actualExpression.OneLine}は{comparingDescription}以下と一致しなければなりませんが、一致しませんでした。
-
-                {expectedExpression}
-                
-                以下にそれぞれのコレクションの差異を同じ項目に対する格納数の違いで表示します。
-                [実際のコレクションに含まれている数, 期待値側のコレクションに含まれている数] : 対象項目
-                {differeceListTextBuilder}
-                """);
+        throw AssertExceptionUtil.CreateBasicShouldEqualFailMessageByOrderIgnoredElementSet(differenceValueList, actualExpression, expectedExpression, comparerExpression);
     }
 
-    public static void NotMatchWithOrderingCore(ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
+    public static void ShouldNotEqualWithOrderingCore(ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
     {
-        var comparerAnnotation = comparerExpression.HasValue
-            ? $"{comparerExpression}による比較で"
-            : "";
-
-        throw AssertExceptionUtil.Create($"""
-            {actualExpression.OneLine}は{comparerAnnotation}以下と一致しています。
-
-            {expectedExpression}
-            """);
+        throw AssertExceptionUtil.CreateBasicShouldNotEqualFailMessage(actualExpression, expectedExpression, isIncludingTheOrder: true, comparerExpression);
     }
 
 #nullable disable warnings
-    public static void NotMatchWithoutOrderingCore<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistgram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistgram, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
+    public static void ShouldNotEqualWithoutOrderingCore<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistgram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistgram, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
 #nullable restore
     {
         if (!SequenceHelper.EqualsValuesHistgram(actualValuesHistgram, expectedValuesHistgram))
             return;
 
-        var comparerAnnotation = comparerExpression.HasValue
-            ? $"{comparerExpression}による並び順を無視した比較で"
-            : "";
-
-        throw AssertExceptionUtil.Create($"""
-            {actualExpression.OneLine}は{comparerAnnotation}以下と一致しています。
-
-            {expectedExpression}
-            """);
+        throw AssertExceptionUtil.CreateBasicShouldNotEqualFailMessage(actualExpression, expectedExpression, isIncludingTheOrder: false, comparerExpression);
     }
 
 #nullable disable warnings

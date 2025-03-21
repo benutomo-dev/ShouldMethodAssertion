@@ -3,8 +3,8 @@ using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
-[ShouldMethodDefinition(typeof(Action))]
-public partial struct ActionShouldThrow
+[ShouldMethodDefinition(typeof(Func<>))]
+public partial struct FuncShouldThrow<TResult>
 {
     public TException ShouldThrow<TException>(bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None) where TException : Exception
     {
@@ -56,11 +56,11 @@ public partial struct ActionShouldThrow
         throw AssertExceptionUtil.CreateBasicShouldThrowFailByNoThrownMessage(ActualExpression);
     }
 
-    public void ShouldNotThrow()
+    public TResult ShouldNotThrow()
     {
         try
         {
-            Actual.Invoke();
+            return Actual.Invoke();
         }
         catch (Exception ex)
         {

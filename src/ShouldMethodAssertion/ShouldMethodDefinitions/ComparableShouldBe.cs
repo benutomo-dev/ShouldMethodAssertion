@@ -16,7 +16,7 @@ public partial struct ComparableShouldBe<T>
         if (Actual is T actual && comparer.Equals(actual, expected!))
             return;
 
-        throw AssertExceptionUtil.CreateSimpleIsStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
+        throw AssertExceptionUtil.CreateBasicShouleBeFailMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
     }
 
     public void ShouldNotBe(T? expected, IEqualityComparer<T>? comparer = null)
@@ -29,6 +29,6 @@ public partial struct ComparableShouldBe<T>
         if (Actual is not T actual || !comparer.Equals(actual, expected!))
             return;
 
-        throw AssertExceptionUtil.CreateSimpleIsNotStyleMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
+        throw AssertExceptionUtil.CreateBasicShouldNotBeFailMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
     }
 }

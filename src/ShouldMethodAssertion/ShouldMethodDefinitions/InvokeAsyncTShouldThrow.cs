@@ -1,16 +1,17 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
+using ShouldMethodAssertion.ShouldExtensions;
 using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
-[ShouldMethodDefinition(typeof(Action))]
-public partial struct ActionShouldThrow
+[ShouldMethodDefinition(typeof(InvokeAsync<TypeArg1>))]
+public partial struct InvokeAsyncTShouldThrow<TResult>
 {
-    public TException ShouldThrow<TException>(bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None) where TException : Exception
+    public async Task<TException> ShouldThrowAsync<TException>(bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None) where TException : Exception
     {
         try
         {
-            Actual.Invoke();
+            await Actual.AsyncFunc().ConfigureAwait(false);
         }
         catch (TException ex) when (includeDerivedType ? true : ex.GetType() == typeof(TException))
         {
@@ -31,11 +32,11 @@ public partial struct ActionShouldThrow
         throw AssertExceptionUtil.CreateBasicShouldThrowFailByNoThrownMessage(ActualExpression);
     }
 
-    public Exception ShouldThrow(Type expectedExceptionType, bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None)
+    public async Task<Exception> ShouldThrowAsync(Type expectedExceptionType, bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling  = AggregateExceptionHandling.None)
     {
         try
         {
-            Actual.Invoke();
+            await Actual.AsyncFunc().ConfigureAwait(false);
         }
         catch (Exception ex) when (ThrowHandlingHelper.IsExpectedException(expectedExceptionType, includeDerivedType, ex))
         {
@@ -45,7 +46,7 @@ public partial struct ActionShouldThrow
         {
             var self = this;
             var actualExpression = ActualExpression;
-            return ThrowHandlingHelper.HandleCatchedAggregateException(expectedExceptionType, ex, includeDerivedType, aggregateExceptionHandling,
+            return ThrowHandlingHelper.HandleCatchedAggregateException(expectedExceptionType,ex, includeDerivedType, aggregateExceptionHandling,
                 createFailException: () => AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, expectedExceptionType, actualExpression));
         }
         catch (Exception ex)
@@ -56,11 +57,11 @@ public partial struct ActionShouldThrow
         throw AssertExceptionUtil.CreateBasicShouldThrowFailByNoThrownMessage(ActualExpression);
     }
 
-    public void ShouldNotThrow()
+    public async Task<TResult> ShouldNotThrowAsync()
     {
         try
         {
-            Actual.Invoke();
+            return await Actual.AsyncFunc().ConfigureAwait(false);
         }
         catch (Exception ex)
         {
