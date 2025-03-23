@@ -169,7 +169,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         {
             var genericTypeParam = rawExtensionType.TypeDefinition.GenericTypeParams.Values.FirstOrDefault(v => v.Name == actualValueType.Type.TypeDefinition.Name);
 
-            DebugSGen.AssertIsNotNull(genericTypeParam.Name);
+            DebugSGen.AssertIsNotNull(genericTypeParam);
 
             if (genericTypeParam.Where?.TypeCategory != CsGenericConstraintTypeCategory.Struct)
                 actualValueType = actualValueType.ToNullableIfReferenceType();
@@ -187,7 +187,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
             var refStructConvertedExtensionType = new CsStruct(
                 rawExtensionType.TypeDefinition.Container,
                 rawExtensionType.TypeDefinition.Name,
-                (rawExtensionType.TypeDefinition as CsGenericDefinableTypeDeclaration)?.GenericTypeParams ?? EquatableArray<CsGenericTypeParam>.Empty,
+                (rawExtensionType.TypeDefinition as CsGenericDefinableTypeDeclaration)?.GenericTypeParams ?? EquatableArray<CsTypeParameterDeclaration>.Empty,
                 isRef: true
                 );
 
@@ -220,7 +220,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
             var extensionType = new CsStruct(
                 rawPartialDefinitionType.TypeDefinition.Container,
                 rawPartialDefinitionType.TypeDefinition.Name,
-                (rawPartialDefinitionType.TypeDefinition as CsGenericDefinableTypeDeclaration)?.GenericTypeParams ?? EquatableArray<CsGenericTypeParam>.Empty,
+                (rawPartialDefinitionType.TypeDefinition as CsGenericDefinableTypeDeclaration)?.GenericTypeParams ?? EquatableArray<CsTypeParameterDeclaration>.Empty,
                 isRef: true
                 );
 
@@ -354,7 +354,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
             if (explicitTypeArgs.IsDefaultOrEmpty)
             {
-                if (!rawShouldMethodDefinitionType.Type.TypeArgs.IsDefaultOrEmpty)
+                if (!rawShouldMethodDefinitionType.Type.TypeArgs[0].IsDefaultOrEmpty)
                 {
                     yield return failedDefaultValue with
                     {
@@ -367,7 +367,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
             }
             else
             {
-                if (rawShouldMethodDefinitionType.Type.TypeArgs.IsDefaultOrEmpty || explicitTypeArgs.Length != rawShouldMethodDefinitionType.Type.TypeArgs[0].Length)
+                if (rawShouldMethodDefinitionType.Type.TypeArgs[0].IsDefaultOrEmpty || explicitTypeArgs.Length != rawShouldMethodDefinitionType.Type.TypeArgs[0].Length)
                 {
                     yield return failedDefaultValue with
                     {
@@ -445,7 +445,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
     private static void AddTypeArgsRedirect([NotNullIfNotNull(nameof(typeRedirectDictionary))] ref Dictionary<CsTypeRef, CsTypeRef>? typeRedirectDictionary, CsTypeRef typeArgsRefereceType, EquatableArray<CsTypeRef> typeArgs)
     {
-        if (!typeArgsRefereceType.TypeArgs.IsDefaultOrEmpty && !typeArgsRefereceType.TypeArgs[0].IsDefaultOrEmpty)
+        if (!typeArgsRefereceType.TypeArgs[0].IsDefaultOrEmpty && !typeArgsRefereceType.TypeArgs[0].IsDefaultOrEmpty)
         {
             typeRedirectDictionary ??= new Dictionary<CsTypeRef, CsTypeRef>(typeArgsRefereceType.TypeArgs[0].Length);
 
@@ -480,7 +480,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
     }
 
     [Obsolete("今はNullable<T>は専用のShouldのみを用意し、値型に対するNullable<T>版の拡張メソッドは生やさないことにしたので一旦非推奨")]
-    private static (CsTypeRefWithAnnotation Type, CsTypeRefWithAnnotation? RawType, EquatableArray<CsGenericTypeParam> GenericTypeParams) GetActualValueTypeAsNullable(CsDeclarationProvider declarationProvider, INamedTypeSymbol actualValueTypeSymbol)
+    private static (CsTypeRefWithAnnotation Type, CsTypeRefWithAnnotation? RawType, EquatableArray<CsTypeParameterDeclaration> GenericTypeParams) GetActualValueTypeAsNullable(CsDeclarationProvider declarationProvider, INamedTypeSymbol actualValueTypeSymbol)
     {
         var rawActualValueType = declarationProvider.GetTypeReference(actualValueTypeSymbol);
 
@@ -503,7 +503,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
             else if (actualValueTypeSymbol.IsUnboundGenericType)
                 return (nullableType, null, rawActualValueType.Type.TypeDefinition.GenericTypeParams);
             else
-                return (nullableType, null, EquatableArray<CsGenericTypeParam>.Empty);
+                return (nullableType, null, EquatableArray<CsTypeParameterDeclaration>.Empty);
         }
     }
 }

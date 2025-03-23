@@ -13,7 +13,13 @@ actualValue.Should().BeOfType<IEnumerable<string>>();
 **Message**
 
 ```
-Type of `actualValue` is not System.Collections.Generic.IEnumerable<string>.
+Type of `actualValue` is string[]. But did not expect it to be.
+
+[Actual]
+string[]
+
+[Expected]
+System.Collections.Generic.IEnumerable<string>
 ```
 
 **TestCode**
@@ -27,7 +33,13 @@ actualValue.Should().BeOfType(typeof(IEnumerable<string>));
 **Message**
 
 ```
-Type of `actualValue` is not System.Collections.Generic.IEnumerable<string>.
+Type of `actualValue` is string[]. But did not expect it to be.
+
+[Actual]
+string[]
+
+[Expected]
+System.Collections.Generic.IEnumerable<string>
 ```
 
 ## Should().NotBeOfType()

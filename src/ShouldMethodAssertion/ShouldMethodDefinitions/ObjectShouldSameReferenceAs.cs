@@ -11,7 +11,15 @@ public partial struct ObjectShouldSameReferenceAs
         if (ReferenceEquals(Actual, expected))
             return;
 
-        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not same reference as {ParamExpressions.expected.OneLine}. But did not expect it to be.");
+        throw AssertExceptionUtil.Create($"""
+            {ActualExpression.OneLine} is not same reference as {ParamExpressions.expected.OneLine}. But did not expect it to be.
+
+            [Actual]
+            {ExpressionUtil.FormartValue(Actual)}
+
+            [Expected]
+            {ExpressionUtil.FormartValue(expected)}
+            """);
     }
 
     public void ShouldNotSameReferenceAs<T>(T expected) where T : class

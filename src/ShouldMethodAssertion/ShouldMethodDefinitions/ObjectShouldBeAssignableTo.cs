@@ -6,13 +6,15 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 [ShouldMethodDefinition(typeof(object), AcceptNullReference = true)]
 public partial struct ObjectShouldBeAssignableTo
 {
-    public void ShouldBeAssignableTo<T>()
+    public T ShouldBeAssignableTo<T>()
     {
         if (Actual is null)
-            return;
+            return default!;
 
         if (!Actual.GetType().IsAssignableTo(typeof(T)))
             throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is can not assign to {typeof(T).FullName}.");
+
+        return (T)Actual;
     }
 
     public void ShouldBeAssignableTo(Type type)
