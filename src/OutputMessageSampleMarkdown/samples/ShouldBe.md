@@ -215,7 +215,7 @@ actualValue.Should().NotBe(expectedValue);
 ```
 The value of `actualValue` is not expected.
 
-[`actualValue`]
+[Actual]
 `73b75ba1-8a48-4cb9-9eb3-c138743e9b0b`
 ```
 
@@ -232,7 +232,7 @@ actualValue.Should().NotBe(Guid.Parse("73b75ba1-8a48-4cb9-9eb3-c138743e9b0b"));
 ```
 The value of `actualValue` is not expected.
 
-[`actualValue`]
+[Actual]
 `73b75ba1-8a48-4cb9-9eb3-c138743e9b0b`
 ```
 

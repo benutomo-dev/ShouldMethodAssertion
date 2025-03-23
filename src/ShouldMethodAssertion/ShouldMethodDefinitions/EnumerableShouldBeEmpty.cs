@@ -12,7 +12,7 @@ public partial struct EnumerableShouldBeEmpty<T>
 
         var (headValues, hasMoreValues, enumeratedCount) = SequenceHelper.GetHeadValues(new CommonEnumerator<T>(Actual.GetEnumerator()), nonEnumeratedCount);
 
-        if (headValues.Count > 0)
+        if (headValues?.Count > 0)
             throw AssertExceptionUtil.CreateBasicShouldEmptyFail(headValues, hasMoreValues, enumeratedCount, ActualExpression);
     }
 

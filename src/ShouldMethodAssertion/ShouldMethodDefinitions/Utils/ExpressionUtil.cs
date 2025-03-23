@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -144,41 +145,65 @@ public static partial class ExpressionUtil
             return LineSeparatorWithBeforeAndAfterWhiteSpaceRegex().Replace(expression, _ => "");
     }
 
-    public static string ToOneLineValueString<TValue>(TValue? value)
+    internal static string FormartValue<TValue>(TValue value)
     {
-        const int maxLength = 80;
+        return value switch
+        {
+            null => "null",
+            string { Length: 0 } => "",
+            string => $"\"{value}\"",
+            _ => $"`{value}`"
+        };
+    }
+
+    internal static string FormatValueAsOneline<TValue>(TValue? value, int maxLength = 160)
+    {
         const string ellipse = " ...";
 
         if (value is null)
             return "null";
 
-        var sourceValueText = value?.ToString() ?? "";
+        var sourceValueText = value.ToString() ?? "";
 
         if (sourceValueText.Length <= maxLength && !sourceValueText.Any(needReplacementChar))
-            return sourceValueText;
+        {
+            if (value is string)
+                return $"\"{sourceValueText}\"";
+            else
+                return sourceValueText;
+        }
 
-        var capacity = Math.Min(sourceValueText.Length, maxLength);
+        var capacity = Math.Min(sourceValueText.Length, maxLength + 20);
         var oneLineValueTextBuilder = new StringBuilder(capacity);
-        //oneLineValueTextBuilder.Append('`');
 
+        if (value is string)
+            oneLineValueTextBuilder.Append('"');
+
+        bool prevCharWasReplacementChar = false;
         foreach (var ch in sourceValueText)
         {
             if (oneLineValueTextBuilder.Length >= maxLength - ellipse.Length)
             {
                 oneLineValueTextBuilder.Append(ellipse);
+                oneLineValueTextBuilder.Append(CultureInfo.InvariantCulture, $"(totallength: {sourceValueText.Length})");
                 break;
             }
 
             if (needReplacementChar(ch))
             {
-                oneLineValueTextBuilder.Append(' ');
+                if (!prevCharWasReplacementChar)
+                    oneLineValueTextBuilder.Append(' ');
+
+                prevCharWasReplacementChar = true;
                 continue;
             }
+            prevCharWasReplacementChar = false;
 
             oneLineValueTextBuilder.Append(ch);
         }
 
-        //oneLineValueTextBuilder.Append('`');
+        if (value is string)
+            oneLineValueTextBuilder.Append('"');
 
         Debug.Assert(oneLineValueTextBuilder.Length <= capacity);
 

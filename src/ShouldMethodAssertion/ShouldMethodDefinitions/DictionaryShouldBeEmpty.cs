@@ -12,7 +12,7 @@ public partial struct DictionaryShouldBeEmpty<TKey, TValue>
 
         var (headValues, hasMoreValues, enumeratedCount) = SequenceHelper.GetHeadValues(new CommonEnumerator<KeyValuePair<TKey, TValue>>(Actual.GetEnumerator()), nonEnumeratedCount);
 
-        if (headValues.Count > 0)
+        if (headValues?.Count > 0)
             throw AssertExceptionUtil.CreateBasicShouldEmptyFail(headValues, hasMoreValues, enumeratedCount, ActualExpression);
     }
 

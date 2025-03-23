@@ -1,6 +1,4 @@
-﻿using System.CodeDom;
-using System.Diagnostics;
-using System.Globalization;
+﻿using System.Diagnostics;
 using System.Text;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
@@ -163,7 +161,7 @@ internal static class SequenceHelper
             headValues.Add(firstHasValueEnumerator.Current);
         }
 
-        var enumeratedCount = hasMoreValues ? nonEnumeratedCount : headValues.Count;
+        var enumeratedCount = hasMoreValues ? nonEnumeratedCount : headValues?.Count;
 
         return (headValues, hasMoreValues, enumeratedCount);
     }

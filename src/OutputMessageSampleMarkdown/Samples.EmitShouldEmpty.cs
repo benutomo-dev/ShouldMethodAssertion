@@ -39,7 +39,7 @@ internal static partial class Samples
         writer.WriteLine($"### Dictionary<TKey, TValue> / Large number of elements");
         writer.EmitMessageSample(() =>
         {
-            var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" }, { 4, "A" }, { 5, "B" }, { 6, "C" }, { 7, "D" }, { 8, "E" }, { 9, "F" }, { 10, "G" }, { 11, "H" }, { 12, "I" } };
+            var actualValue = new Dictionary<string, string> { { "apple", "APPLE" }, { "banana", "BANANA" }, { "orange", "ORANGE" }, { "a", "A" }, { "b", "B" }, { "c", "C" }, { "d", "D" }, { "e", "E" }, { "f", "F" }, { "g", "G" }, { "h", "H" }, { "i", "I" } };
 
             actualValue.Should().BeEmpty();
         });

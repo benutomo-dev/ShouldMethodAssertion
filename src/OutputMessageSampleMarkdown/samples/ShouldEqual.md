@@ -161,9 +161,9 @@ actualValue.Should().Equal(expectedValue, ignoreOrder: true);
 Below shows the differences between each collection in terms of the number of items for the same element.
 Target item : {Number contained in actual collection, Number contained in expected collection}
 
-banana : {ActualCount:1, ExpectedCount:2}
-grape : {ActualCount:0, ExpectedCount:1}
-orange : {ActualCount:1, ExpectedCount:0}
+"banana" : {NumberInActual:1, NumberInExpected:2}
+"grape" : {NumberInActual:0, NumberInExpected:1}
+"orange" : {NumberInActual:1, NumberInExpected:0}
 
 ```
 
@@ -198,16 +198,16 @@ actualValue.Should().Equal([
 Below shows the differences between each collection in terms of the number of items for the same element.
 Target item : {Number contained in actual collection, Number contained in expected collection}
 
-A : {ActualCount:0, ExpectedCount:1}
-C : {ActualCount:0, ExpectedCount:1}
-D : {ActualCount:0, ExpectedCount:1}
-E : {ActualCount:0, ExpectedCount:1}
-F : {ActualCount:0, ExpectedCount:1}
-G : {ActualCount:0, ExpectedCount:1}
-H : {ActualCount:0, ExpectedCount:1}
-I : {ActualCount:0, ExpectedCount:1}
-J : {ActualCount:0, ExpectedCount:1}
-K : {ActualCount:0, ExpectedCount:1}
+"A" : {NumberInActual:0, NumberInExpected:1}
+"C" : {NumberInActual:0, NumberInExpected:1}
+"D" : {NumberInActual:0, NumberInExpected:1}
+"E" : {NumberInActual:0, NumberInExpected:1}
+"F" : {NumberInActual:0, NumberInExpected:1}
+"G" : {NumberInActual:0, NumberInExpected:1}
+"H" : {NumberInActual:0, NumberInExpected:1}
+"I" : {NumberInActual:0, NumberInExpected:1}
+"J" : {NumberInActual:0, NumberInExpected:1}
+"K" : {NumberInActual:0, NumberInExpected:1}
 
 Additionally, there were differences in the count of 5 other elements.
 ```

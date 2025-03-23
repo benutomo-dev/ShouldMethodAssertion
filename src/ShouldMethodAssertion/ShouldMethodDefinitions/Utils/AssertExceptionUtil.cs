@@ -52,8 +52,8 @@ public static class AssertExceptionUtil
     {
         var stringBuilder = new StringBuilder();
 
-        var actualValueText = Formart(actualValue);
-        var expectedValueText = Formart(expectedValue);
+        var actualValueText = ExpressionUtil.FormartValue(actualValue);
+        var expectedValueText = ExpressionUtil.FormartValue(expectedValue);
 
         if (expectedValueText.Contains('\n') || expectedValueText.Length > 30)
         {
@@ -78,13 +78,13 @@ public static class AssertExceptionUtil
     {
         var stringBuilder = new StringBuilder();
 
-        var actualValueText = Formart(actualValue);
+        var actualValueText = ExpressionUtil.FormartValue(actualValue);
 
         if (actualValueText.Contains('\n') || actualValueText.Length > 30)
         {
             stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"The value of {actualExpression.OneLine} is not expected.");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"[{actualExpression.OneLine}]");
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"[Actual]");
             stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualValueText}");
         }
         else
@@ -102,8 +102,8 @@ public static class AssertExceptionUtil
             ? $" when compared using {comparerExpression}"
             : $"";
 
-        var actualValueText = Formart(actualElementValue);
-        var expectedValueText = Formart(expectedElementValue);
+        var actualValueText = ExpressionUtil.FormartValue(actualElementValue);
+        var expectedValueText = ExpressionUtil.FormartValue(expectedElementValue);
 
         var stringBuilder = new StringBuilder();
 
@@ -167,7 +167,7 @@ public static class AssertExceptionUtil
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"");
         
         foreach (var entry in differenceValueList.Take(SequenceHelper.MaxListingCount))
-            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{ExpressionUtil.ToOneLineValueString(entry.value)} : {{ActualCount:{entry.countInActual}, ExpectedCount:{entry.countInExpected}}}");
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{ExpressionUtil.FormatValueAsOneline(entry.value, maxLength: 80)} : {{NumberInActual:{entry.countInActual}, NumberInExpected:{entry.countInExpected}}}");
 
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"");
 
@@ -295,6 +295,9 @@ public static class AssertExceptionUtil
             """, actualException);
     }
 
+    const int ListingKeyStringMaxLength = 80;
+    const int ListingValueStringMaxLength = 500;
+
     internal static Exception CreateBasicShouldEmptyFail<T>(List<T> headValues, bool hasMoreValues, int? enumeratedCount, ValueExpression actualExpression)
     {
         var stringBuilder = new StringBuilder();
@@ -313,7 +316,7 @@ public static class AssertExceptionUtil
 
         for (int i = 0; i < headValues.Count; i++)
         {
-            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"[{i}] {ExpressionUtil.ToOneLineValueString(headValues[i])}");
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"[{i}] {ExpressionUtil.FormatValueAsOneline(headValues[i], ListingValueStringMaxLength)}");
         }
 
         return Create(stringBuilder.ToString());
@@ -337,7 +340,7 @@ public static class AssertExceptionUtil
 
         for (int i = 0; i < headValues.Count; i++)
         {
-            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"[{ExpressionUtil.ToOneLineValueString(headValues[i].Key)}] {ExpressionUtil.ToOneLineValueString(headValues[i].Value)}");
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"[{ExpressionUtil.FormatValueAsOneline(headValues[i].Key, ListingKeyStringMaxLength)}] {ExpressionUtil.FormatValueAsOneline(headValues[i].Value, ListingValueStringMaxLength)}");
         }
 
         return Create(stringBuilder.ToString());
@@ -350,14 +353,4 @@ public static class AssertExceptionUtil
 
     public static Exception Create(string message, Exception? exception = null) =>  _exceptionFactory.Value.Create(message, exception);
 
-    internal static string Formart<T>(T value)
-    {
-        return value switch
-        {
-            null => "null",
-            string { Length: 0 } => "",
-            string => $"\"{value}\"",
-            _ => $"`{value}`"
-        };
-    }
 }

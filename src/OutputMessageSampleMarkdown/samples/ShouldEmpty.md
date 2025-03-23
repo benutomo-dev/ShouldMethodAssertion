@@ -18,9 +18,9 @@ actualValue.Should().BeEmpty();
 `actualValue` have 3 elements.
 
 List of all elements:
-[0] apple
-[1] banana
-[2] orange
+[0] "apple"
+[1] "banana"
+[2] "orange"
 ```
 
 ### string[] / Large number of elements
@@ -39,16 +39,16 @@ actualValue.Should().BeEmpty();
 `actualValue` have 12 elements.
 
 List of first 10 elements:
-[0] apple
-[1] banana
-[2] orange
-[3] A
-[4] B
-[5] C
-[6] D
-[7] E
-[8] F
-[9] G
+[0] "apple"
+[1] "banana"
+[2] "orange"
+[3] "A"
+[4] "B"
+[5] "C"
+[6] "D"
+[7] "E"
+[8] "F"
+[9] "G"
 ```
 
 ### Dictionary<TKey, TValue> / Small number of elements
@@ -67,9 +67,9 @@ actualValue.Should().BeEmpty();
 `actualValue` have 3 entries.
 
 List of all entries:
-[1] apple
-[2] banana
-[3] orange
+[1] "apple"
+[2] "banana"
+[3] "orange"
 ```
 
 ### Dictionary<TKey, TValue> / Large number of elements
@@ -77,7 +77,7 @@ List of all entries:
 **TestCode**
 
 ```csharp
-var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" }, { 4, "A" }, { 5, "B" }, { 6, "C" }, { 7, "D" }, { 8, "E" }, { 9, "F" }, { 10, "G" }, { 11, "H" }, { 12, "I" } };
+var actualValue = new Dictionary<string, string> { { "apple", "APPLE" }, { "banana", "BANANA" }, { "orange", "ORANGE" }, { "a", "A" }, { "b", "B" }, { "c", "C" }, { "d", "D" }, { "e", "E" }, { "f", "F" }, { "g", "G" }, { "h", "H" }, { "i", "I" } };
 
 actualValue.Should().BeEmpty();
 ```
@@ -88,16 +88,16 @@ actualValue.Should().BeEmpty();
 `actualValue` have 12 entries.
 
 List of first 10 entries:
-[1] apple
-[2] banana
-[3] orange
-[4] A
-[5] B
-[6] C
-[7] D
-[8] E
-[9] F
-[10] G
+["apple"] "APPLE"
+["banana"] "BANANA"
+["orange"] "ORANGE"
+["a"] "A"
+["b"] "B"
+["c"] "C"
+["d"] "D"
+["e"] "E"
+["f"] "F"
+["g"] "G"
 ```
 
 ## Should().NotBeEmpty()
