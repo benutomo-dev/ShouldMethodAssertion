@@ -15,23 +15,23 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
     record struct ShouldExtensionWithProvider(
         GeneratorAttributeSyntaxContext Context,
         CsDeclarationProvider DeclarationProvider,
-        CsTypeReference ActualValueTypeRedicertType,
-        EquatableArray<CsTypeReference> TypeArgRedirectTypes,
-        CsTypeReference PartialDefinitionType,
-        CsTypeRefWithNullability ActualValueType
+        CsTypeRef ActualValueTypeRedicertType,
+        EquatableArray<CsTypeRef> TypeArgRedirectTypes,
+        CsTypeRef PartialDefinitionType,
+        CsTypeRefWithAnnotation ActualValueType
         );
 
     record struct ShouldMethodDefinitionWithProvider(
         GeneratorAttributeSyntaxContext Context,
         CsDeclarationProvider DeclarationProvider,
-        CsTypeReference PartialDefinitionType,
+        CsTypeRef PartialDefinitionType,
         EquatableArray<(string Name, bool MayBeNull)> MethodParameters,
-        CsTypeRefWithNullability ActualValueType
+        CsTypeRefWithAnnotation ActualValueType
         );
 
     record struct CsDeclarationProviderWithExtraInfo(
         CsDeclarationProvider DeclarationProvider,
-        EquatableArray<CsTypeReference> TypeArgs
+        EquatableArray<CsTypeRef> TypeArgs
         );
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -123,7 +123,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         var rawExtensionType = declarationProvider.GetTypeReference(shouldExtentionObjectTypeSymbol).Type;
 
         // TypeArg1,.. をShouldExtension型の型パラメータに置き換えるための辞書を作成
-        Dictionary<CsTypeReference, CsTypeReference>? actualValueTypeArgsRedirectDictionary = null;
+        Dictionary<CsTypeRef, CsTypeRef>? actualValueTypeArgsRedirectDictionary = null;
         AddTypeArgsRedirect(ref actualValueTypeArgsRedirectDictionary, rawExtensionType, typeArgRedirectTypes);
 
         // ShouldExtension属性のTypeArgsからActualValue用の型引数を作成
@@ -208,7 +208,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
         var rawPartialDefinitionType = declarationProvider.GetTypeReference(shouldMethodDefinitionTypeSymbol).Type;
 
-        Dictionary<CsTypeReference, CsTypeReference>? actualValueTypeArgsRedirectDictionary = null;
+        Dictionary<CsTypeRef, CsTypeRef>? actualValueTypeArgsRedirectDictionary = null;
         AddTypeArgsRedirect(ref actualValueTypeArgsRedirectDictionary, rawPartialDefinitionType, typeArgRedirectTypes);
 
         var actualValueType = GetActualValueTypeFromShouldMethodDefinitionAttribute(declarationProvider, context.Attributes[0], actualValueTypeArgsRedirectDictionary);
@@ -298,7 +298,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         var stringType = declarationProvider.SpecialType.String;
         var callerArgumentExpressionAttributeType = declarationProvider.GetTypeReferenceByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
 
-        var shouldMethodDefinitionTypeTypeArgsRedirectDictionary = new Dictionary<CsTypeReference, CsTypeReference>
+        var shouldMethodDefinitionTypeTypeArgsRedirectDictionary = new Dictionary<CsTypeRef, CsTypeRef>
             {
                 {actualValueTypeRedirectType, actualValueType.Type}
             };
@@ -348,9 +348,9 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
 
 
-            Dictionary<CsTypeReference, CsTypeReference>? shouldMethodDefinitionIntenalTypeRedirectDictionary = null;
+            Dictionary<CsTypeRef, CsTypeRef>? shouldMethodDefinitionIntenalTypeRedirectDictionary = null;
 
-            CsTypeRefWithNullability shouldMethodDefinitionType;
+            CsTypeRefWithAnnotation shouldMethodDefinitionType;
 
             if (explicitTypeArgs.IsDefaultOrEmpty)
             {
@@ -378,7 +378,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
                 shouldMethodDefinitionType = rawShouldMethodDefinitionType.WithTypeArgs(EquatableArray.Create(explicitTypeArgs));
 
-                shouldMethodDefinitionIntenalTypeRedirectDictionary = new Dictionary<CsTypeReference, CsTypeReference>(explicitTypeArgs.Length);
+                shouldMethodDefinitionIntenalTypeRedirectDictionary = new Dictionary<CsTypeRef, CsTypeRef>(explicitTypeArgs.Length);
 
                 for (int i = 0; i < shouldMethodDefinitionType.Type.TypeArgs[0].Length; i++)
                 {
@@ -389,7 +389,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
                 }
             }
 
-            var shouldMethodDefinitionActualValueTypeArgsRedirectDictionary = new Dictionary<CsTypeReference, CsTypeReference>
+            var shouldMethodDefinitionActualValueTypeArgsRedirectDictionary = new Dictionary<CsTypeRef, CsTypeRef>
             {
                 {actualValueTypeRedirectType, actualValueType.Type}
             };
@@ -443,11 +443,11 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         }
     }
 
-    private static void AddTypeArgsRedirect([NotNullIfNotNull(nameof(typeRedirectDictionary))] ref Dictionary<CsTypeReference, CsTypeReference>? typeRedirectDictionary, CsTypeReference typeArgsRefereceType, EquatableArray<CsTypeReference> typeArgs)
+    private static void AddTypeArgsRedirect([NotNullIfNotNull(nameof(typeRedirectDictionary))] ref Dictionary<CsTypeRef, CsTypeRef>? typeRedirectDictionary, CsTypeRef typeArgsRefereceType, EquatableArray<CsTypeRef> typeArgs)
     {
         if (!typeArgsRefereceType.TypeArgs.IsDefaultOrEmpty && !typeArgsRefereceType.TypeArgs[0].IsDefaultOrEmpty)
         {
-            typeRedirectDictionary ??= new Dictionary<CsTypeReference, CsTypeReference>(typeArgsRefereceType.TypeArgs[0].Length);
+            typeRedirectDictionary ??= new Dictionary<CsTypeRef, CsTypeRef>(typeArgsRefereceType.TypeArgs[0].Length);
 
             DebugSGen.Assert(typeArgsRefereceType.TypeArgs[0].Length <= typeArgs.Length);
             for (int i = 0; i < typeArgsRefereceType.TypeArgs[0].Length && i < typeArgs.Length; i++)
@@ -457,7 +457,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         }
     }
 
-    private static CsTypeRefWithNullability GetActualValueTypeFromShouldMethodDefinitionAttribute(CsDeclarationProvider declarationProvider, AttributeData attributeData, IReadOnlyDictionary<CsTypeReference, CsTypeReference>? typeRedirectDictionary)
+    private static CsTypeRefWithAnnotation GetActualValueTypeFromShouldMethodDefinitionAttribute(CsDeclarationProvider declarationProvider, AttributeData attributeData, IReadOnlyDictionary<CsTypeRef, CsTypeRef>? typeRedirectDictionary)
     {
         DebugSGen.AssertIsNotNull(attributeData.AttributeClass);
         DebugSGen.Assert(attributeData.AttributeClass.Name == HintingAttributeSymbolNames.ShouldMethodDefinitionAttribute);
@@ -480,7 +480,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
     }
 
     [Obsolete("今はNullable<T>は専用のShouldのみを用意し、値型に対するNullable<T>版の拡張メソッドは生やさないことにしたので一旦非推奨")]
-    private static (CsTypeRefWithNullability Type, CsTypeRefWithNullability? RawType, EquatableArray<CsGenericTypeParam> GenericTypeParams) GetActualValueTypeAsNullable(CsDeclarationProvider declarationProvider, INamedTypeSymbol actualValueTypeSymbol)
+    private static (CsTypeRefWithAnnotation Type, CsTypeRefWithAnnotation? RawType, EquatableArray<CsGenericTypeParam> GenericTypeParams) GetActualValueTypeAsNullable(CsDeclarationProvider declarationProvider, INamedTypeSymbol actualValueTypeSymbol)
     {
         var rawActualValueType = declarationProvider.GetTypeReference(actualValueTypeSymbol);
 

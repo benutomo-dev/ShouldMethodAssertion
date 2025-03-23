@@ -3,9 +3,9 @@
 namespace ShouldMethodAssertion.Generator.Emitters;
 
 record struct ShouldExtensionInput(
-    CsTypeReference PartialDefinitionType,
-    CsTypeRefWithNullability ActualValueType,
-    CsTypeReference StringType,
-    CsTypeReference? NotNullAttributeType,
-    CsTypeReference CallerArgumentExpressionAttributeType
+    CsTypeRef PartialDefinitionType,
+    CsTypeRefWithAnnotation ActualValueType,
+    CsTypeRef StringType,
+    CsTypeRef? NotNullAttributeType,
+    CsTypeRef CallerArgumentExpressionAttributeType
     );

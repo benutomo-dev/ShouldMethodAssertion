@@ -4,7 +4,7 @@ using SourceGeneratorCommons.CSharp.Declarations;
 namespace ShouldMethodAssertion.Generator.Emitters;
 
 record struct ShouldMethodDefinitionInput(
-    CsTypeReference PartialDefinitionType,
+    CsTypeRef PartialDefinitionType,
     EquatableArray<(string Name, bool MayBeNull)> MethodParameters,
-    CsTypeRefWithNullability ActualValueType
+    CsTypeRefWithAnnotation ActualValueType
     );

@@ -38,7 +38,7 @@ internal static class ShouldExtensionEmitter
         sb.Commit();
     }
 
-    private static void EmitMethod(SourceBuilder sb, CsTypeReference partialDefinitionType, CsTypeRefWithNullability actualValueType, CsTypeReference stringType, CsTypeReference? notNullAttributeType, CsAttribute callerArgumentExpressionAttribute)
+    private static void EmitMethod(SourceBuilder sb, CsTypeRef partialDefinitionType, CsTypeRefWithAnnotation actualValueType, CsTypeRef stringType, CsTypeRef? notNullAttributeType, CsAttribute callerArgumentExpressionAttribute)
     {
         var actualValueParamAttributes = EquatableArray<CsAttribute>.Empty;
 
