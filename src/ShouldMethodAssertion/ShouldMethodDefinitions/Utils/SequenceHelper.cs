@@ -1,5 +1,7 @@
 ﻿using System.CodeDom;
 using System.Diagnostics;
+using System.Globalization;
+using System.Text;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
@@ -136,5 +138,33 @@ internal static class SequenceHelper
         }
 
         return true;
+    }
+
+    internal static (List<T>? HeadValues, bool HasMoreValues, int? EnumeratedCount) GetHeadValues<T>(CommonEnumerator<T> firstHasValueEnumerator, int? nonEnumeratedCount)
+    {
+        var stringBuilder = new StringBuilder();
+
+        const int maxHeadValueCount = 10;
+
+        var headValues = (nonEnumeratedCount > 0) ? new List<T>(maxHeadValueCount) : null;
+
+        bool hasMoreValues = true;
+
+        for (int i = 0; i < maxHeadValueCount; i++)
+        {
+            if (!firstHasValueEnumerator.MoveNext())
+            {
+                hasMoreValues = false;
+                break;
+            }
+
+            headValues ??= new List<T>(maxHeadValueCount);
+
+            headValues.Add(firstHasValueEnumerator.Current);
+        }
+
+        var enumeratedCount = hasMoreValues ? nonEnumeratedCount : headValues.Count;
+
+        return (headValues, hasMoreValues, enumeratedCount);
     }
 }

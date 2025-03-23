@@ -295,6 +295,59 @@ public static class AssertExceptionUtil
             """, actualException);
     }
 
+    internal static Exception CreateBasicShouldEmptyFail<T>(List<T> headValues, bool hasMoreValues, int? enumeratedCount, ValueExpression actualExpression)
+    {
+        var stringBuilder = new StringBuilder();
+
+        if (enumeratedCount is null)
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} is not empty.");
+        else
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} have {enumeratedCount} elements.");
+
+        stringBuilder.AppendLine();
+
+        if (hasMoreValues)
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"List of first {headValues.Count} elements:");
+        else
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"List of all elements:");
+
+        for (int i = 0; i < headValues.Count; i++)
+        {
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"[{i}] {ExpressionUtil.ToOneLineValueString(headValues[i])}");
+        }
+
+        return Create(stringBuilder.ToString());
+    }
+
+    internal static Exception CreateBasicShouldEmptyFail<TKey, TValue>(List<KeyValuePair<TKey, TValue>> headValues, bool hasMoreValues, int? enumeratedCount, ValueExpression actualExpression)
+    {
+        var stringBuilder = new StringBuilder();
+
+        if (enumeratedCount is null)
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} is not empty.");
+        else
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} have {enumeratedCount} entries.");
+
+        stringBuilder.AppendLine();
+
+        if (hasMoreValues)
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"List of first {headValues.Count} entries:");
+        else
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"List of all entries:");
+
+        for (int i = 0; i < headValues.Count; i++)
+        {
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"[{ExpressionUtil.ToOneLineValueString(headValues[i].Key)}] {ExpressionUtil.ToOneLineValueString(headValues[i].Value)}");
+        }
+
+        return Create(stringBuilder.ToString());
+    }
+
+    internal static Exception CreateBasicShouldNotEmptyFail<T>(ValueExpression actualExpression)
+    {
+        return Create($"{actualExpression.OneLine} is empty.");
+    }
+
     public static Exception Create(string message, Exception? exception = null) =>  _exceptionFactory.Value.Create(message, exception);
 
     internal static string Formart<T>(T value)
