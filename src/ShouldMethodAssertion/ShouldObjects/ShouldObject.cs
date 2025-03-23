@@ -9,6 +9,7 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(ObjectShouldBe<>), TypeArgs = [typeof(object)])]
 [ShouldMethod(typeof(ObjectShouldBeOneOf))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
+[ShouldMethod(typeof(ObjectShouldBeOfType))]
 [ShouldMethod(typeof(ObjectShouldBeAssignableTo))]
 public partial struct ShouldObject
 {

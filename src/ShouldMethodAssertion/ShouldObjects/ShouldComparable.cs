@@ -10,6 +10,7 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(ObjectShouldBe<>), TypeArgs = [typeof(TypeArg1)])]
 [ShouldMethod(typeof(ObjectShouldBeOneOf))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
+[ShouldMethod(typeof(ObjectShouldBeOfType))]
 [ShouldMethod(typeof(ObjectShouldBeAssignableTo))]
 [ShouldMethod(typeof(ComparableShouldCompare<>), TypeArgs = [typeof(TypeArg1)])]
 public partial struct ShouldComparable<T1>

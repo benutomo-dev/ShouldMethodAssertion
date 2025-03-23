@@ -10,6 +10,7 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(EnumerableShouldBeEmpty<>), TypeArgs = [typeof(TypeArg1)])]
 [ShouldMethod(typeof(EnumerableShouldContain<>), TypeArgs = [typeof(TypeArg1)])]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
+[ShouldMethod(typeof(ObjectShouldBeOfType))]
 [ShouldMethod(typeof(ObjectShouldBeAssignableTo))]
 public partial struct ShouldEnumerable<T>
 {

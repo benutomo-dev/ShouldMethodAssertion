@@ -54,7 +54,7 @@ internal static class ShouldObjectAssertionMethodsEmitter
         {
             // [System.Runtime.CompilerServices.CallerArgumentExpressionAttribute("xxx")]
             var callerArgumentExpressionParam = new CsMethodParamWithDefaultValue(
-                args.StringType.WithNullability(true),
+                args.StringType.WithAnnotation(isNullableIfRefereceType: true),
                 $"{param.Name}{ExpressionParamSuffix}",
                 DefaultValue: null,
                 Attributes: ImmutableArray.Create(new CsAttribute(args.CallerArgumentExpressionAttributeType, [param.Name]))

@@ -152,6 +152,7 @@ public static partial class ExpressionUtil
             null => "null",
             string { Length: 0 } => "",
             string => $"\"{value}\"",
+            Type type => GetOutputFullName(type),
             _ => $"`{value}`"
         };
     }
@@ -162,6 +163,9 @@ public static partial class ExpressionUtil
 
         if (value is null)
             return "null";
+
+        if (value is Type type)
+            return GetOutputFullName(type);
 
         var sourceValueText = value.ToString() ?? "";
 
@@ -210,5 +214,93 @@ public static partial class ExpressionUtil
         return oneLineValueTextBuilder.ToString();
 
         static bool needReplacementChar(char ch) => ch is '\r' or '\n' or '\t';
+    }
+
+    private static string GetOutputFullName(Type type)
+    {
+        var stringBuilder = new StringBuilder();
+
+        append(stringBuilder, type);
+
+        return stringBuilder.ToString();
+
+
+        static void append(StringBuilder stringBuilder, Type type)
+        {
+            if (type.IsArray && type.GetElementType() is { } elementType)
+            {
+                var rank = type.GetArrayRank();
+
+                append(stringBuilder, elementType);
+                stringBuilder.Append('[');
+                for (int i = 1; i < rank; i++)
+                    stringBuilder.Append(',');
+                stringBuilder.Append(']');
+                return;
+            }
+
+            if (getKeywordType(type) is { } typeKeyword)
+            {
+                stringBuilder.Append(typeKeyword);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(type.Namespace))
+            {
+                stringBuilder.Append(type.Namespace);
+                stringBuilder.Append('.');
+            }
+
+            var index = type.Name.IndexOf('`');
+            if (index >= 0)
+                stringBuilder.Append(type.Name, 0, index);
+            else
+                stringBuilder.Append(type.Name);
+
+            if (type.IsGenericType)
+            {
+                stringBuilder.Append('<');
+                bool isFirstArg = true;
+                foreach (var typeArg in type.GenericTypeArguments)
+                {
+                    if (!isFirstArg)
+                        stringBuilder.Append(',');
+                    isFirstArg = false;
+
+                    append(stringBuilder, typeArg);
+                }
+                stringBuilder.Append('>');
+            }
+        }
+
+        static string? getKeywordType(Type type)
+        {
+            if (type == typeof(char))
+                return "char";
+            else if (type == typeof(byte))
+                return "byte";
+            else if (type == typeof(sbyte))
+                return "sbyte";
+            else if (type == typeof(short))
+                return "short";
+            else if (type == typeof(int))
+                return "int";
+            else if (type == typeof(long))
+                return "long";
+            else if (type == typeof(ushort))
+                return "ushort";
+            else if (type == typeof(uint))
+                return "uint";
+            else if (type == typeof(ulong))
+                return "ulong";
+            else if (type == typeof(string))
+                return "string";
+            else if (type == typeof(bool))
+                return "bool";
+            else if (type == typeof(object))
+                return "object";
+            else
+                return null;
+        }
     }
 }

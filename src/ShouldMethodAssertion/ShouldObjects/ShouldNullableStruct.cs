@@ -11,6 +11,6 @@ namespace ShouldMethodAssertion.ShouldObjects;
 // 存在しないと誤解し易そうなので、Nullable<T>に対して出来ることはあえてNullチェックと型チェックに限定する
 // それ以上は`nullable.Value.Should().Xxx`で呼出しが必要に統一する
 //[ShouldMethod(typeof(NullableStructShouldBe<>), TypeArgs = [typeof(TypeArg1)])]
-public partial struct ShouldNullable<T> where T : struct
+public partial struct ShouldNullableStruct<T> where T : struct
 {
 }

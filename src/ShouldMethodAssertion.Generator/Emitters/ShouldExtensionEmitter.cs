@@ -49,10 +49,10 @@ internal static class ShouldExtensionEmitter
 
         var method = new CsExtensionMethod(
             "Should",
-            partialDefinitionType.WithNullability(false),
+            partialDefinitionType.WithAnnotation(isNullableIfRefereceType: false),
             Params: EquatableArray.Create(
                 new CsMethodParam(actualValueType, ActualParamName, Attributes: actualValueParamAttributes),
-                new CsMethodParamWithDefaultValue(stringType.WithNullability(true), ActualExpressionParamName, DefaultValue: null, Attributes: EquatableArray.Create(callerArgumentExpressionAttribute))
+                new CsMethodParamWithDefaultValue(stringType.WithAnnotation(isNullableIfRefereceType: true), ActualExpressionParamName, DefaultValue: null, Attributes: EquatableArray.Create(callerArgumentExpressionAttribute))
             ),
             GenericTypeParams: partialDefinitionType.TypeDefinition.GenericTypeParams,
             Accessibility: CsAccessibility.Public
