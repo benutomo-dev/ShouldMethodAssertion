@@ -18,7 +18,7 @@ actualValue.Should().HaveCount(1);
 Count of `actualValue` is 3. But it expected to be 1.
 ```
 
-### Dictionary<TKey, TValue> / Small number of elements
+### Dictionary<TKey, TValue>
 
 **TestCode**
 

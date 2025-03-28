@@ -159,6 +159,30 @@ public static partial class ExpressionUtil
         };
     }
 
+    internal static string FormatRange(Range range)
+    {
+        if (range.End.IsFromEnd && range.End.Value == 0)
+        {
+            Debug.Assert(!range.Start.IsFromEnd);
+            return $"{range.Start.Value}～";
+        }
+        else
+        {
+            Debug.Assert(!range.Start.IsFromEnd);
+            Debug.Assert(!range.End.IsFromEnd);
+
+            if (range.Start.Value == range.End.Value)
+            {
+                return $"{range.Start.Value}";
+            }
+            else
+            {
+                Debug.Assert(range.Start.Value < range.End.Value);
+                return $"{range.Start.Value}～{range.End.Value}";
+            }
+        }
+    }
+
     internal static string FormartValue(ReadOnlySpan<char> value)
     {
         if (Unsafe.IsNullRef(ref MemoryMarshal.GetReference(value)))

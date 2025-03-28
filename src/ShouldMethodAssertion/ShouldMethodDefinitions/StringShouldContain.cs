@@ -61,31 +61,20 @@ public partial struct StringShouldContain
 
     public void ShouldContain(ReadOnlySpan<char> text, Range containedCountsRange, bool ignoreCase = false)
     {
-        if (containedCountsRange.Start.IsFromEnd)
-            throw new ArgumentOutOfRangeException(nameof(containedCountsRange));
+        containedCountsRange.ThrowIfInvalidAsCountRange();
 
-        if (containedCountsRange.End.IsFromEnd)
-            throw new ArgumentOutOfRangeException(nameof(containedCountsRange));
-
-        if (containedCountsRange.Start.Value < 0)
-            throw new ArgumentOutOfRangeException(nameof(containedCountsRange));
-
-        if (containedCountsRange.End.Value < 0)
-            throw new ArgumentOutOfRangeException(nameof(containedCountsRange));
-
-        if (containedCountsRange.End.Value < containedCountsRange.Start.Value)
-            throw new ArgumentOutOfRangeException(nameof(containedCountsRange));
-
-        if (containedCountsRange.Start.Value == 0 && containedCountsRange.End.Value == 0)
+        if (containedCountsRange.IsSingleValueRange(out var value))
         {
-            ShouldNotContain(text, ignoreCase);
-            return;
-        }
-
-        if (containedCountsRange.Start.Value == containedCountsRange.End.Value)
-        {
-            ShouldContain(text, containedCountsRange.Start.Value, ignoreCase);
-            return;
+            if (value == 0)
+            {
+                ShouldNotContain(text, ignoreCase);
+                return;
+            }
+            else
+            {
+                ShouldContain(text, value, ignoreCase);
+                return;
+            }
         }
 
         var ignoreCaseAnnotation = ignoreCase
@@ -96,7 +85,7 @@ public partial struct StringShouldContain
 
         var actualCount = GetActualContainedCount(text, stringComparison);
 
-        if (actualCount < containedCountsRange.Start.Value || containedCountsRange.End.Value < actualCount)
+        if (!containedCountsRange.IsInRange(actualCount))
         {
             if (actualCount == 0)
                 throw AssertExceptionUtil.Create($"""
