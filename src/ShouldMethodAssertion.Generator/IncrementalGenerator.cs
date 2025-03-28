@@ -478,34 +478,6 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
         return acceptNullReference ? actualValueType.ToNullableIfReferenceType() : actualValueType;
     }
-
-    [Obsolete("今はNullable<T>は専用のShouldのみを用意し、値型に対するNullable<T>版の拡張メソッドは生やさないことにしたので一旦非推奨")]
-    private static (CsTypeRefWithAnnotation Type, CsTypeRefWithAnnotation? RawType, EquatableArray<CsTypeParameterDeclaration> GenericTypeParams) GetActualValueTypeAsNullable(CsDeclarationProvider declarationProvider, INamedTypeSymbol actualValueTypeSymbol)
-    {
-        var rawActualValueType = declarationProvider.GetTypeReference(actualValueTypeSymbol);
-
-        if (rawActualValueType.Type.TypeDefinition is CsStruct { IsRef: true })
-        {
-            // ref structはNullable<T>にできない
-            return (rawActualValueType, null, rawActualValueType.Type.TypeDefinition.GenericTypeParams);
-        }
-        else if (rawActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-        {
-            // 元の型自体がNullable<T>
-            return (rawActualValueType, null, rawActualValueType.Type.TypeDefinition.GenericTypeParams);
-        }
-        else
-        {
-            var nullableType = declarationProvider.MakeNullableTypeReference(rawActualValueType);
-
-            if (nullableType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-                return (nullableType, rawActualValueType, rawActualValueType.Type.TypeDefinition.GenericTypeParams);
-            else if (actualValueTypeSymbol.IsUnboundGenericType)
-                return (nullableType, null, rawActualValueType.Type.TypeDefinition.GenericTypeParams);
-            else
-                return (nullableType, null, EquatableArray<CsTypeParameterDeclaration>.Empty);
-        }
-    }
 }
 
 file static class FileLocalExtensions
