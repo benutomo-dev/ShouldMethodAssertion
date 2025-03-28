@@ -8,6 +8,9 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(ObjectShouldBe<>), TypeArgs = [typeof(ActualValueType)])]
 [ShouldMethod(typeof(ObjectShouldBeOneOf))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
+[ShouldMethod(typeof(StringShouldBeEmpty))]
+[ShouldMethod(typeof(StringShouldBeNullOrEmpty))]
+[ShouldMethod(typeof(StringShouldContain))]
 public partial struct ShouldString
 {
 }
