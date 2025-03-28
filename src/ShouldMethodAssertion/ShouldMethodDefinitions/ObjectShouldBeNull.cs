@@ -8,8 +8,15 @@ public partial struct ObjectShouldBeNull
 {
     public void ShouldBeNull()
     {
-        if (!IsNull(Actual))
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not null.");
+        if (IsNull(Actual))
+            return;
+
+        throw AssertExceptionUtil.Create($"""
+            {ActualExpression.OneLine} is not null.
+
+            [Actual]
+            {ExpressionUtil.FormartValue(Actual)}
+            """);
     }
 
     public void ShouldNotBeNull()
