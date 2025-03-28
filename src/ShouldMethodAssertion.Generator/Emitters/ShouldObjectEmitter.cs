@@ -18,7 +18,7 @@ internal static class ShouldObjectEmitter
     /// </summary>
     public static void Emit(SourceProductionContext context, ShouldObjectInput args)
     {
-        var hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}.cs";
+        var hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.SimpleCref}.cs";
 
         using var sb = new SourceBuilder(context, hintName);
 

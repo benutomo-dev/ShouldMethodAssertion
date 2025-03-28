@@ -128,13 +128,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
         // ShouldExtension属性のTypeArgsからActualValue用の型引数を作成
         var typeArgsTypedConstant = context.Attributes[0].NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.TypeArgs).Value;
-        var explicitTypeArgs = typeArgsTypedConstant.Kind == TypedConstantKind.Array
-            ? typeArgsTypedConstant.Values
-                .Select(v => declarationProvider.GetTypeReference((ITypeSymbol)v.Value!))
-                .Select(v => actualValueTypeArgsRedirectDictionary is null ? v : v.WithTypeRedirection(actualValueTypeArgsRedirectDictionary))
-                .ToImmutableArray()
-                .ToEquatableArray()
-            : default;
+        var explicitTypeArgs = BuildExlicitTypeArgs(declarationProvider, typeArgsTypedConstant, actualValueTypeArgsRedirectDictionary);
 
         // ShouldExtension属性で指定されたママのActualValueの型を作成
         // ※ この時点のActualValueの型はまだtype(bool)などの他に、type(IComparable<>)やtype(TypeArg1)など型パラメータが仮の状態
@@ -315,9 +309,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
             var typeArgsTypedConstant = shouldMethodAttributeData.NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.TypeArgs).Value;
 
-            var explicitTypeArgs = typeArgsTypedConstant.Kind == TypedConstantKind.Array
-                ? typeArgsTypedConstant.Values.Select(v => args.DeclarationProvider.GetTypeReference((ITypeSymbol)v.Value!).WithTypeRedirection(shouldMethodDefinitionTypeTypeArgsRedirectDictionary)).ToImmutableArray().ToEquatableArray()
-                : default;
+            var explicitTypeArgs = BuildExlicitTypeArgs(declarationProvider, typeArgsTypedConstant, shouldMethodDefinitionTypeTypeArgsRedirectDictionary);
 
             if (shouldMethodDefinitionTypeSymbol.IsUnboundGenericType)
                 shouldMethodDefinitionTypeSymbol = shouldMethodDefinitionTypeSymbol.OriginalDefinition;
@@ -477,6 +469,22 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         var acceptNullReference = (bool)(attributeData.NamedArguments.FirstOrDefault(v => v.Key == HintingAttributeSymbolNames.AcceptNullReference).Value.Value ?? false);
 
         return acceptNullReference ? actualValueType.ToNullableIfReferenceType() : actualValueType;
+    }
+
+    private static EquatableArray<CsTypeRefWithAnnotation> BuildExlicitTypeArgs(CsDeclarationProvider declarationProvider, TypedConstant typedConstant, IReadOnlyDictionary<CsTypeRef, CsTypeRef>? typeRedirectDictionary)
+    {
+        if (typedConstant.IsNull)
+            return default;
+
+        DebugSGen.Assert(typedConstant.Kind == TypedConstantKind.Array);
+
+        var explicitTypeArgs = typedConstant.Values
+                .Select(v => declarationProvider.GetTypeReference((ITypeSymbol)v.Value!))
+                .Select(v => typeRedirectDictionary is null ? v : v.WithTypeRedirection(typeRedirectDictionary))
+                .ToImmutableArray()
+                .ToEquatableArray();
+
+        return explicitTypeArgs;
     }
 }
 

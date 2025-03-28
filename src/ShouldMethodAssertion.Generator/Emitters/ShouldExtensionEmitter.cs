@@ -19,9 +19,9 @@ internal static class ShouldExtensionEmitter
         string hintName;
 
         if (args.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.PartialDefinitionType.TypeDefinition.Name}/{args.ActualValueType.Type.TypeArgs[0][0].Type.Cref}.cs";
+            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.PartialDefinitionType.SimpleCref}/{args.ActualValueType.Type.TypeArgs[0][0].Type.SimpleCref}.cs";
         else
-            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.PartialDefinitionType.TypeDefinition.Name}/{args.ActualValueType.Type.Cref}.cs";
+            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.PartialDefinitionType.SimpleCref}/{args.ActualValueType.Type.SimpleCref}.cs";
 
         using var sb = new SourceBuilder(context, hintName);
 

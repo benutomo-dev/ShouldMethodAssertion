@@ -17,16 +17,20 @@ internal static class ShouldObjectAssertionMethodsEmitter
         string hintName;
 
         if (args.ShouldObjectActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.TypeDefinition.Name}/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].Cref}/{args.ShouldMethodDefinitionType.Cref}.cs";
+            hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.SimpleCref}/{args.ShouldMethodDefinitionType.SimpleCref}/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].SimpleCref}.cs";
         else
-            hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.TypeDefinition.Name}/{args.ShouldObjectActualValueType.Type.Cref}/{args.ShouldMethodDefinitionType.Cref}.cs";
+            hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.SimpleCref}/{args.ShouldMethodDefinitionType.SimpleCref}/{args.ShouldObjectActualValueType.Type.SimpleCref}.cs";
 
         using var sb = new SourceBuilder(context, hintName);
 
         if (!string.IsNullOrWhiteSpace(args.WarningMessage))
             sb.AppendLine($"#warning {args.WarningMessage}");
 
-        using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition))
+        var options = new TypeDefinitionBlockOptions
+        {
+            TypeDeclarationLineTail = $" // {args.ShouldMethodDefinitionType.InternalReference}",
+        };
+        using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition, options))
         {
             if (args.ShouldMethodDefinitionActualValueType is null)
             {

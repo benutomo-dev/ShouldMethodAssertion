@@ -25,7 +25,7 @@ internal static class ShouldMethodDefinitionEmitter
     /// </summary>
     public static void Emit(SourceProductionContext context, ShouldMethodDefinitionInput args)
     {
-        using var sb = new SourceBuilder(context, $"{NameSpaceNames.ShouldMethodDefinitions}/{args.PartialDefinitionType.TypeDefinition.MakeStandardHintName()}.cs");
+        using var sb = new SourceBuilder(context, $"{NameSpaceNames.ShouldMethodDefinitions}/{args.PartialDefinitionType.SimpleCref}.cs");
 
         using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition))
         {
