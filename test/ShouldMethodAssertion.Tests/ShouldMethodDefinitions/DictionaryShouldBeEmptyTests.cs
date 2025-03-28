@@ -2,7 +2,7 @@
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.DictionaryShouldBeEmpty<TypeArg, TypeArg>)])]
+[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.EnumerableShouldBeEmpty<KeyValuePair<TypeArg, TypeArg>>)])]
 public class DictionaryShouldBeEmptyTests
 {
     [Fact]

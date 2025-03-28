@@ -10,7 +10,29 @@ internal static partial class Samples
 
         writer.WriteLine($"## Should().Contain()");
 
-        writer.WriteLine($"### string[] / Default");
+        writer.WriteLine($"### string");
+
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = "apple banana orange";
+            var expectedValue = "Apple";
+
+            actualValue.Should().Contain(expectedValue);
+        });
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = "apple banana orange";
+
+            actualValue.Should().Contain("Apple", /*containedCounts*/ 2, ignoreCase: true);
+        });
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = "apple banana orange";
+
+            actualValue.Should().Contain("banana", /*containedCountsRange*/ 2..3, ignoreCase: true);
+        });
+
+        writer.WriteLine($"### Array / Default");
 
         writer.EmitMessageSample(() =>
         {
@@ -26,7 +48,7 @@ internal static partial class Samples
             actualValue.Should().Contain("Apple");
         });
 
-        writer.WriteLine($"### string[] / Not contain with comparer");
+        writer.WriteLine($"### Array / Not contain with comparer");
 
         writer.EmitMessageSample(() =>
         {
@@ -90,7 +112,23 @@ internal static partial class Samples
 
         writer.WriteLine($"## Should().NotContain()");
 
-        writer.WriteLine($"### string[] / Defualt");
+        writer.WriteLine($"### string");
+
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = "apple banana orange";
+            var expectedValue = "apple";
+
+            actualValue.Should().NotContain(expectedValue);
+        });
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = "apple banana orange";
+
+            actualValue.Should().NotContain("Apple", ignoreCase: true);
+        });
+
+        writer.WriteLine($"### Array / Defualt");
 
         writer.EmitMessageSample(() =>
         {
@@ -106,7 +144,7 @@ internal static partial class Samples
             actualValue.Should().NotContain("banana");
         });
 
-        writer.WriteLine($"### string[] / Contain with comparer");
+        writer.WriteLine($"### Array / Contain with comparer");
         writer.EmitMessageSample(() =>
         {
             var actualValue = (string[])["apple", "banana", "orange"];

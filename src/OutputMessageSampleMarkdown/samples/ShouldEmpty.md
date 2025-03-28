@@ -64,12 +64,12 @@ actualValue.Should().BeEmpty();
 **Message**
 
 ```
-`actualValue` have 3 entries.
+`actualValue` have 3 elements.
 
-List of all entries:
-[1] "apple"
-[2] "banana"
-[3] "orange"
+List of all elements:
+[0] [1, apple]
+[1] [2, banana]
+[2] [3, orange]
 ```
 
 ### Dictionary<TKey, TValue> / Large number of elements
@@ -85,19 +85,19 @@ actualValue.Should().BeEmpty();
 **Message**
 
 ```
-`actualValue` have 12 entries.
+`actualValue` have 12 elements.
 
-List of first 10 entries:
-["apple"] "APPLE"
-["banana"] "BANANA"
-["orange"] "ORANGE"
-["a"] "A"
-["b"] "B"
-["c"] "C"
-["d"] "D"
-["e"] "E"
-["f"] "F"
-["g"] "G"
+List of first 10 elements:
+[0] [apple, APPLE]
+[1] [banana, BANANA]
+[2] [orange, ORANGE]
+[3] [a, A]
+[4] [b, B]
+[5] [c, C]
+[6] [d, D]
+[7] [e, E]
+[8] [f, F]
+[9] [g, G]
 ```
 
 ## Should().NotBeEmpty()

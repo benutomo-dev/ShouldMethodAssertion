@@ -2,7 +2,61 @@
 
 ## Should().Contain()
 
-### string[] / Default
+### string
+
+**TestCode**
+
+```csharp
+var actualValue = "apple banana orange";
+var expectedValue = "Apple";
+
+actualValue.Should().Contain(expectedValue);
+```
+
+**Message**
+
+```
+`actualValue` is not contain "Apple".
+
+[Actual]
+"apple banana orange"
+```
+
+**TestCode**
+
+```csharp
+var actualValue = "apple banana orange";
+
+actualValue.Should().Contain("Apple", /*containedCounts*/ 2, ignoreCase: true);
+```
+
+**Message**
+
+```
+`actualValue` is contain 1 "Apple", with case ignored. But expected count is 2.
+
+[Actual]
+"apple banana orange"
+```
+
+**TestCode**
+
+```csharp
+var actualValue = "apple banana orange";
+
+actualValue.Should().Contain("banana", /*containedCountsRange*/ 2..3, ignoreCase: true);
+```
+
+**Message**
+
+```
+`actualValue` is contain 1 "banana", with case ignored. But expected count is in range of 2～3.
+
+[Actual]
+"apple banana orange"
+```
+
+### Array / Default
 
 **TestCode**
 
@@ -33,7 +87,7 @@ actualValue.Should().Contain("Apple");
 `actualValue` is NOT contain "Apple".
 ```
 
-### string[] / Not contain with comparer
+### Array / Not contain with comparer
 
 **TestCode**
 
@@ -195,7 +249,44 @@ grape
 
 ## Should().NotContain()
 
-### string[] / Defualt
+### string
+
+**TestCode**
+
+```csharp
+var actualValue = "apple banana orange";
+var expectedValue = "apple";
+
+actualValue.Should().NotContain(expectedValue);
+```
+
+**Message**
+
+```
+`actualValue` is contain 1 "apple". But expected count is 0.
+
+[Actual]
+"apple banana orange"
+```
+
+**TestCode**
+
+```csharp
+var actualValue = "apple banana orange";
+
+actualValue.Should().NotContain("Apple", ignoreCase: true);
+```
+
+**Message**
+
+```
+`actualValue` is contain 1 "Apple", with case ignored. But expected count is 0.
+
+[Actual]
+"apple banana orange"
+```
+
+### Array / Defualt
 
 **TestCode**
 
@@ -226,7 +317,7 @@ actualValue.Should().NotContain("banana");
 `actualValue` contain "banana".
 ```
 
-### string[] / Contain with comparer
+### Array / Contain with comparer
 
 **TestCode**
 

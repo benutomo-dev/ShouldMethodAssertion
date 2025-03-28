@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -155,6 +157,22 @@ public static partial class ExpressionUtil
             Type type => GetOutputFullName(type),
             _ => $"`{value}`"
         };
+    }
+
+    internal static string FormartValue(ReadOnlySpan<char> value)
+    {
+        if (Unsafe.IsNullRef(ref MemoryMarshal.GetReference(value)))
+        {
+            return "null";
+        }
+        else if (value.Length == 0)
+        {
+            return "";
+        }
+        else
+        {
+            return $"\"{value}\"";
+        }
     }
 
     internal static string FormatValueAsOneline<TValue>(TValue? value, int maxLength = 160)
