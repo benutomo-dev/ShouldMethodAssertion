@@ -3,6 +3,6 @@
 namespace ShouldMethodAssertion.Generator.Emitters;
 
 record struct ShouldObjectInput(
-    CsTypeRef PartialDefinitionType,
+    CsTypeRef ShouldObjectType,
     CsTypeRefWithAnnotation ActualValueType
     );

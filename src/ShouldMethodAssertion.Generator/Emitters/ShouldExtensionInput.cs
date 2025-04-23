@@ -3,7 +3,7 @@
 namespace ShouldMethodAssertion.Generator.Emitters;
 
 record struct ShouldExtensionInput(
-    CsTypeRef PartialDefinitionType,
+    CsTypeRef ShouldObjectType,
     CsTypeRefWithAnnotation ActualValueType,
     CsTypeRef StringType,
     CsTypeRef? NotNullAttributeType,
