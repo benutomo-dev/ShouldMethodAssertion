@@ -16,10 +16,10 @@ internal static class ShouldObjectAssertionMethodsEmitter
     {
         string hintName;
 
-        if (args.ShouldObjectActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.SimpleCref}/{args.ShouldMethodDefinitionType.SimpleCref}/{args.ShouldObjectActualValueType.Type.TypeArgs[0][0].SimpleCref}.cs";
+        if (args.ShouldObjectType.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
+            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectType.PartialDefinitionType.SimpleCref}/{args.ShouldMethodDefinitionType.PartialDefinitionType.SimpleCref}/{args.ShouldObjectType.ActualValueType.Type.TypeArgs[0][0].SimpleCref}.cs";
         else
-            hintName = $"{NameSpaceNames.ShouldObjects}/{args.PartialDefinitionType.SimpleCref}/{args.ShouldMethodDefinitionType.SimpleCref}/{args.ShouldObjectActualValueType.Type.SimpleCref}.cs";
+            hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectType.PartialDefinitionType.SimpleCref}/{args.ShouldMethodDefinitionType.PartialDefinitionType.SimpleCref}/{args.ShouldObjectType.ActualValueType.Type.SimpleCref}.cs";
 
         using var sb = new SourceBuilder(context, hintName);
 
@@ -28,20 +28,13 @@ internal static class ShouldObjectAssertionMethodsEmitter
 
         var options = new TypeDefinitionBlockOptions
         {
-            TypeDeclarationLineTail = $" // {args.ShouldMethodDefinitionType.InternalReference}",
+            TypeDeclarationLineTail = $" // {args.ShouldMethodDefinitionType.PartialDefinitionType.InternalReference}",
         };
-        using (sb.BeginTypeDefinitionBlock(args.PartialDefinitionType.TypeDefinition, options))
+        using (sb.BeginTypeDefinitionBlock(args.ShouldObjectType.PartialDefinitionType.TypeDefinition, options))
         {
-            if (args.ShouldMethodDefinitionActualValueType is null)
+            foreach (var shouldMethod in args.ShouldMethods.Values)
             {
-                sb.AppendLine($"#warning ソース生成時の{nameof(args.ShouldMethodDefinitionActualValueType)}がnullです。");
-            }
-            else
-            {
-                foreach (var shouldMethod in args.ShouldMethods.Values)
-                {
-                    EmitMethod(sb, args, shouldMethod);
-                }
+                EmitMethod(sb, args, shouldMethod);
             }
         }
 
@@ -50,8 +43,6 @@ internal static class ShouldObjectAssertionMethodsEmitter
 
     private static void EmitMethod(SourceBuilder sb, ShouldObjectAssertionMethodsInput args, CsMethod shouldMethod)
     {
-        DebugSGen.AssertIsNotNull(args.ShouldMethodDefinitionActualValueType);
-
         var paramsBuilder = ImmutableArray.CreateBuilder<CsMethodParam>(shouldMethod.Params.Length * 2);
         paramsBuilder.AddRange(shouldMethod.Params);
         foreach (var param in shouldMethod.Params.Values)
@@ -87,12 +78,12 @@ internal static class ShouldObjectAssertionMethodsEmitter
 
             string actualValueRefSymbolName = "Actual";
 
-            if (args.ShouldMethodDefinitionActualValueType is not { IsNullable: true, Type.TypeDefinition.IsReferenceType: true })
+            if (args.ShouldMethodDefinitionType.ActualValueType is not { IsNullable: true, Type.TypeDefinition.IsReferenceType: true })
             {
                 // ShouldAssertionContextのActualがnull許容の参照型でない場合は、必要に応じて事前にnullチェックを実施してから、
                 // 本来の検証内容の呼出しを行う
 
-                if (args.ShouldObjectActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT) && !args.ShouldMethodDefinitionActualValueType.Value.Type.TypeDefinition.Is(CsSpecialType.NullableT))
+                if (args.ShouldObjectType.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT) && !args.ShouldMethodDefinitionType.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
                 {
                     // ShouldAssertionContextのActualがnull非許容の値型で、検証対象の実際値の型がNullable<T>
 
@@ -105,7 +96,7 @@ internal static class ShouldObjectAssertionMethodsEmitter
 
                     actualValueRefSymbolName = "rawActualValue";
                 }
-                else if (args.ShouldObjectActualValueType is { IsNullable: true, Type.TypeDefinition.IsReferenceType: true } && args.ShouldMethodDefinitionActualValueType is { IsNullable: false, Type.TypeDefinition.IsReferenceType: true })
+                else if (args.ShouldObjectType.ActualValueType is { IsNullable: true, Type.TypeDefinition.IsReferenceType: true } && args.ShouldMethodDefinitionType.ActualValueType is { IsNullable: false, Type.TypeDefinition.IsReferenceType: true })
                 {
                     // ShouldAssertionContextのActualがnull非許容の参照型で、検証対象の実際値の型がnull許容の参照型
 
@@ -124,7 +115,7 @@ internal static class ShouldObjectAssertionMethodsEmitter
                 actualValueRefSymbolName = "__convertedActualValue";
             }
 
-            using (sb.BeginBlock($"var __parameterExpressions = new {args.ShouldMethodDefinitionType.GlobalReference}.{InternalTypeNames.ParameterExpressions}"))
+            using (sb.BeginBlock($"var __parameterExpressions = new {args.ShouldMethodDefinitionType.PartialDefinitionType.GlobalReference}.{InternalTypeNames.ParameterExpressions}"))
             {
                 if (!shouldMethod.Params.IsDefaultOrEmpty)
                 {
@@ -134,7 +125,7 @@ internal static class ShouldObjectAssertionMethodsEmitter
             }
             sb.AppendLineWithFirstIndent($";");
             sb.AppendLine();
-            sb.AppendLineWithFirstIndent($"var __assertMethod = new {args.ShouldMethodDefinitionType.GlobalReference}({actualValueRefSymbolName}, ActualExpression ?? \"Actual\", __parameterExpressions);");
+            sb.AppendLineWithFirstIndent($"var __assertMethod = new {args.ShouldMethodDefinitionType.PartialDefinitionType.GlobalReference}({actualValueRefSymbolName}, ActualExpression ?? \"Actual\", __parameterExpressions);");
             sb.AppendLine();
             sb.PutIndentSpace();
             if (!shouldMethod.IsVoidLikeMethod)

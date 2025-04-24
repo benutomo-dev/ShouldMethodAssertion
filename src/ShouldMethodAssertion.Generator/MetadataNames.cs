@@ -13,6 +13,9 @@ internal static class MetadataNames
     internal const string ShouldMethodAttribute           = $"{NameSpaces.DataAnnotations}.{HintingAttributeSymbolNames.ShouldMethodAttribute}";
     internal const string ShouldMethodDefinitionAttribute = $"{NameSpaces.DataAnnotations}.{HintingAttributeSymbolNames.ShouldMethodDefinitionAttribute}";
 
-    internal const string CallerArgumentExpressionAttribute = $"System.Runtime.CompilerServices.CallerArgumentExpressionAttribute";
-    internal const string NotNullAttribute                  = $"System.Diagnostics.CodeAnalysis.NotNullAttribute";
+    internal const string NullableStructShouldHaveValue = $"{NameSpaces.ShouldMethodDefinitions}.NullableStructShouldHaveValue`1";
+
+    internal const string CallerArgumentExpressionAttribute   = $"System.Runtime.CompilerServices.CallerArgumentExpressionAttribute";
+    internal const string NotNullAttribute                    = $"System.Diagnostics.CodeAnalysis.NotNullAttribute";
+    internal const string OverloadResolutionPriorityAttribute = $"System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute";
 }

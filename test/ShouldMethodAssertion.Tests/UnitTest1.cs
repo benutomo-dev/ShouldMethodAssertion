@@ -44,7 +44,9 @@ public class UnitTest1
         (2.0).Should().BeLessThan(3);
 
         //Guid.NewGuid().Should().Be(Guid.NewGuid());
+
         
+
         1.Should().Be(1, EqualityComparer<int>.Default);
 
         //"banana".Should().Be("");
@@ -59,12 +61,12 @@ public class UnitTest1
 
         (MethodImplOptions.PreserveSig | MethodImplOptions.Synchronized).Should().HaveFlag(MethodImplOptions.Synchronized);
 
-        ((int?)0).Should().NotBeNull();
+        ((int?)0).Should().HaveValue();
 
         0.Should().BeAssignableTo<object>();
 
-        default(int?).Should().BeNull();
-        default(Guid?).Should().BeNull();
+        default(int?).Should().NotHaveValue();
+        default(Guid?).Should().NotHaveValue();
 
         default(StructA).Should().BeDefault();
         new StructA{ value = 1}.Should().NotBeDefault();
@@ -88,14 +90,14 @@ public class UnitTest1
         "asdf".Should().BeOneOf(["23456", "457", "asdf", "srt"]);
 
         int? nullInt = null;
-        nullInt.Should().BeNull();
+        nullInt.Should().NotHaveValue();
 
         int? nullableInt = 1;
-        nullableInt.Should().NotBeNull();
+        nullableInt.Should().HaveValue();
         nullableInt.Value.Should().BeGreaterThan(0);
         nullableInt.Should().BeAssignableTo<int>();
 
-
+        new StructA().Should().Be(new StructA());
 
         var x = nullableInt.Value;
     }

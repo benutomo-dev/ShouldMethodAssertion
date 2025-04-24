@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0;net462</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0;net9.0;net462</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <Version>1.8.1.0</Version>
+    <Version>1.9.0.0</Version>
   </PropertyGroup>
 
   <!-- NuGet -->
   <PropertyGroup>
-    <PackageVersion>1.8.1</PackageVersion>
+    <PackageVersion>1.9.0-preview1</PackageVersion>
 
     <PackageId>ShouldMethodAssertion</PackageId>
     <Description>ShouldMethodAssertion is an assertion framework.</Description>
@@ -27,6 +27,7 @@
   
   <ItemGroup>
     <None Include="$(OutputPath)\..\..\ShouldMethodAssertion.Generator\$(Configuration)\netstandard2.0\ShouldMethodAssertion.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/roslyn4.0/cs" Visible="false" />
+    <None Include="..\ShouldMethodAssertion.Generator\nuget.props" Pack="true" PackagePath="build/$(PackageId).props" Visible="false" />
     <None Include="$(MSBuildThisFileDirectory)nuget.readme.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 

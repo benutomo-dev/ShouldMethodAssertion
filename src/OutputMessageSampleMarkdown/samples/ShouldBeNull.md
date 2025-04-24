@@ -21,25 +21,6 @@ actualValue.Should().BeNull();
 "apple"
 ```
 
-### struct (System.Nullable&lt;T&gt;)
-
-**TestCode**
-
-```csharp
-var actualValue = (int?)1;
-
-actualValue.Should().BeNull();
-```
-
-**Message**
-
-```
-`actualValue` is not null.
-
-[Actual]
-`1`
-```
-
 ## Should().NotBeNull()
 
 ### class
@@ -58,18 +39,3 @@ actualValue.Should().NotBeNull();
 `actualValue` is null.
 ```
 
-### struct (System.Nullable&lt;T&gt;)
-
-**TestCode**
-
-```csharp
-var actualValue = default(int?);
-
-actualValue.Should().NotBeNull();
-```
-
-**Message**
-
-```
-`actualValue` is null.
-```

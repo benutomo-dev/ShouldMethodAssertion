@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace ShouldMethodAssertion.ShouldExtensions;
 
-public static partial class ShouldExtension
+public static class ShouldSatisfyExtension
 {
     public static void ShouldSatisfy<T>(this T actual, Func<T, bool> predicate, [CallerArgumentExpression(nameof(actual))] string? actualCallerArgumentExpression = null, [CallerArgumentExpression(nameof(predicate))] string? predicateCallerArgumentExpression = null)
     {

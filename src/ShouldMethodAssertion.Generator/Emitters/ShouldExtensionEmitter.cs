@@ -16,52 +16,62 @@ internal static class ShouldExtensionEmitter
     /// </summary>
     public static void Emit(SourceProductionContext context, ShouldExtensionInput args)
     {
-        string hintName;
-
-        if (args.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT))
-            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.ShouldObjectType.SimpleCref}/{args.ActualValueType.Type.TypeArgs[0][0].Type.SimpleCref}.cs";
-        else
-            hintName = $"{NameSpaceNames.ShouldExtensions}/{args.ShouldObjectType.SimpleCref}/{args.ActualValueType.Type.SimpleCref}.cs";
+        var hintName = $"{NameSpaceNames.ShouldExtensions}/ShouldExtension.cs";
 
         using var sb = new SourceBuilder(context, hintName);
 
-        using (sb.BeginBlock($"namespace {NameSpaces.ShouldExtensions}"))
+        using (args.ShouldMethodDefinitionNameSpace is null ? default : sb.BeginBlock($"namespace {args.ShouldMethodDefinitionNameSpace}"))
         {
-            using (sb.BeginBlock($"public static partial class {args.ShouldObjectType.TypeDefinition.Name}Extension"))
+            using (sb.BeginBlock($"internal static partial class {args.ShouldMethodDefinitionClassName}"))
             {
                 var callerArgumentExpressionAttribute = new CsAttribute(args.CallerArgumentExpressionAttributeType, [ActualParamName]);
 
-                EmitMethod(sb, args.ShouldObjectType, args.ActualValueType, args.StringType, args.NotNullAttributeType, callerArgumentExpressionAttribute);
+                for (int i = 0; i < args.ShouldExtensionMethodInfos.Length; i++)
+                {
+                    EmitMethod(sb, args.ShouldExtensionMethodInfos[i], i, args.StringType, args.NotNullAttributeType, callerArgumentExpressionAttribute);
+                    sb.AppendLine();
+                }
             }
         }
-
         sb.Commit();
     }
 
-    private static void EmitMethod(SourceBuilder sb, CsTypeRef partialDefinitionType, CsTypeRefWithAnnotation actualValueType, CsTypeRef stringType, CsTypeRef? notNullAttributeType, CsAttribute callerArgumentExpressionAttribute)
+    private static void EmitMethod(SourceBuilder sb, ShouldExtensionMethodInfo shouldExtensionMethodInfo, int methodIndex, CsTypeRef stringType, CsTypeRef? notNullAttributeType, CsAttribute callerArgumentExpressionAttribute)
     {
+        var (shouldObjectType, overloadResolutionPriority) = shouldExtensionMethodInfo;
+
         var actualValueParamAttributes = EquatableArray<CsAttribute>.Empty;
 
         // Should拡張メソッドが呼び出された時点でnullの可能性はなくなったものとして扱わせる。
         // (明示的にnullであることが確認されたか、null検証に失敗するかのどちらかとなる)
-        if (notNullAttributeType is not null && (actualValueType.IsNullable || actualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT)))
+        if (notNullAttributeType is not null && (shouldObjectType.ActualValueType.IsNullable || shouldObjectType.ActualValueType.Type.TypeDefinition.Is(CsSpecialType.NullableT)))
             actualValueParamAttributes = EquatableArray.Create(new CsAttribute(notNullAttributeType));
+
+        var dummyArgTypeName = $"AvoidOverloadConflictionDummyArgT{methodIndex}";
+
+        var dummyArgType = new CsTypeRefWithAnnotation(CsTypeRef.CreateFrom(new CsClass(null, dummyArgTypeName, accessibility: CsAccessibility.Public)), isNullableIfRefereceType: true);
 
         var method = new CsExtensionMethod(
             "Should",
-            partialDefinitionType.WithAnnotation(isNullableIfRefereceType: false),
+            shouldObjectType.PartialDefinitionType.WithAnnotation(isNullableIfRefereceType: false),
             Params: EquatableArray.Create(
-                new CsMethodParam(actualValueType, ActualParamName, Attributes: actualValueParamAttributes),
-                new CsMethodParamWithDefaultValue(stringType.WithAnnotation(isNullableIfRefereceType: true), ActualExpressionParamName, DefaultValue: null, Attributes: EquatableArray.Create(callerArgumentExpressionAttribute))
+                new CsMethodParam(shouldObjectType.ActualValueType, ActualParamName, Attributes: actualValueParamAttributes),
+                new CsMethodParamWithDefaultValue(stringType.WithAnnotation(isNullableIfRefereceType: true), ActualExpressionParamName, DefaultValue: null, Attributes: EquatableArray.Create(callerArgumentExpressionAttribute)),
+                new CsMethodParamWithDefaultValue(dummyArgType, "dummyArg", null)
             ),
-            GenericTypeParams: partialDefinitionType.TypeDefinition.GenericTypeParams,
+            GenericTypeParams: shouldObjectType.PartialDefinitionType.TypeDefinition.GenericTypeParams,
             Accessibility: CsAccessibility.Public
             );
 
+        sb.AppendLineWithFirstIndent($"public sealed class {dummyArgTypeName} {{ private {dummyArgTypeName}() {{}} }}");
+        if (overloadResolutionPriority != 0)
+        {
+            sb.AppendLineWithFirstIndent($"[{MetadataNames.OverloadResolutionPriorityAttribute}({overloadResolutionPriority})]");
+        }
         using (sb.BeginMethodDefinitionBlock(method, isPartial: false))
         {
             sb.AppendLine($"#pragma warning disable CS8777"); // null許容性のチェックに対して発生する警告をもみ消す
-            sb.AppendLineWithFirstIndent($"return new {partialDefinitionType.GlobalReference}({ActualParamName}, {ActualExpressionParamName});");
+            sb.AppendLineWithFirstIndent($"return new {shouldObjectType.PartialDefinitionType.GlobalReference}({ActualParamName}, {ActualExpressionParamName});");
             sb.AppendLine($"#pragma warning restore CS8777");
         }
     }

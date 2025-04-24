@@ -1,0 +1,3 @@
+﻿namespace ShouldMethodAssertion.Generator.Emitters;
+
+record struct ShouldExtensionMethodInfo(PartialDefinitionTypeWithActualValueType ShouldObjectType, int OverloadResolutionPriority);

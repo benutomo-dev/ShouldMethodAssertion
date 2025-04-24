@@ -1,11 +1,11 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
+using ShouldMethodAssertion.ShouldExtensions;
 using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.ShouldObjects;
 
-[ShouldExtension(typeof(object))]
+[ShouldExtension(typeof(object), OverloadResolutionPriority = OverloadResolutionPriorities.Object)]
 [ShouldMethod(typeof(ObjectShouldBeNull))]
-[ShouldMethod(typeof(ObjectShouldBeDefault))]
 [ShouldMethod(typeof(ObjectShouldBe<>), TypeArgs = [typeof(object)])]
 [ShouldMethod(typeof(ObjectShouldBeOneOf))]
 [ShouldMethod(typeof(ObjectShouldSameReferenceAs))]

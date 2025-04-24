@@ -18,28 +18,12 @@ internal static partial class Samples
             actualValue.Should().BeNull();
         });
 
-        writer.WriteLine($"### struct (System.Nullable&lt;T&gt;)");
-        writer.EmitMessageSample(() =>
-        {
-            var actualValue = (int?)1;
-
-            actualValue.Should().BeNull();
-        });
-
         writer.WriteLine($"## Should().NotBeNull()");
 
         writer.WriteLine($"### class");
         writer.EmitMessageSample(() =>
         {
             var actualValue = default(string);
-
-            actualValue.Should().NotBeNull();
-        });
-
-        writer.WriteLine($"### struct (System.Nullable&lt;T&gt;)");
-        writer.EmitMessageSample(() =>
-        {
-            var actualValue = default(int?);
 
             actualValue.Should().NotBeNull();
         });

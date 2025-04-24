@@ -7,6 +7,8 @@ public class ShouldExtensionAttribute : Attribute
 
     public Type[]? TypeArgs { get; init; }
 
+    public int OverloadResolutionPriority { get; init; }
+
     public ShouldExtensionAttribute(Type actualValueType)
     {
         ActualValueType = actualValueType;

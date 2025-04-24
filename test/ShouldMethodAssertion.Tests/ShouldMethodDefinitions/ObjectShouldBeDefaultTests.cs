@@ -15,10 +15,6 @@ public class ObjectShouldBeDefaultTests
     {
         default(int).Should().BeDefault();
         default(RawStruct).Should().BeDefault();
-
-#pragma warning disable SMAssertion0003 // Inappropriate use of BeDefault on reference types (including Nullable<T>)
-        default(object).Should().BeDefault();
-#pragma warning restore SMAssertion0003 // Inappropriate use of BeDefault on reference types (including Nullable<T>)
     }
 
     [Fact]
@@ -26,11 +22,6 @@ public class ObjectShouldBeDefaultTests
     {
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new RawStruct(1).Should().BeDefault());
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeDefault());
-
-
-#pragma warning disable SMAssertion0003 // Inappropriate use of BeDefault on reference types (including Nullable<T>)
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeDefault()); // 否nullの参照型ならば常に否default
-#pragma warning restore SMAssertion0003 // Inappropriate use of BeDefault on reference types (including Nullable<T>)
     }
 
     [Fact]
@@ -38,10 +29,6 @@ public class ObjectShouldBeDefaultTests
     {
         new RawStruct(1).Should().NotBeDefault();
         1.Should().NotBeDefault();
-
-#pragma warning disable SMAssertion0004 // Inappropriate use of BeNotDefault on reference types (including Nullable<T>)
-        new object().Should().NotBeDefault(); // 否nullの参照型ならば常に否default
-#pragma warning restore SMAssertion0004 // Inappropriate use of BeNotDefault on reference types (including Nullable<T>)
     }
 
     [Fact]
@@ -51,10 +38,5 @@ public class ObjectShouldBeDefaultTests
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 0.Should().NotBeDefault()); // intの0はdefault(int)と等価
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(RawStruct).Should().NotBeDefault());
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new RawStruct(0).Should().NotBeDefault()); // new RawStruct(0)はdefault(RawStruct)と等価
-
-
-#pragma warning disable SMAssertion0004 // Inappropriate use of BeNotDefault on reference types (including Nullable<T>)
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(object).Should().NotBeDefault());
-#pragma warning restore SMAssertion0004 // Inappropriate use of BeNotDefault on reference types (including Nullable<T>)
     }
 }

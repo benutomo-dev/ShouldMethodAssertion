@@ -18,23 +18,34 @@ internal static class ShouldObjectEmitter
     /// </summary>
     public static void Emit(SourceProductionContext context, ShouldObjectInput args)
     {
-        var hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectType.SimpleCref}.cs";
+        var hintName = $"{NameSpaceNames.ShouldObjects}/{args.ShouldObjectType.PartialDefinitionType.SimpleCref}.cs";
 
         using var sb = new SourceBuilder(context, hintName);
 
-        using (sb.BeginTypeDefinitionBlock(args.ShouldObjectType.TypeDefinition))
+        EmitCore(sb, args.ShouldObjectType);
+
+        // 構造体に対するNullable<T>版の出力
+        if (args.NullableTShouldObjectType.HasValue)
+            EmitCore(sb, args.NullableTShouldObjectType.Value);
+
+        sb.Commit();
+    }
+
+    private static void EmitCore(SourceBuilder sb, PartialDefinitionTypeWithActualValueType shouldObjectType)
+    {
+        using (sb.BeginTypeDefinitionBlock(shouldObjectType.PartialDefinitionType.TypeDefinition))
         {
-            sb.AppendLineWithFirstIndent($"private {args.ActualValueType.GlobalReference} Actual {{ get; }}");
+            sb.AppendLineWithFirstIndent($"private {shouldObjectType.ActualValueType.GlobalReference} Actual {{ get; }}");
             sb.AppendLineWithFirstIndent($"private string? ActualExpression {{ get; }}");
             sb.AppendLine();
 
-            using (sb.BeginBlock($"public {args.ShouldObjectType.TypeDefinition.Name}({args.ActualValueType.GlobalReference} actual, string? actualExpression)"))
+            using (sb.BeginBlock($"public {shouldObjectType.PartialDefinitionType.TypeDefinition.Name}({shouldObjectType.ActualValueType.GlobalReference} actual, string? actualExpression)"))
             {
                 sb.AppendLineWithFirstIndent($"Actual = actual;");
                 sb.AppendLineWithFirstIndent($"ActualExpression = actualExpression;");
             }
         }
 
-        sb.Commit();
     }
+
 }

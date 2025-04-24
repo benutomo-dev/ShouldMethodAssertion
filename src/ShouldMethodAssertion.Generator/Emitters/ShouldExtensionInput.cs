@@ -1,10 +1,12 @@
-﻿using SourceGeneratorCommons.CSharp.Declarations;
+﻿using SourceGeneratorCommons.Collections.Generic;
+using SourceGeneratorCommons.CSharp.Declarations;
 
 namespace ShouldMethodAssertion.Generator.Emitters;
 
 record struct ShouldExtensionInput(
-    CsTypeRef ShouldObjectType,
-    CsTypeRefWithAnnotation ActualValueType,
+    EquatableArray<ShouldExtensionMethodInfo> ShouldExtensionMethodInfos,
+    string? ShouldMethodDefinitionNameSpace,
+    string ShouldMethodDefinitionClassName,
     CsTypeRef StringType,
     CsTypeRef? NotNullAttributeType,
     CsTypeRef CallerArgumentExpressionAttributeType

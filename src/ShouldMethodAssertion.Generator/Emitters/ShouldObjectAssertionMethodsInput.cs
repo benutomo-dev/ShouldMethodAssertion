@@ -4,13 +4,10 @@ using SourceGeneratorCommons.CSharp.Declarations;
 namespace ShouldMethodAssertion.Generator.Emitters;
 
 record struct ShouldObjectAssertionMethodsInput(
-    CsTypeRef PartialDefinitionType,
-    CsTypeRefWithAnnotation ShouldObjectActualValueType,
+    PartialDefinitionTypeWithActualValueType ShouldObjectType,
+    PartialDefinitionTypeWithActualValueType ShouldMethodDefinitionType,
+    EquatableArray<CsMethod> ShouldMethods,
     CsTypeRef StringType,
     CsTypeRef CallerArgumentExpressionAttributeType,
-    CsTypeRef ShouldMethodDefinitionType,
     string? ActualValueConvertMethodName,
-
-    CsTypeRefWithAnnotation? ShouldMethodDefinitionActualValueType,
-    EquatableArray<CsMethod> ShouldMethods,
     string? WarningMessage);

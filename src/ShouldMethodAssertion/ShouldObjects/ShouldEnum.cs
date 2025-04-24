@@ -1,9 +1,10 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
+using ShouldMethodAssertion.ShouldExtensions;
 using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.ShouldObjects;
 
-[ShouldExtension(typeof(TypeArg1))]
+[ShouldExtension(typeof(TypeArg1), OverloadResolutionPriority = OverloadResolutionPriorities.GenericEnum)]
 [ShouldMethod(typeof(StructShouldBe<>),         TypeArgs = [typeof(ActualValueType)])]
 [ShouldMethod(typeof(NullableStructShouldBe<>), TypeArgs = [typeof(ActualValueType)])]
 [ShouldMethod(typeof(ObjectShouldBeDefault))]

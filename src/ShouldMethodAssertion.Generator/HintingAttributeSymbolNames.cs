@@ -9,4 +9,5 @@ internal static class HintingAttributeSymbolNames
     internal const string AcceptNullReference = "AcceptNullReference";
     internal const string ConvertBy           = "ConvertBy";
     internal const string TypeArgs            = "TypeArgs";
+    internal const string OverloadResolutionPriority = "OverloadResolutionPriority";
 }

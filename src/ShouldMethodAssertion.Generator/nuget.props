@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <ShouldMethodDefinitionClass Condition="'$(ShouldMethodDefinitionClass)' == ''">ShouldMethodAssertion.ShouldExtensions.ShouldExtension</ShouldMethodDefinitionClass>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <CompilerVisibleProperty Include="ShouldMethodDefinitionClass" />
+  </ItemGroup>
+</Project>

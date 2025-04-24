@@ -4,9 +4,9 @@ using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 
 [ShouldMethodDefinition(typeof(Nullable<>))]
-public partial struct NullableStructShouldBeNull<T> where T : struct
+public partial struct NullableStructShouldHaveValue<T> where T : struct
 {
-    public void ShouldBeNull()
+    public void ShouldNotHaveValue()
     {
         if (!Actual.HasValue)
             return;
@@ -20,7 +20,7 @@ public partial struct NullableStructShouldBeNull<T> where T : struct
             """);
     }
 
-    public T ShouldNotBeNull()
+    public T ShouldHaveValue()
     {
         if (!Actual.HasValue)
             throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is null.");

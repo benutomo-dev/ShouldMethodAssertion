@@ -5,8 +5,6 @@ using ShouldMethodAssertion.ShouldMethodDefinitions;
 namespace ShouldMethodAssertion.ShouldObjects;
 
 [ShouldExtension(typeof(InvokeAsync<TypeArg1>))]
-[ShouldMethod(typeof(ObjectShouldBeNull))]
-[ShouldMethod(typeof(ObjectShouldSameReferenceAs))]
 [ShouldMethod(typeof(InvokeAsyncTShouldThrow<>), TypeArgs = [typeof(TypeArg1)])]
 public partial struct ShouldInvokeAsync<TResult>
 {

@@ -10,7 +10,6 @@ public class ObjectShouldBeNullTests
     {
         default(object).Should().BeNull();
         default(string).Should().BeNull();
-        default(int?).Should().BeNull();
     }
 
     [Fact]
@@ -18,7 +17,6 @@ public class ObjectShouldBeNullTests
     {
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeNull() );
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "asdf".Should().BeNull());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeNull());
 
 #pragma warning disable SMAssertion0001 // Inappropriate use of BeNull on value types
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeNull());
@@ -30,7 +28,6 @@ public class ObjectShouldBeNullTests
     {
         new object().Should().NotBeNull();
         "asdf".Should().NotBeNull();
-        ((int?)1).Should().NotBeNull();
 
 #pragma warning disable SMAssertion0002 // Inappropriate use of NotBeNull on value types
         1.Should().NotBeNull();
@@ -42,6 +39,5 @@ public class ObjectShouldBeNullTests
     {
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(object).Should().NotBeNull());
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(string).Should().NotBeNull());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(int?).Should().NotBeNull());
     }
 }

@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\src\ShouldMethodAssertion.Generator\nuget.props" />
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
@@ -11,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShouldMethodAssertion\ShouldMethodAssertion.csproj" />
+    <ProjectReference Include="..\..\src\ShouldMethodAssertion.Generator\ShouldMethodAssertion.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
