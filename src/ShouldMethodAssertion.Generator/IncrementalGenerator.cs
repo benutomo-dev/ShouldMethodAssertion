@@ -6,6 +6,7 @@ using SourceGeneratorCommons;
 using SourceGeneratorCommons.Collections.Generic;
 using SourceGeneratorCommons.CSharp.Declarations;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ShouldMethodAssertion.Generator;
@@ -51,6 +52,19 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+#if DEBUG
+        context.RegisterSourceOutput(context.CompilationProvider, (context, compilation) =>
+        {
+            var sb = new SourceBuilder(context, "_debug_info_.cs");
+
+            sb.AppendLine($"#if false");
+
+            sb.AppendLine($"#endif");
+
+            sb.Commit();
+        });
+#endif
+
         var buildProperties = context.AnalyzerConfigOptionsProvider
             .SelectBuildProperties();
 
@@ -114,6 +128,23 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
         // ShouldMethodDefinition属性を付与した型に対する実装補完partial定義の出力
         context.RegisterSourceOutput(shouldMethodDefinitionSource, ShouldMethodDefinitionEmitter.Emit);
+
+#if DEBUG
+        context.RegisterSourceOutput(context.CompilationProvider.ForAttributeWithMetadataNameInReferenceAssemblies(MetadataNames.ShouldExtensionAttribute, (v, _) => v), (context, arg) =>
+        {
+            var sb = new SourceBuilder(context, $"_debug_info_{arg.TargetSymbol.MetadataName}_.cs");
+
+            sb.AppendLine($"#if false");
+
+            sb.AppendLine($"TargetSymbol: {arg.TargetSymbol}");
+            sb.AppendLine($"Attributes: {string.Join(",", arg.Attributes.Select(v => v.AttributeClass))}");
+
+            sb.AppendLine($"#endif");
+
+            sb.Commit();
+        });
+#endif
+
     }
 
     private static IEnumerable<string> EnumerablePolyfills((Compilation, BuildProperties) arg, CancellationToken cancellationToken)
@@ -401,7 +432,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
             shouldMethodDefinitionClassName = buildProperties.ShouldMethodDefinitionClass.Substring(classNameSplitterIndex + 1);
         }
 
-        var shouldMethodAssertionAssermbly = csDeclarationProvider.Compilation.GetTypeByMetadataName(MetadataNames.ShouldExtensionAttribute)?.ContainingAssembly;
+        var shouldMethodAssertionAssermbly = csDeclarationProvider.Compilation.GetFirstTypeByMetadataName(MetadataNames.ShouldExtensionAttribute)?.ContainingAssembly;
 
         if (SymbolEqualityComparer.Default.Equals(csDeclarationProvider.Compilation.Assembly, shouldMethodAssertionAssermbly))
         {
@@ -449,9 +480,9 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
         if (typeSymbol is null)
             yield break;
 
-        var shouldMethodAttributeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(MetadataNames.ShouldMethodAttribute);
+        var shouldMethodAttributeSymbol = declarationProvider.Compilation.GetFirstTypeByMetadataName(MetadataNames.ShouldMethodAttribute);
 
-        var shouldMethodDefinitionAttributeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(MetadataNames.ShouldMethodDefinitionAttribute);
+        var shouldMethodDefinitionAttributeSymbol = declarationProvider.Compilation.GetFirstTypeByMetadataName(MetadataNames.ShouldMethodDefinitionAttribute);
 
         if (shouldMethodDefinitionAttributeSymbol is null)
             yield break;
@@ -520,7 +551,7 @@ internal sealed class IncrementalGenerator : IIncrementalGenerator
 
         if (nullableTShouldObjectType.HasValue)
         {
-            var nullableStructShouldHaveValueTypeSymbol = declarationProvider.Compilation.GetTypeByMetadataName(MetadataNames.NullableStructShouldHaveValue);
+            var nullableStructShouldHaveValueTypeSymbol = declarationProvider.Compilation.GetFirstTypeByMetadataName(MetadataNames.NullableStructShouldHaveValue);
 
             DebugSGen.AssertIsNotNull(nullableStructShouldHaveValueTypeSymbol);
 
@@ -735,11 +766,11 @@ file static class FileLocalExtensions
 
     private static IEnumerable<GeneratorAttributeSymbolContext> QueryAttributeTypes(Compilation compilation, string fullyQualifiedMetadataName)
     {
-        var attributeSymbol = compilation.GetTypeByMetadataName(fullyQualifiedMetadataName);
+        var attributeSymbol = compilation.GetFirstTypeByMetadataName(fullyQualifiedMetadataName);
 
         var shouldMethodAssertionAssemblySymbol = attributeSymbol?.ContainingAssembly;
 
-        foreach (var asmRef in compilation.GetUsedAssemblyReferences())
+        foreach (var asmRef in compilation.References)
         {
             var asmSymbol = compilation.GetAssemblyOrModuleSymbol(asmRef) as IAssemblySymbol;
 
@@ -751,7 +782,7 @@ file static class FileLocalExtensions
 
             foreach (var typeSymbol in GetAllTypeSymbols(asmSymbol.GlobalNamespace))
             {
-                if (typeSymbol.DeclaredAccessibility != Accessibility.Public)
+                if (!compilation.IsSymbolAccessibleWithin(typeSymbol, compilation.Assembly))
                     continue;
 
                 if (!typeSymbol.GetAttributes().Any(v => SymbolEqualityComparer.Default.Equals(v.AttributeClass, attributeSymbol)))

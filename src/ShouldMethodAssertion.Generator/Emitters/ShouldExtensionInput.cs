@@ -9,5 +9,5 @@ record struct ShouldExtensionInput(
     string ShouldMethodDefinitionClassName,
     CsTypeRef StringType,
     CsTypeRef? NotNullAttributeType,
-    CsTypeRef CallerArgumentExpressionAttributeType
+    CsTypeRef? CallerArgumentExpressionAttributeType
     );

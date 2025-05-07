@@ -2,6 +2,7 @@
 using SourceGeneratorCommons;
 using SourceGeneratorCommons.Collections.Generic;
 using SourceGeneratorCommons.CSharp.Declarations;
+using System.Diagnostics;
 
 namespace ShouldMethodAssertion.Generator.Emitters;
 
@@ -20,19 +21,29 @@ internal static class ShouldExtensionEmitter
 
         using var sb = new SourceBuilder(context, hintName);
 
-        using (args.ShouldMethodDefinitionNameSpace is null ? default : sb.BeginBlock($"namespace {args.ShouldMethodDefinitionNameSpace}"))
+        if (args.CallerArgumentExpressionAttributeType is null)
         {
-            using (sb.BeginBlock($"internal static partial class {args.ShouldMethodDefinitionClassName}"))
-            {
-                var callerArgumentExpressionAttribute = new CsAttribute(args.CallerArgumentExpressionAttributeType, [ActualParamName]);
+            sb.AppendLine($"#warning CallerArgumentExpressionAttribute not found.");
+        }
+        else
+        {
+            sb.AppendLine($"#nullable enable");
 
-                for (int i = 0; i < args.ShouldExtensionMethodInfos.Length; i++)
+            using (args.ShouldMethodDefinitionNameSpace is null ? default : sb.BeginBlock($"namespace {args.ShouldMethodDefinitionNameSpace}"))
+            {
+                using (sb.BeginBlock($"internal static partial class {args.ShouldMethodDefinitionClassName}"))
                 {
-                    EmitMethod(sb, args.ShouldExtensionMethodInfos[i], i, args.StringType, args.NotNullAttributeType, callerArgumentExpressionAttribute);
-                    sb.AppendLine();
+                    var callerArgumentExpressionAttribute = new CsAttribute(args.CallerArgumentExpressionAttributeType, [ActualParamName]);
+
+                    for (int i = 0; i < args.ShouldExtensionMethodInfos.Length; i++)
+                    {
+                        EmitMethod(sb, args.ShouldExtensionMethodInfos[i], i, args.StringType, args.NotNullAttributeType, callerArgumentExpressionAttribute);
+                        sb.AppendLine();
+                    }
                 }
             }
         }
+
         sb.Commit();
     }
 

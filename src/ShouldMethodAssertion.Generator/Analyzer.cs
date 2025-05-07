@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using SourceGeneratorCommons;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -103,7 +104,7 @@ internal sealed class Analyzer : DiagnosticAnalyzer
 
     private void DetectInvalidArgumentExpressionArgUsingAnalysis(CompilationStartAnalysisContext context)
     {
-        var callerArgumentExpressionAttributeSymbol = context.Compilation.GetTypeByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
+        var callerArgumentExpressionAttributeSymbol = context.Compilation.GetFirstTypeByMetadataName(MetadataNames.CallerArgumentExpressionAttribute);
 
         if (callerArgumentExpressionAttributeSymbol is null)
             return;
