@@ -11,6 +11,7 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(StringShouldBeEmpty))]
 [ShouldMethod(typeof(StringShouldBeNullOrEmpty))]
 [ShouldMethod(typeof(StringShouldContain))]
+[ShouldMethod(typeof(StringShouldMatch))]
 public partial struct ShouldString
 {
 }
