@@ -2,7 +2,6 @@
 using SourceGeneratorCommons;
 using SourceGeneratorCommons.Collections.Generic;
 using SourceGeneratorCommons.CSharp.Declarations;
-using System.Diagnostics;
 
 namespace ShouldMethodAssertion.Generator.Emitters;
 

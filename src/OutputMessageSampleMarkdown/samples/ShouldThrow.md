@@ -74,6 +74,30 @@ var action = new Action(() => throw new AggregateException(new FileNotFoundExcep
 action.Should().Throw<IOException>(includeDerivedType: true, aggregateExceptionHandling: ShouldMethodAssertion.AggregateExceptionHandling.AnyFlattened); // NotFail
 ```
 
+### With message match
+
+**TestCode**
+
+```csharp
+var action = new Action(() => throw new FileNotFoundException("Some message xxx yyy zzz A"));
+
+action.Should()
+    .Throw<FileNotFoundException>()
+    .AndMessageMatch("Some message * B");
+```
+
+**Message**
+
+```
+`FileNotFoundException.Message` is not match to expected.
+
+[Actual]
+Some message xxx yyy zzz A
+
+[Expected]
+Some message * B
+```
+
 ## Should().NotThrow()
 
 ### Method

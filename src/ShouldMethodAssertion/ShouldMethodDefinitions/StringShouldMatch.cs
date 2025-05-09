@@ -21,7 +21,7 @@ public partial struct StringShouldMatch
             return;
 
         throw AssertExceptionUtil.Create($"""
-            {ActualExpression.OneLine} is not match to expectedNextWildcardStartText.
+            {ActualExpression.OneLine} is not match to expected.
 
             [Actual]
             {Actual}
@@ -42,7 +42,7 @@ public partial struct StringShouldMatch
             return;
 
         throw AssertExceptionUtil.Create($"""
-            {ActualExpression.OneLine} is match to expectedNextWildcardStartText.
+            {ActualExpression.OneLine} is match to expected.
 
             [Actual]
             {Actual}

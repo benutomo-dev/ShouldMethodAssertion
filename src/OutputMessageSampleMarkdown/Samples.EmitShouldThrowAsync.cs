@@ -53,6 +53,18 @@ internal static partial class Samples
                 ).ConfigureAwait(false); // NotFail
         }).ConfigureAwait(false);
 
+        writer.WriteLine($"### With message match");
+        await writer.EmitMessageSampleAsync(async () =>
+        {
+            Func<Task> actionAsync = () => throw new FileNotFoundException("Some message xxx yyy zzz A");
+
+            await InvokeAsync.That(actionAsync)
+                .Should()
+                .ThrowAsync<FileNotFoundException>()
+                .AndMessageMatch("Some message * B")
+                .ConfigureAwait(false);
+        }).ConfigureAwait(false);
+
 
         someObject = new { MethodAsync = new Func<Task<int>>(async () => { await Task.CompletedTask.ConfigureAwait(false); throw new InvalidOperationException("smple exception"); }) };
 

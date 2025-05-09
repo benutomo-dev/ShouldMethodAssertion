@@ -1,6 +1,4 @@
 ﻿using ShouldMethodAssertion.ShouldExtensions;
-using System.ComponentModel;
-using System.Runtime.Serialization;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 

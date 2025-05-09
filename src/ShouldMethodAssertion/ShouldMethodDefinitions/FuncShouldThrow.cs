@@ -1,4 +1,5 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
+using ShouldMethodAssertion.ShouldExtensions;
 using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
@@ -6,61 +7,72 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 [ShouldMethodDefinition(typeof(Func<>))]
 public partial struct FuncShouldThrow<TResult>
 {
-    public TException ShouldThrow<TException>(bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None) where TException : Exception
+    public ShouldExceptionContinuation<TException> ShouldThrow<TException>(bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None) where TException : Exception
     {
-        try
+        var exception = shouldThrowCore(this, includeDerivedType, aggregateExceptionHandling);
+
+        return new ShouldExceptionContinuation<TException>(exception);
+
+        static TException shouldThrowCore(FuncShouldThrow<TResult> self, bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
         {
-            Actual.Invoke();
-        }
-        catch (TException ex) when (includeDerivedType ? true : ex.GetType() == typeof(TException))
-        {
-            return ex;
-        }
-        catch (AggregateException ex) when (aggregateExceptionHandling != AggregateExceptionHandling.None)
-        {
-            var self = this;
-            var actualExpression = ActualExpression;
-            return ThrowHandlingHelper.HandleCatchedAggregateException<TException>(ex, includeDerivedType, aggregateExceptionHandling,
-                createFailException: () => AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, typeof(TException), actualExpression));
-        }
-        catch (Exception ex)
-        {
-            throw AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, typeof(TException), ActualExpression);
+            try
+            {
+                self.Actual.Invoke();
+            }
+            catch (TException ex) when (includeDerivedType ? true : ex.GetType() == typeof(TException))
+            {
+                return ex;
+            }
+            catch (AggregateException ex) when (aggregateExceptionHandling != AggregateExceptionHandling.None)
+            {
+                return ThrowHandlingHelper.HandleCatchedAggregateException<TException>(ex, includeDerivedType, aggregateExceptionHandling,
+                    createFailException: () => AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, typeof(TException), self.ActualExpression));
+            }
+            catch (Exception ex)
+            {
+                throw AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, typeof(TException), self.ActualExpression);
+            }
+
+            throw AssertExceptionUtil.CreateBasicShouldThrowFailByNoThrownMessage(self.ActualExpression);
         }
 
-        throw AssertExceptionUtil.CreateBasicShouldThrowFailByNoThrownMessage(ActualExpression);
     }
 
-    public Exception ShouldThrow(Type expectedExceptionType, bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None)
+    public ShouldExceptionContinuation<Exception> ShouldThrow(Type expectedExceptionType, bool includeDerivedType = false, AggregateExceptionHandling aggregateExceptionHandling = AggregateExceptionHandling.None)
     {
-        try
-        {
-            Actual.Invoke();
-        }
-        catch (Exception ex) when (ThrowHandlingHelper.IsExpectedException(expectedExceptionType, includeDerivedType, ex))
-        {
-            return ex;
-        }
-        catch (AggregateException ex) when (aggregateExceptionHandling != AggregateExceptionHandling.None)
-        {
-            var self = this;
-            var actualExpression = ActualExpression;
-            return ThrowHandlingHelper.HandleCatchedAggregateException(expectedExceptionType, ex, includeDerivedType, aggregateExceptionHandling,
-                createFailException: () => AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, expectedExceptionType, actualExpression));
-        }
-        catch (Exception ex)
-        {
-            throw AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, expectedExceptionType, ActualExpression);
-        }
+        var exception = shouldThrowCore(this, expectedExceptionType, includeDerivedType, aggregateExceptionHandling);
 
-        throw AssertExceptionUtil.CreateBasicShouldThrowFailByNoThrownMessage(ActualExpression);
+        return new ShouldExceptionContinuation<Exception>(exception);
+
+        static Exception shouldThrowCore(FuncShouldThrow<TResult> self, Type expectedExceptionType, bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
+        {
+            try
+            {
+                self.Actual.Invoke();
+            }
+            catch (Exception ex) when (ThrowHandlingHelper.IsExpectedException(expectedExceptionType, includeDerivedType, ex))
+            {
+                return ex;
+            }
+            catch (AggregateException ex) when (aggregateExceptionHandling != AggregateExceptionHandling.None)
+            {
+                return ThrowHandlingHelper.HandleCatchedAggregateException(expectedExceptionType, ex, includeDerivedType, aggregateExceptionHandling,
+                    createFailException: () => AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, expectedExceptionType, self.ActualExpression));
+            }
+            catch (Exception ex)
+            {
+                throw AssertExceptionUtil.CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(ex, expectedExceptionType, self.ActualExpression);
+            }
+
+            throw AssertExceptionUtil.CreateBasicShouldThrowFailByNoThrownMessage(self.ActualExpression);
+        }
     }
 
-    public TResult ShouldNotThrow()
+    public ShouldContinuation<TResult> ShouldNotThrow()
     {
         try
         {
-            return Actual.Invoke();
+            return new ShouldContinuation<TResult>(Actual.Invoke());
         }
         catch (Exception ex)
         {

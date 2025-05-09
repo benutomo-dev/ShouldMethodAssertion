@@ -1,4 +1,5 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
+using ShouldMethodAssertion.ShouldExtensions;
 using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
@@ -6,7 +7,7 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 [ShouldMethodDefinition(typeof(object), AcceptNullReference = true)]
 public partial struct ObjectShouldBeAssignableTo
 {
-    public T ShouldBeAssignableTo<T>()
+    public ShouldContinuation<T> ShouldBeAssignableTo<T>()
     {
         if (Actual is null)
             return default!;
@@ -14,7 +15,7 @@ public partial struct ObjectShouldBeAssignableTo
         if (!Actual.GetType().IsAssignableTo(typeof(T)))
             throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is can not assign to {typeof(T).FullName}.");
 
-        return (T)Actual;
+        return new ShouldContinuation<T>((T)Actual);
     }
 
     public void ShouldBeAssignableTo(Type type)

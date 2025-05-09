@@ -64,7 +64,7 @@ public class ActionShouldThrowTests
 
         if (includeDerivedType && aggregateExceptionHandling == AggregateExceptionHandling.AnyFlattened)
         {
-            var actualException = taskFunc.Should().Throw<IOException>(includeDerivedType, aggregateExceptionHandling);
+            var actualException = taskFunc.Should().Throw<IOException>(includeDerivedType, aggregateExceptionHandling).Exception;
             Assert.Equal("expected", actualException.Message);
         }
         else
@@ -90,7 +90,7 @@ public class ActionShouldThrowTests
 
         if (includeDerivedType && aggregateExceptionHandling == AggregateExceptionHandling.AnyFlattened)
         {
-            var actualException = taskFunc.Should().Throw<IOException>(includeDerivedType, aggregateExceptionHandling);
+            var actualException = taskFunc.Should().Throw<IOException>(includeDerivedType, aggregateExceptionHandling).Exception;
             Assert.Equal("expected2", actualException.Message);
         }
         else
@@ -186,7 +186,7 @@ public class ActionShouldThrowTests
 
         if (includeDerivedType && aggregateExceptionHandling == AggregateExceptionHandling.AnyFlattened)
         {
-            var actualException = taskFunc.Should().Throw(typeof(IOException), includeDerivedType, aggregateExceptionHandling);
+            var actualException = taskFunc.Should().Throw(typeof(IOException), includeDerivedType, aggregateExceptionHandling).Exception;
             Assert.Equal("expected", actualException.Message);
         }
         else
@@ -212,7 +212,7 @@ public class ActionShouldThrowTests
 
         if (includeDerivedType && aggregateExceptionHandling == AggregateExceptionHandling.AnyFlattened)
         {
-            var actualException = taskFunc.Should().Throw(typeof(IOException), includeDerivedType, aggregateExceptionHandling);
+            var actualException = taskFunc.Should().Throw(typeof(IOException), includeDerivedType, aggregateExceptionHandling).Exception;
             Assert.Equal("expected2", actualException.Message);
         }
         else

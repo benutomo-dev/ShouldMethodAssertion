@@ -75,14 +75,25 @@ public class UnitTest1
         guid.Should().NotBeDefault();
         default(Guid).Should().BeDefault();
 
-        var exception1 = new Action(() => throw new FileNotFoundException("hogehoge")).Should().Throw<IOException>(includeDerivedType: true);
+        var exception1 = new Action(() => throw new FileNotFoundException("hogehoge"))
+            .Should()
+            .Throw<IOException>(includeDerivedType: true)
+            .AndMessageMatch("hogehoge")
+            .AndSatisfy(ex => ex.Message.Should().Be("hogehoge"))
+            .Exception;
+
         exception1.Message.Should().Be("hogehoge");
 
         var exception2 = await InvokeAsync.That(async () =>
-        {
-            await Task.Delay(1).ConfigureAwait(true);
-            throw new FileNotFoundException("fugafuga");
-        }).Should().ThrowAsync<IOException>(includeDerivedType: true).ConfigureAwait(true);
+            {
+                await Task.Delay(1).ConfigureAwait(true);
+                throw new FileNotFoundException("fugafuga");
+            })
+            .Should()
+            .ThrowAsync<IOException>(includeDerivedType: true)
+            .AndMessageMatch("fugafuga")
+            .ConfigureAwait(true);
+
         exception2.Message.Should().Be("fugafuga");
 
         "asdf".ShouldSatisfy(v => v.Length == 4);

@@ -77,6 +77,32 @@ await InvokeAsync.That(actionAsync).Should().ThrowAsync<IOException>(
     ).ConfigureAwait(false); // NotFail
 ```
 
+### With message match
+
+**TestCode**
+
+```csharp
+Func<Task> actionAsync = () => throw new FileNotFoundException("Some message xxx yyy zzz A");
+
+await InvokeAsync.That(actionAsync)
+    .Should()
+    .ThrowAsync<FileNotFoundException>()
+    .AndMessageMatch("Some message * B")
+    .ConfigureAwait(false);
+```
+
+**Message**
+
+```
+`FileNotFoundException.Message` is not match to expected.
+
+[Actual]
+Some message xxx yyy zzz A
+
+[Expected]
+Some message * B
+```
+
 ## Should().NotThrow()
 
 ### Method

@@ -50,6 +50,16 @@ internal static partial class Samples
             action.Should().Throw<IOException>(includeDerivedType: true, aggregateExceptionHandling: ShouldMethodAssertion.AggregateExceptionHandling.AnyFlattened); // NotFail
         });
 
+        writer.WriteLine($"### With message match");
+        writer.EmitMessageSample(() =>
+        {
+            var action = new Action(() => throw new FileNotFoundException("Some message xxx yyy zzz A"));
+
+            action.Should()
+                .Throw<FileNotFoundException>()
+                .AndMessageMatch("Some message * B");
+        });
+
 
         someObject = new { Method = new Func<int>(() => throw new InvalidOperationException("smple exception")) };
 
