@@ -1,31 +1,30 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.NullableStructShouldHaveValue<StructTypeArg>)])]
 public class NullableStructShouldHaveValueTests
 {
     [Fact]
     public void ShouldNotHaveValue_NotFail()
     {
-        default(int?).Should().NotHaveValue();
+        new NullableStructShouldHaveValue<int>(default(int?), "actual", default).ShouldNotHaveValue();
     }
 
     [Fact]
     public void ShouldNotHaveValue_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().NotHaveValue());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldHaveValue<int>(((int?)1), "actual", default).ShouldNotHaveValue());
     }
 
     [Fact]
     public void ShouldHaveValue_NotFail()
     {
-        ((int?)1).Should().HaveValue();
+        new NullableStructShouldHaveValue<int>(((int?)1), "actual", default).ShouldHaveValue();
     }
 
     [Fact]
     public void ShouldHaveValue_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(int?).Should().HaveValue());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldHaveValue<int>(default(int?), "actual", default).ShouldHaveValue());
     }
 }

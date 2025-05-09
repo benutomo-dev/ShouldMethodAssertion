@@ -1,33 +1,32 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.GuidShouldBeEmpty)])]
 public class GuidShouldBeEmptyTests
 {
     [Fact]
     public void ShouldBeEmpty_NotFail()
     {
-        default(Guid).Should().BeEmpty();
-        Guid.Empty.Should().BeEmpty();
+        new GuidShouldBeEmpty(default(Guid), "actual", default).ShouldBeEmpty();
+        new GuidShouldBeEmpty(Guid.Empty, "actual", default).ShouldBeEmpty();
     }
 
     [Fact]
     public void ShouldBeEmpty_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Guid.NewGuid().Should().BeEmpty());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new GuidShouldBeEmpty(Guid.NewGuid(), "actual", default).ShouldBeEmpty());
     }
 
     [Fact]
     public void ShouldNotBeEmpty_NotFail()
     {
-        Guid.NewGuid().Should().NotBeEmpty();
+        new GuidShouldBeEmpty(Guid.NewGuid(), "actual", default).ShouldNotBeEmpty();
     }
 
     [Fact]
     public void ShouldNotBeEmpty_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(Guid).Should().NotBeEmpty());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Guid.Empty.Should().NotBeEmpty());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new GuidShouldBeEmpty(default(Guid), "actual", default).ShouldNotBeEmpty());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new GuidShouldBeEmpty(Guid.Empty, "actual", default).ShouldNotBeEmpty());
     }
 }

@@ -1,10 +1,12 @@
 ﻿using Moq;
 using ShouldMethodAssertion.ShouldExtensions;
+using ShouldMethodAssertion.ShouldMethodDefinitions;
+
+#pragma warning disable CA2263 // 型が既知の場合はジェネリック オーバーロードを優先する
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.InvokeAsyncTShouldThrow<TypeArg>)])]
-public class TaskFuncShouldThrowTests
+public class InvokeAsyncShouldThrowTests
 {
     [Theory]
     [CombinatorialData]
@@ -15,7 +17,7 @@ public class TaskFuncShouldThrowTests
 
         await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
         {
-            await InvokeAsync.That(actionMock.Object).Should().ThrowAsync<Exception>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+            await new InvokeAsyncShouldThrow(InvokeAsync.That(actionMock.Object), "actual", default).ShouldThrowAsync<Exception>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         });
 
         actionMock.Verify(v => v.Invoke(), Times.Once());
@@ -27,7 +29,7 @@ public class TaskFuncShouldThrowTests
     {
         await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
         {
-            await InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))).Should().ThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+            await new InvokeAsyncShouldThrow(InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))), "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         });
     }
 
@@ -35,7 +37,7 @@ public class TaskFuncShouldThrowTests
     [CombinatorialData]
     public async Task ShouldThrowAsyncT_ThrowExactExpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        await InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))).Should().ThrowAsync<ArgumentException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+        await new InvokeAsyncShouldThrow(InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))), "actual", default).ShouldThrowAsync<ArgumentException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
     }
 
     [Theory]
@@ -46,13 +48,13 @@ public class TaskFuncShouldThrowTests
 
         if (includeDerivedType)
         {
-            await InvokeAsync.That(taskFunc).Should().ThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+            await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         }
         else
         {
             await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
             {
-                await InvokeAsync.That(taskFunc).Should().ThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+                await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             });
         }
     }
@@ -65,14 +67,14 @@ public class TaskFuncShouldThrowTests
 
         if (includeDerivedType && aggregateExceptionHandling == AggregateExceptionHandling.AnyFlattened)
         {
-            var actualException = await InvokeAsync.That(taskFunc).Should().ThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+            var actualException = await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             Assert.Equal("expected", actualException.Message);
         }
         else
         {
             await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
             {
-                await InvokeAsync.That(taskFunc).Should().ThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+                await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             });
         }
     }
@@ -91,14 +93,14 @@ public class TaskFuncShouldThrowTests
 
         if (includeDerivedType && aggregateExceptionHandling == AggregateExceptionHandling.AnyFlattened)
         {
-            var actualException = await InvokeAsync.That(taskFunc).Should().ThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+            var actualException = await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             Assert.Equal("expected2", actualException.Message);
         }
         else
         {
             await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
             {
-                await InvokeAsync.That(taskFunc).Should().ThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+                await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             });
         }
     }
@@ -107,7 +109,7 @@ public class TaskFuncShouldThrowTests
     [CombinatorialData]
     public async Task ShouldThrowAsyncT_ThrowAggregateSingleExactExpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        await InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))).Should().ThrowAsync<ArgumentException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+        await new InvokeAsyncShouldThrow(InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))), "actual", default).ShouldThrowAsync<ArgumentException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
     }
 
     [Theory]
@@ -118,13 +120,13 @@ public class TaskFuncShouldThrowTests
 
         if (includeDerivedType)
         {
-            await InvokeAsync.That(taskFunc).Should().ThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+            await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         }
         else
         {
             await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
             {
-                await InvokeAsync.That(taskFunc).Should().ThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+                await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             });
         }
     }
@@ -137,7 +139,7 @@ public class TaskFuncShouldThrowTests
 
         await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
         {
-            await InvokeAsync.That(actionMock.Object).Should().ThrowAsync(typeof(Exception), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+            await new InvokeAsyncShouldThrow(InvokeAsync.That(actionMock.Object), "actual", default).ShouldThrowAsync(typeof(Exception), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         });
 
         actionMock.Verify(v => v.Invoke(), Times.Once());
@@ -149,7 +151,7 @@ public class TaskFuncShouldThrowTests
     {
         await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
         {
-            await InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))).Should().ThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+            await new InvokeAsyncShouldThrow(InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))), "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         });
     }
 
@@ -157,7 +159,7 @@ public class TaskFuncShouldThrowTests
     [CombinatorialData]
     public async Task ShouldThrowAsync_ThrowExactExpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        await InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))).Should().ThrowAsync(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+        await new InvokeAsyncShouldThrow(InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))), "actual", default).ShouldThrowAsync(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
     }
 
     [Theory]
@@ -168,13 +170,13 @@ public class TaskFuncShouldThrowTests
 
         if (includeDerivedType)
         {
-            await InvokeAsync.That(taskFunc).Should().ThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+            await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         }
         else
         {
             await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
             {
-                await InvokeAsync.That(taskFunc).Should().ThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+                await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             });
         }
     }
@@ -187,14 +189,14 @@ public class TaskFuncShouldThrowTests
 
         if (includeDerivedType && aggregateExceptionHandling == AggregateExceptionHandling.AnyFlattened)
         {
-            var actualException = await InvokeAsync.That(taskFunc).Should().ThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+            var actualException = await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             Assert.Equal("expected", actualException.Message);
         }
         else
         {
             await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
             {
-                await InvokeAsync.That(taskFunc).Should().ThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+                await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             });
         }
     }
@@ -213,14 +215,14 @@ public class TaskFuncShouldThrowTests
 
         if (includeDerivedType && aggregateExceptionHandling == AggregateExceptionHandling.AnyFlattened)
         {
-            var actualException = await InvokeAsync.That(taskFunc).Should().ThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+            var actualException = await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             Assert.Equal("expected2", actualException.Message);
         }
         else
         {
             await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
             {
-                await InvokeAsync.That(taskFunc).Should().ThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+                await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             });
         }
     }
@@ -229,7 +231,7 @@ public class TaskFuncShouldThrowTests
     [CombinatorialData]
     public async Task ShouldThrowAsync_ThrowAggregateSingleExactExpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        await InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))).Should().ThrowAsync(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+        await new InvokeAsyncShouldThrow(InvokeAsync.That(async () => await Task.FromException(new ArgumentException("xxx"))), "actual", default).ShouldThrowAsync(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
     }
 
     [Theory]
@@ -240,13 +242,13 @@ public class TaskFuncShouldThrowTests
 
         if (includeDerivedType)
         {
-            await InvokeAsync.That(taskFunc).Should().ThrowAsync(typeof(IOException),includeDerivedType, aggregateExceptionHandling).ConfigureAwait(true);
+            await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         }
         else
         {
             await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
             {
-                await InvokeAsync.That(taskFunc).Should().ThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+                await new InvokeAsyncShouldThrow(InvokeAsync.That(taskFunc), "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
             });
         }
     }
@@ -256,7 +258,7 @@ public class TaskFuncShouldThrowTests
     {
         var exception = await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
         {
-            await InvokeAsync.That(async () => await Task.FromException(new Exception("xxx"))).Should().NotThrowAsync().ConfigureAwait(false);
+            await new InvokeAsyncShouldThrow(InvokeAsync.That(async () => await Task.FromException(new Exception("xxx"))), "actual", default).ShouldNotThrowAsync().ConfigureAwait(false);
         });
         Assert.NotNull(exception.InnerException);
     }

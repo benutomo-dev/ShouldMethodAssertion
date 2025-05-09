@@ -1,4 +1,4 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
@@ -9,40 +9,40 @@ public class DictionaryShouldContainKeyTests
     public void ShouldContainKey_Fail()
     {
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(
-            () => new Dictionary<int, string>().Should().ContainKey(1)
+            () => new DictionaryShouldContainKey<int, string>(new Dictionary<int, string>(), "actual", default).ShouldContainKey(1)
             );
 
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(
-            () => new Dictionary<int, string> { { 1, "2" } }.Should().ContainKey(2)
+            () => new DictionaryShouldContainKey<int, string>(new Dictionary<int, string> { { 1, "2" } }, "actual", default).ShouldContainKey(2)
             );
     }
 
     [Fact]
     public void ShouldContainKey_NotFail()
     {
-        new Dictionary<int, string> { { 1, "2" } }.Should().ContainKey(1);
-        new Dictionary<string, string> { { "asdf", "2" } }.Should().ContainKey("asdf");
-        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "asdf", "2" } }.Should().ContainKey("ASDF");
+        new DictionaryShouldContainKey<int, string>(new Dictionary<int, string> { { 1, "2" } }, "actual", default).ShouldContainKey(1);
+        new DictionaryShouldContainKey<string, string>(new Dictionary<string, string> { { "asdf", "2" } }, "actual", default).ShouldContainKey("asdf");
+        new DictionaryShouldContainKey<string, string>(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "asdf", "2" } }, "actual", default).ShouldContainKey("ASDF");
     }
 
     [Fact]
     public void ShouldNotContainKey_Fail()
     {
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(
-            () => new Dictionary<int, string> { { 1, "2" } }.Should().NotContainKey(1)
+            () => new DictionaryShouldContainKey<int, string>(new Dictionary<int, string> { { 1, "2" } }, "actual", default).ShouldNotContainKey(1)
             );
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(
-            () => new Dictionary<string, string> { { "asdf", "2" } }.Should().NotContainKey("asdf")
+            () => new DictionaryShouldContainKey<string, string>(new Dictionary<string, string> { { "asdf", "2" } }, "actual", default).ShouldNotContainKey("asdf")
             );
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(
-            () => new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "asdf", "2" } }.Should().NotContainKey("ASDF")
+            () => new DictionaryShouldContainKey<string, string>(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "asdf", "2" } }, "actual", default).ShouldNotContainKey("ASDF")
             );
     }
 
     [Fact]
     public void ShouldNotContainKey_NotFail()
     {
-        new Dictionary<int, string>().Should().NotContainKey(1);
-        new Dictionary<string, string> { { "asdf", "2" } }.Should().NotContainKey("ASDF");
+        new DictionaryShouldContainKey<int, string>(new Dictionary<int, string>(), "actual", default).ShouldNotContainKey(1);
+        new DictionaryShouldContainKey<string, string>(new Dictionary<string, string> { { "asdf", "2" } }, "actual", default).ShouldNotContainKey("ASDF");
     }
 }

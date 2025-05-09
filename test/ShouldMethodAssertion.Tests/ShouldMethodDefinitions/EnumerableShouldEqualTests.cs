@@ -1,62 +1,71 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.EnumerableShouldEqual<TypeArg>)])]
 public class EnumerableShouldEqualTests
 {
+	EnumerableShouldEqual<int>.__ParameterExpressions paramExpDefaultInt = new()
+    {
+		expected = "expected",
+	};
+
+    EnumerableShouldEqual<string>.__ParameterExpressions paramExpDefaultString = new()
+    {
+        expected = "expected",
+    };
+
     [Fact]
     public void ShouldEqual_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2 }.Should().Equal([1]));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2 }.Should().Equal([1, 2, 3]));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2 }.Should().Equal([1, 3]));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2 }.Should().Equal([2, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([1]));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([1, 2, 3]));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([1, 3]));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([2, 1]));
 
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2 }.Should().Equal([1],       ignoreOrder: true));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2 }.Should().Equal([1, 2, 3], ignoreOrder: true));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2 }.Should().Equal([1, 3],    ignoreOrder: true));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2 }.Should().Equal([1, 2, 2], ignoreOrder: true));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([1],       ignoreOrder: true));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([1, 2, 3], ignoreOrder: true));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([1, 3],    ignoreOrder: true));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([1, 2, 2], ignoreOrder: true));
 
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { "1", "2" }.Should().Equal(["1", "3"], comparer: StringComparer.InvariantCultureIgnoreCase));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<string>(["1", "2"], "actual", paramExpDefaultString).ShouldEqual(["1", "3"], comparer: StringComparer.InvariantCultureIgnoreCase));
 	}
 
 	[Fact]
 	public void ShouldEqual_NotFail()
 	{
-		Array.Empty<int>().Should().Equal([]);
-		Array.Empty<int>().Should().Equal([], ignoreOrder: true);
+		new EnumerableShouldEqual<int>([], "actual", paramExpDefaultInt).ShouldEqual([]);
+        new EnumerableShouldEqual<int>([], "actual", paramExpDefaultInt).ShouldEqual([], ignoreOrder: true);
 
-		new[] { 1, 2 }.Should().Equal([1, 2]);
-		new[] { 1, 2, 3 }.Should().Equal([2, 3, 1], ignoreOrder: true);
-		new[] { "abc", "DEF" }.Should().Equal(["ABC", "def"], comparer: StringComparer.OrdinalIgnoreCase);
-		new[] { "abc", "DEF" }.Should().Equal(["def", "ABC"], ignoreOrder: true, comparer: StringComparer.OrdinalIgnoreCase);
+		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([1, 2]);
+		new EnumerableShouldEqual<int>([1, 2, 3], "actual", paramExpDefaultInt).ShouldEqual([2, 3, 1], ignoreOrder: true);
+		new EnumerableShouldEqual<string>(["abc", "DEF"], "actual", paramExpDefaultString).ShouldEqual(["ABC", "def"], comparer: StringComparer.OrdinalIgnoreCase);
+		new EnumerableShouldEqual<string>(["abc", "DEF"], "actual", paramExpDefaultString).ShouldEqual(["def", "ABC"], ignoreOrder: true, comparer: StringComparer.OrdinalIgnoreCase);
 	}
 
 	[Fact]
 	public void ShouldNotEqual_Fail()
 	{
-		new[] { 1, 2 }.Should().NotEqual([1]);
-		new[] { 1, 2 }.Should().NotEqual([1, 2, 3]);
-		new[] { 1, 2 }.Should().NotEqual([1, 3]);
-		new[] { 1, 2 }.Should().NotEqual([2, 1]);
+		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1]);
+		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 2, 3]);
+		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 3]);
+		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([2, 1]);
 
-		new[] { 1, 2 }.Should().NotEqual([1],       ignoreOrder: true);
-		new[] { 1, 2 }.Should().NotEqual([1, 2, 3], ignoreOrder: true);
-		new[] { 1, 2 }.Should().NotEqual([1, 2, 2], ignoreOrder: true);
+		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1],       ignoreOrder: true);
+		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 2, 3], ignoreOrder: true);
+		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 2, 2], ignoreOrder: true);
 
-		new[] { "1", "2" }.Should().NotEqual(["1", "3"], comparer: StringComparer.InvariantCultureIgnoreCase);
+		new EnumerableShouldEqual<string>(["1", "2"], "actual", paramExpDefaultString).ShouldNotEqual(["1", "3"], comparer: StringComparer.InvariantCultureIgnoreCase);
 	}
 
 	[Fact]
 	public void ShouldNotEqual_NotFail()
 	{
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Array.Empty<int>().Should().NotEqual([]));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Array.Empty<int>().Should().NotEqual([], ignoreOrder: true));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([], "actual", paramExpDefaultInt).ShouldNotEqual([]));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([], "actual", paramExpDefaultInt).ShouldNotEqual([], ignoreOrder: true));
 
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2 }.Should().NotEqual([1, 2]));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { 1, 2, 3 }.Should().NotEqual([2, 3, 1], ignoreOrder: true));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { "abc", "DEF" }.Should().NotEqual(["ABC", "def"], comparer: StringComparer.OrdinalIgnoreCase));
-		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new[] { "abc", "DEF" }.Should().NotEqual(["def", "ABC"], ignoreOrder: true, comparer: StringComparer.OrdinalIgnoreCase));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 2]));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2, 3], "actual", paramExpDefaultInt).ShouldNotEqual([2, 3, 1], ignoreOrder: true));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<string>(["abc", "DEF"], "actual", paramExpDefaultString).ShouldNotEqual(["ABC", "def"], comparer: StringComparer.OrdinalIgnoreCase));
+		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<string>(["abc", "DEF"], "actual", paramExpDefaultString).ShouldNotEqual(["def", "ABC"], ignoreOrder: true, comparer: StringComparer.OrdinalIgnoreCase));
 	}
 }

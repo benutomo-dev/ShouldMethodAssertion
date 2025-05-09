@@ -1,65 +1,64 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBe<TypeArg>)])]
 public class ObjectShouldBeTests
 {
     [Fact]
     public void ShouldBe_NotFail()
     {
-        1.Should().Be(1);
-        "asdf".Should().Be("asdf");
-        "asdf".Should().Be("ASDF", StringComparer.OrdinalIgnoreCase);
+        new ObjectShouldBe<int>(1, "actual", default).ShouldBe(1);
+        new ObjectShouldBe<string>("asdf", "actual", default).ShouldBe("asdf");
+        new ObjectShouldBe<string>("asdf", "actual", default).ShouldBe("ASDF", StringComparer.OrdinalIgnoreCase);
 
-        ((object)1).Should().Be(1);
-        1.Should().Be((int?)1);
-        ((object)1).Should().Be((int?)1);
+        new ObjectShouldBe<int>(((object)1), "actual", default).ShouldBe(1);
+        new ObjectShouldBe<int?>(1, "actual", default).ShouldBe((int?)1);
+        new ObjectShouldBe<int?>(((object)1), "actual", default).ShouldBe((int?)1);
 
-        ((object?)null).Should().Be(default(int?));
+        new ObjectShouldBe<int?>(((object?)null), "actual", default).ShouldBe(default(int?));
 
-        ((object)"asdf").Should().Be("asdf");
+        new ObjectShouldBe<string>(((object)"asdf"), "actual", default).ShouldBe("asdf");
 
-        default(object).Should().Be(default(object));
+        new ObjectShouldBe<object>(default(object), "actual", default).ShouldBe(default(object));
     }
 
     [Fact]
     public void ShouldBe_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().Be(2));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "asdf".Should().Be("ASDF"));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "asdf".Should().Be("ASDFC", StringComparer.OrdinalIgnoreCase));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<int>(1, "actual", default).ShouldBe(2));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<string>("asdf", "actual", default).ShouldBe("ASDF"));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<string>("asdf", "actual", default).ShouldBe("ASDFC", StringComparer.OrdinalIgnoreCase));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((object)1).Should().Be(2));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().Be((int?)2));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((object)1).Should().Be((int?)2));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<int>(((object)1), "actual", default).ShouldBe(2));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<int?>(1, "actual", default).ShouldBe((int?)2));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<int?>(((object)1), "actual", default).ShouldBe((int?)2));
     }
 
     [Fact]
     public void ShouldNotBe_NotFail()
     {
-        1.Should().NotBe(2);
-        "asdf".Should().NotBe("aSdf");
-        "asdf".Should().NotBe("ASDFC", StringComparer.OrdinalIgnoreCase);
+        new ObjectShouldBe<int>(1, "actual", default).ShouldNotBe(2);
+        new ObjectShouldBe<string>("asdf", "actual", default).ShouldNotBe("aSdf");
+        new ObjectShouldBe<string>("asdf", "actual", default).ShouldNotBe("ASDFC", StringComparer.OrdinalIgnoreCase);
 
-        ((object)1).Should().NotBe(2);
-        1.Should().NotBe((int?)2);
-        ((object)1).Should().NotBe((int?)2);
+        new ObjectShouldBe<int>(((object)1), "actual", default).ShouldNotBe(2);
+        new ObjectShouldBe<int?>(1, "actual", default).ShouldNotBe((int?)2);
+        new ObjectShouldBe<int?>(((object)1), "actual", default).ShouldNotBe((int?)2);
     }
 
     [Fact]
     public void ShouldNotBe_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().NotBe(1));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "asdf".Should().NotBe("asdf"));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "asdf".Should().NotBe("ASDF", StringComparer.OrdinalIgnoreCase));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<int>(1, "actual", default).ShouldNotBe(1));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<string>("asdf", "actual", default).ShouldNotBe("asdf"));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<string>("asdf", "actual", default).ShouldNotBe("ASDF", StringComparer.OrdinalIgnoreCase));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((object)1).Should().NotBe(1));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().NotBe((int?)1));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((object)1).Should().NotBe((int?)1));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<int>(((object)1), "actual", default).ShouldNotBe(1));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<int?>(1, "actual", default).ShouldNotBe((int?)1));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<int?>(((object)1), "actual", default).ShouldNotBe((int?)1));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((object)"asdf").Should().NotBe("asdf"));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<string>(((object)"asdf"), "actual", default).ShouldNotBe("asdf"));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((object?)null).Should().NotBe(default(int?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBe<int?>(((object?)null), "actual", default).ShouldNotBe(default(int?)));
     }
 }

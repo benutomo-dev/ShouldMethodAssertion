@@ -1,8 +1,7 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeOneOf)])]
 public partial class ObjectShouldBeOneOfTests
 {
     sealed record class Class(int Value);
@@ -18,22 +17,22 @@ public partial class ObjectShouldBeOneOfTests
         var s1 = new Struct(1);
         var s2 = new Struct(2);
 
-        1.Should().BeOneOf([1]);
-        1.Should().BeOneOf([2,1]);
-        1.Should().BeOneOf<object>(["1", c1, s1, 1]);
+        new ObjectShouldBeOneOf(1, "actual", default).ShouldBeOneOf([1]);
+        new ObjectShouldBeOneOf(1, "actual", default).ShouldBeOneOf([2,1]);
+        new ObjectShouldBeOneOf(1, "actual", default).ShouldBeOneOf<object>(["1", c1, s1, 1]);
 
-        "1".Should().BeOneOf(["1"]);
-        "1".Should().BeOneOf(["2", "1"]);
-        "1".Should().BeOneOf<object>(["1", c1, s1, 1]);
-        "abcd".Should().BeOneOf(["2", "ABCD"], StringComparer.OrdinalIgnoreCase);
+        new ObjectShouldBeOneOf("1", "actual", default).ShouldBeOneOf(["1"]);
+        new ObjectShouldBeOneOf("1", "actual", default).ShouldBeOneOf(["2", "1"]);
+        new ObjectShouldBeOneOf("1", "actual", default).ShouldBeOneOf<object>(["1", c1, s1, 1]);
+        new ObjectShouldBeOneOf("abcd", "actual", default).ShouldBeOneOf(["2", "ABCD"], StringComparer.OrdinalIgnoreCase);
 
-        c1.Should().BeOneOf([c1]);
-        c1.Should().BeOneOf([c2, c1]);
-        c1.Should().BeOneOf<object>(["1", c1, s1, 1]);
+        new ObjectShouldBeOneOf(c1, "actual", default).ShouldBeOneOf([c1]);
+        new ObjectShouldBeOneOf(c1, "actual", default).ShouldBeOneOf([c2, c1]);
+        new ObjectShouldBeOneOf(c1, "actual", default).ShouldBeOneOf<object>(["1", c1, s1, 1]);
 
-        s1.Should().BeOneOf([s1]);
-        s1.Should().BeOneOf([s2, s1]);
-        s1.Should().BeOneOf<object>(["1", c1, s1, 1]);
+        new ObjectShouldBeOneOf(s1, "actual", default).ShouldBeOneOf([s1]);
+        new ObjectShouldBeOneOf(s1, "actual", default).ShouldBeOneOf([s2, s1]);
+        new ObjectShouldBeOneOf(s1, "actual", default).ShouldBeOneOf<object>(["1", c1, s1, 1]);
     }
 
     [Fact]
@@ -43,21 +42,21 @@ public partial class ObjectShouldBeOneOfTests
 
         var s1 = new Struct(1);
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeOneOf(ReadOnlySpan<int>.Empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeOneOf([2]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeOneOf(["1"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(1, "actual", default).ShouldBeOneOf(ReadOnlySpan<int>.Empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(1, "actual", default).ShouldBeOneOf([2]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(1, "actual", default).ShouldBeOneOf(["1"]));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().BeOneOf(ReadOnlySpan<string>.Empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().BeOneOf(["2"]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().BeOneOf([1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf("1", "actual", default).ShouldBeOneOf(ReadOnlySpan<string>.Empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf("1", "actual", default).ShouldBeOneOf(["2"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf("1", "actual", default).ShouldBeOneOf([1]));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().BeOneOf(ReadOnlySpan<Class>.Empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().BeOneOf(["2"]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().BeOneOf([1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(c1, "actual", default).ShouldBeOneOf(ReadOnlySpan<Class>.Empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(c1, "actual", default).ShouldBeOneOf(["2"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(c1, "actual", default).ShouldBeOneOf([1]));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().BeOneOf(ReadOnlySpan<Struct>.Empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().BeOneOf(["2"]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().BeOneOf([1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(s1, "actual", default).ShouldBeOneOf(ReadOnlySpan<Struct>.Empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(s1, "actual", default).ShouldBeOneOf(["2"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(s1, "actual", default).ShouldBeOneOf([1]));
     }
 
     [Fact]
@@ -67,21 +66,21 @@ public partial class ObjectShouldBeOneOfTests
 
         var s1 = new Struct(1);
 
-        1.Should().NotBeOneOf(ReadOnlySpan<int>.Empty);
-        1.Should().NotBeOneOf([2]);
-        1.Should().NotBeOneOf(["1"]);
+        new ObjectShouldBeOneOf(1, "actual", default).ShouldNotBeOneOf(ReadOnlySpan<int>.Empty);
+        new ObjectShouldBeOneOf(1, "actual", default).ShouldNotBeOneOf([2]);
+        new ObjectShouldBeOneOf(1, "actual", default).ShouldNotBeOneOf(["1"]);
 
-        "1".Should().NotBeOneOf(ReadOnlySpan<string>.Empty);
-        "1".Should().NotBeOneOf(["2"]);
-        "1".Should().NotBeOneOf([1]);
+        new ObjectShouldBeOneOf("1", "actual", default).ShouldNotBeOneOf(ReadOnlySpan<string>.Empty);
+        new ObjectShouldBeOneOf("1", "actual", default).ShouldNotBeOneOf(["2"]);
+        new ObjectShouldBeOneOf("1", "actual", default).ShouldNotBeOneOf([1]);
 
-        c1.Should().NotBeOneOf(ReadOnlySpan<Class>.Empty);
-        c1.Should().NotBeOneOf(["2"]);
-        c1.Should().NotBeOneOf([1]);
+        new ObjectShouldBeOneOf(c1, "actual", default).ShouldNotBeOneOf(ReadOnlySpan<Class>.Empty);
+        new ObjectShouldBeOneOf(c1, "actual", default).ShouldNotBeOneOf(["2"]);
+        new ObjectShouldBeOneOf(c1, "actual", default).ShouldNotBeOneOf([1]);
 
-        s1.Should().NotBeOneOf(ReadOnlySpan<Struct>.Empty);
-        s1.Should().NotBeOneOf(["2"]);
-        s1.Should().NotBeOneOf([1]);
+        new ObjectShouldBeOneOf(s1, "actual", default).ShouldNotBeOneOf(ReadOnlySpan<Struct>.Empty);
+        new ObjectShouldBeOneOf(s1, "actual", default).ShouldNotBeOneOf(["2"]);
+        new ObjectShouldBeOneOf(s1, "actual", default).ShouldNotBeOneOf([1]);
     }
 
     [Fact]
@@ -93,21 +92,21 @@ public partial class ObjectShouldBeOneOfTests
         var s1 = new Struct(1);
         var s2 = new Struct(2);
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().NotBeOneOf([1]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().NotBeOneOf([2, 1]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().NotBeOneOf<object>(["1", c1, s1, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(1, "actual", default).ShouldNotBeOneOf([1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(1, "actual", default).ShouldNotBeOneOf([2, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(1, "actual", default).ShouldNotBeOneOf<object>(["1", c1, s1, 1]));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().NotBeOneOf(["1"]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().NotBeOneOf(["2", "1"]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "1".Should().NotBeOneOf<object>(["1", c1, s1, 1]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "abcd".Should().NotBeOneOf(["2", "ABCD"], StringComparer.OrdinalIgnoreCase));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf("1", "actual", default).ShouldNotBeOneOf(["1"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf("1", "actual", default).ShouldNotBeOneOf(["2", "1"]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf("1", "actual", default).ShouldNotBeOneOf<object>(["1", c1, s1, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf("abcd", "actual", default).ShouldNotBeOneOf(["2", "ABCD"], StringComparer.OrdinalIgnoreCase));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().NotBeOneOf([c1]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().NotBeOneOf([c2, c1]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => c1.Should().NotBeOneOf<object>(["1", c1, s1, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(c1, "actual", default).ShouldNotBeOneOf([c1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(c1, "actual", default).ShouldNotBeOneOf([c2, c1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(c1, "actual", default).ShouldNotBeOneOf<object>(["1", c1, s1, 1]));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().NotBeOneOf([s1]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().NotBeOneOf([s2, s1]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => s1.Should().NotBeOneOf<object>(["1", c1, s1, 1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(s1, "actual", default).ShouldNotBeOneOf([s1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(s1, "actual", default).ShouldNotBeOneOf([s2, s1]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeOneOf(s1, "actual", default).ShouldNotBeOneOf<object>(["1", c1, s1, 1]));
     }
 }

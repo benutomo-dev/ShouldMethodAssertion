@@ -1,70 +1,70 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
+#pragma warning disable CA2263 // 型が既知の場合はジェネリック オーバーロードを優先する
+
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeAssignableTo)])]
 public class ObjectShouldBeAssignableToTests
 {
     [Fact]
     public void ShouldBeAssignableToT_NotFail()
     {
-        default(object).Should().BeAssignableTo<object>();
-        default(Exception).Should().BeAssignableTo<object>();
-        default(object).Should().BeAssignableTo<Exception>();
+        new ObjectShouldBeAssignableTo(default(object), "actual", default).ShouldBeAssignableTo<object>();
+        new ObjectShouldBeAssignableTo(default(Exception), "actual", default).ShouldBeAssignableTo<object>();
+        new ObjectShouldBeAssignableTo(default(object), "actual", default).ShouldBeAssignableTo<Exception>();
 
-        1.Should().BeAssignableTo<int>();
-        1.Should().BeAssignableTo<int?>();
-        1.Should().BeAssignableTo<IComparable<int>>();
-        ((object)1).Should().BeAssignableTo<int>();
-        ((int?)1).Should().BeAssignableTo<int>();
+        new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo<int>();
+        new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo<int?>();
+        new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo<IComparable<int>>();
+        new ObjectShouldBeAssignableTo(((object)1), "actual", default).ShouldBeAssignableTo<int>();
+        new ObjectShouldBeAssignableTo(((int?)1), "actual", default).ShouldBeAssignableTo<int>();
 
-        new Exception().Should().BeAssignableTo<Exception>();
-        new Exception().Should().BeAssignableTo<ISerializable>();
-        ((object)new Exception()).Should().BeAssignableTo<Exception>();
+        new ObjectShouldBeAssignableTo(new Exception(), "actual", default).ShouldBeAssignableTo<Exception>();
+        new ObjectShouldBeAssignableTo(new Exception(), "actual", default).ShouldBeAssignableTo<ISerializable>();
     }
 
     [Fact]
     public void ShouldBeAssignableToT_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo<int>());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo<int?>());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo<string>());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo<INotifyPropertyChanged>());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeAssignableTo<string>());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeAssignableTo<INotifyPropertyChanged>());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeAssignableTo<string>());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeAssignableTo<INotifyPropertyChanged>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(new object(), "actual", default).ShouldBeAssignableTo<int>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(new object(), "actual", default).ShouldBeAssignableTo<int?>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(new object(), "actual", default).ShouldBeAssignableTo<string>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(new object(), "actual", default).ShouldBeAssignableTo<INotifyPropertyChanged>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo<string>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo<INotifyPropertyChanged>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(((int?)1), "actual", default).ShouldBeAssignableTo<string>());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(((int?)1), "actual", default).ShouldBeAssignableTo<INotifyPropertyChanged>());
     }
+
     [Fact]
     public void ShouldBeAssignableTo_NotFail()
     {
-        default(object).Should().BeAssignableTo(typeof(object));
-        default(Exception).Should().BeAssignableTo(typeof(object));
-        default(object).Should().BeAssignableTo(typeof(Exception));
+        new ObjectShouldBeAssignableTo(default(object), "actual", default).ShouldBeAssignableTo(typeof(object));
+        new ObjectShouldBeAssignableTo(default(Exception), "actual", default).ShouldBeAssignableTo(typeof(object));
+        new ObjectShouldBeAssignableTo(default(object), "actual", default).ShouldBeAssignableTo(typeof(Exception));
 
-        1.Should().BeAssignableTo(typeof(int));
-        1.Should().BeAssignableTo(typeof(int?));
-        1.Should().BeAssignableTo(typeof(IComparable<int>));
-        ((object)1).Should().BeAssignableTo(typeof(int));
-        ((int?)1).Should().BeAssignableTo(typeof(int));
+        new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo(typeof(int));
+        new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo(typeof(int?));
+        new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo(typeof(IComparable<int>));
+        new ObjectShouldBeAssignableTo(((object)1), "actual", default).ShouldBeAssignableTo(typeof(int));
+        new ObjectShouldBeAssignableTo(((int?)1), "actual", default).ShouldBeAssignableTo(typeof(int));
 
-        new Exception().Should().BeAssignableTo(typeof(Exception));
-        new Exception().Should().BeAssignableTo(typeof(ISerializable));
-        ((object)new Exception()).Should().BeAssignableTo(typeof(Exception));
+        new ObjectShouldBeAssignableTo(new Exception(), "actual", default).ShouldBeAssignableTo(typeof(Exception));
+        new ObjectShouldBeAssignableTo(new Exception(), "actual", default).ShouldBeAssignableTo(typeof(ISerializable));
     }
 
     [Fact]
     public void ShouldBeAssignableTo_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo(typeof(int)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo(typeof(int?)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo(typeof(string)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeAssignableTo(typeof(INotifyPropertyChanged)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeAssignableTo(typeof(string)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeAssignableTo(typeof(INotifyPropertyChanged)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeAssignableTo(typeof(string)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((int?)1).Should().BeAssignableTo(typeof(INotifyPropertyChanged)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(new object(), "actual", default).ShouldBeAssignableTo(typeof(int)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(new object(), "actual", default).ShouldBeAssignableTo(typeof(int?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(new object(), "actual", default).ShouldBeAssignableTo(typeof(string)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(new object(), "actual", default).ShouldBeAssignableTo(typeof(INotifyPropertyChanged)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo(typeof(string)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(1, "actual", default).ShouldBeAssignableTo(typeof(INotifyPropertyChanged)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(((int?)1), "actual", default).ShouldBeAssignableTo(typeof(string)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeAssignableTo(((int?)1), "actual", default).ShouldBeAssignableTo(typeof(INotifyPropertyChanged)));
     }
 }

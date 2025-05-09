@@ -1,35 +1,34 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.EnumerableShouldBeEmpty<TypeArg>)])]
 public class EnumerableShouldBeEmptyTests
 {
     [Fact]
     public void ShouldBeEmpty_Fail()
     {
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(
-            () => new[] { 1 }.Should().BeEmpty()
+            () => new EnumerableShouldBeEmpty<int>([1], "actual", default).ShouldBeEmpty()
             );
     }
 
     [Fact]
     public void ShouldBeEmpty_NotFail()
     {
-        Array.Empty<int>().Should().BeEmpty();
+        new EnumerableShouldBeEmpty<int>([], "actual", default).ShouldBeEmpty();
     }
 
     [Fact]
     public void ShouldNotBeEmpty_Fail()
     {
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(
-            () => Array.Empty<int>().Should().NotBeEmpty()
+            () => new EnumerableShouldBeEmpty<int>([], "actual", default).ShouldNotBeEmpty()
             );
     }
 
     [Fact]
     public void ShouldNotBeEmpty_NotFail()
     {
-        new[] { 1 }.Should().NotBeEmpty();
+        new EnumerableShouldBeEmpty<int>([1], "actual", default).ShouldNotBeEmpty();
     }
 }

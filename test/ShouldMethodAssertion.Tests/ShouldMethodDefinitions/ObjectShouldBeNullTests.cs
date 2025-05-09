@@ -1,43 +1,36 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeNull)])]
 public class ObjectShouldBeNullTests
 {
     [Fact]
     public void ShouldBeNull_NotFail()
     {
-        default(object).Should().BeNull();
-        default(string).Should().BeNull();
+        new ObjectShouldBeNull(default(object), "actual", default).ShouldBeNull();
+        new ObjectShouldBeNull(default(string), "actual", default).ShouldBeNull();
     }
 
     [Fact]
     public void ShouldBeNull_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new object().Should().BeNull() );
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => "asdf".Should().BeNull());
-
-#pragma warning disable SMAssertion0001 // Inappropriate use of BeNull on value types
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeNull());
-#pragma warning restore SMAssertion0001 // Inappropriate use of BeNull on value types
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeNull(new object(), "actual", default).ShouldBeNull() );
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeNull("asdf", "actual", default).ShouldBeNull());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeNull(1, "actual", default).ShouldBeNull());
     }
 
     [Fact]
     public void ShouldNotBeNull_NotFail()
     {
-        new object().Should().NotBeNull();
-        "asdf".Should().NotBeNull();
-
-#pragma warning disable SMAssertion0002 // Inappropriate use of NotBeNull on value types
-        1.Should().NotBeNull();
-#pragma warning restore SMAssertion0002 // Inappropriate use of NotBeNull on value types
+        new ObjectShouldBeNull(new object(), "actual", default).ShouldNotBeNull();
+        new ObjectShouldBeNull("asdf", "actual", default).ShouldNotBeNull();
+        new ObjectShouldBeNull(1, "actual", default).ShouldNotBeNull();
     }
 
     [Fact]
     public void ShouldNotBeNull_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(object).Should().NotBeNull());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(string).Should().NotBeNull());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeNull(default(object), "actual", default).ShouldNotBeNull());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeNull(default(string), "actual", default).ShouldNotBeNull());
     }
 }

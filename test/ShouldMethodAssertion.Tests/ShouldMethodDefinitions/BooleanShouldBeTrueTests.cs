@@ -1,8 +1,7 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.BooleanShouldBeTrue)])]
 public class BooleanShouldBeTrueTests
 {
     [Theory]
@@ -10,9 +9,9 @@ public class BooleanShouldBeTrueTests
     public void ShouldBeXxx_NotFail(bool value)
     {
         if (value)
-            value.Should().BeTrue();
+            new BooleanShouldBeTrue(value, "actual", default).ShouldBeTrue();
         else
-            value.Should().BeFalse();
+            new BooleanShouldBeTrue(value, "actual", default).ShouldBeFalse();
     }
 
     [Theory]
@@ -22,9 +21,9 @@ public class BooleanShouldBeTrueTests
         Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
         {
             if (value)
-                value.Should().BeFalse();
+                new BooleanShouldBeTrue(value, "actual", default).ShouldBeFalse();
             else
-                value.Should().BeTrue();
+                new BooleanShouldBeTrue(value, "actual", default).ShouldBeTrue();
         });
     }
 }

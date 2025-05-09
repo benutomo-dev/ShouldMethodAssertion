@@ -1,8 +1,7 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ComparableShouldCompare<TypeArg>)])]
 public class ComparableShouldCompareTests
 {
     sealed class ReverseComparer<T> : IComparer<T>
@@ -20,13 +19,13 @@ public class ComparableShouldCompareTests
     [Fact]
     public void ShouldEqualLessOrGreater_NotFail()
     {
-        1.Should().BeLessThan(2);
-        1.Should().BeLessThan(2, Comparer<int>.Default);
-        1.Should().BeGreaterThan(2, new ReverseComparer<int>(Comparer<int>.Default));
+        new ComparableShouldCompare<int>(1, "actual", default).ShouldBeLessThan(2);
+        new ComparableShouldCompare<int>(1, "actual", default).ShouldBeLessThan(2, Comparer<int>.Default);
+        new ComparableShouldCompare<int>(1, "actual", default).ShouldBeGreaterThan(2, new ReverseComparer<int>(Comparer<int>.Default));
 
-        2.Should().BeGreaterThan(1);
-        2.Should().BeGreaterThan(1, Comparer<int>.Default);
-        2.Should().BeLessThan(1, new ReverseComparer<int>(Comparer<int>.Default));
+        new ComparableShouldCompare<int>(2, "actual", default).ShouldBeGreaterThan(1);
+        new ComparableShouldCompare<int>(2, "actual", default).ShouldBeGreaterThan(1, Comparer<int>.Default);
+        new ComparableShouldCompare<int>(2, "actual", default).ShouldBeLessThan(1, new ReverseComparer<int>(Comparer<int>.Default));
     }
 
     [Theory]
@@ -34,13 +33,13 @@ public class ComparableShouldCompareTests
     [InlineData(1, 2)]
     public void ShouldLessOrGreater_Fail(int smallOrEqual, int bigOrEqual)
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => smallOrEqual.Should().BeGreaterThan(bigOrEqual));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => smallOrEqual.Should().BeGreaterThan(bigOrEqual, Comparer<int>.Default));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => smallOrEqual.Should().BeLessThan(bigOrEqual, new ReverseComparer<int>(Comparer<int>.Default)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(smallOrEqual, "actual", default).ShouldBeGreaterThan(bigOrEqual));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(smallOrEqual, "actual", default).ShouldBeGreaterThan(bigOrEqual, Comparer<int>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(smallOrEqual, "actual", default).ShouldBeLessThan(bigOrEqual, new ReverseComparer<int>(Comparer<int>.Default)));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => bigOrEqual.Should().BeLessThan(smallOrEqual));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => bigOrEqual.Should().BeLessThan(smallOrEqual, Comparer<int>.Default));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => bigOrEqual.Should().BeGreaterThan(smallOrEqual, new ReverseComparer<int>(Comparer<int>.Default)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(bigOrEqual, "actual", default).ShouldBeLessThan(smallOrEqual));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(bigOrEqual, "actual", default).ShouldBeLessThan(smallOrEqual, Comparer<int>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(bigOrEqual, "actual", default).ShouldBeGreaterThan(smallOrEqual, new ReverseComparer<int>(Comparer<int>.Default)));
     }
 
     [Theory]
@@ -48,24 +47,24 @@ public class ComparableShouldCompareTests
     [InlineData(1, 2)]
     public void ShouldEqualLessOrGreaterWithinEqual_NotFail(int smallOrEqual, int bigOrEqual)
     {
-        smallOrEqual.Should().BeLessThanOrEqual(bigOrEqual);
-        smallOrEqual.Should().BeLessThanOrEqual(bigOrEqual, Comparer<int>.Default);
-        smallOrEqual.Should().BeGreaterThanOrEqual(bigOrEqual, new ReverseComparer<int>(Comparer<int>.Default));
+        new ComparableShouldCompare<int>(smallOrEqual, "actual", default).ShouldBeLessThanOrEqual(bigOrEqual);
+        new ComparableShouldCompare<int>(smallOrEqual, "actual", default).ShouldBeLessThanOrEqual(bigOrEqual, Comparer<int>.Default);
+        new ComparableShouldCompare<int>(smallOrEqual, "actual", default).ShouldBeGreaterThanOrEqual(bigOrEqual, new ReverseComparer<int>(Comparer<int>.Default));
 
-        bigOrEqual.Should().BeGreaterThanOrEqual(smallOrEqual);
-        bigOrEqual.Should().BeGreaterThanOrEqual(smallOrEqual, Comparer<int>.Default);
-        bigOrEqual.Should().BeLessThanOrEqual(smallOrEqual, new ReverseComparer<int>(Comparer<int>.Default));
+        new ComparableShouldCompare<int>(bigOrEqual, "actual", default).ShouldBeGreaterThanOrEqual(smallOrEqual);
+        new ComparableShouldCompare<int>(bigOrEqual, "actual", default).ShouldBeGreaterThanOrEqual(smallOrEqual, Comparer<int>.Default);
+        new ComparableShouldCompare<int>(bigOrEqual, "actual", default).ShouldBeLessThanOrEqual(smallOrEqual, new ReverseComparer<int>(Comparer<int>.Default));
     }
 
     [Fact]
     public void ShouldEqualLessOrGreaterWithinEqual_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeGreaterThanOrEqual(2));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeGreaterThanOrEqual(2, Comparer<int>.Default));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeLessThanOrEqual(2, new ReverseComparer<int>(Comparer<int>.Default)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(1, "actual", default).ShouldBeGreaterThanOrEqual(2));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(1, "actual", default).ShouldBeGreaterThanOrEqual(2, Comparer<int>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(1, "actual", default).ShouldBeLessThanOrEqual(2, new ReverseComparer<int>(Comparer<int>.Default)));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 2.Should().BeLessThanOrEqual(1));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 2.Should().BeLessThanOrEqual(1, Comparer<int>.Default));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 2.Should().BeGreaterThanOrEqual(1, new ReverseComparer<int>(Comparer<int>.Default)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(2, "actual", default).ShouldBeLessThanOrEqual(1));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(2, "actual", default).ShouldBeLessThanOrEqual(1, Comparer<int>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ComparableShouldCompare<int>(2, "actual", default).ShouldBeGreaterThanOrEqual(1, new ReverseComparer<int>(Comparer<int>.Default)));
     }
 }

@@ -1,8 +1,7 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.StructShouldBe<StructTypeArg>)])]
 public class StructShouldBeTests
 {
     [Fact]
@@ -11,11 +10,11 @@ public class StructShouldBeTests
         var empty = Guid.Empty;
         var guid = Guid.NewGuid();
 
-        empty.Should().Be(empty);
-        guid.Should().Be(guid);
+        new StructShouldBe<Guid>(empty, "actual", default).ShouldBe(empty);
+        new StructShouldBe<Guid>(guid, "actual", default).ShouldBe(guid);
 
-        empty.Should().Be(guid, AlwaysEqual<Guid>.Default);
-        guid.Should().Be(empty, AlwaysEqual<Guid>.Default);
+        new StructShouldBe<Guid>(empty, "actual", default).ShouldBe(guid, AlwaysEqual<Guid>.Default);
+        new StructShouldBe<Guid>(guid, "actual", default).ShouldBe(empty, AlwaysEqual<Guid>.Default);
     }
 
     [Fact]
@@ -24,8 +23,8 @@ public class StructShouldBeTests
         var empty = Guid.Empty;
         var guid = Guid.NewGuid();
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => empty.Should().Be(guid));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => guid.Should().Be(empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new StructShouldBe<Guid>(empty, "actual", default).ShouldBe(guid));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new StructShouldBe<Guid>(guid, "actual", default).ShouldBe(empty));
     }
 
     [Fact]
@@ -34,8 +33,8 @@ public class StructShouldBeTests
         var empty = Guid.Empty;
         var guid = Guid.NewGuid();
 
-        empty.Should().NotBe(guid);
-        guid.Should().NotBe(empty);
+        new StructShouldBe<Guid>(empty, "actual", default).ShouldNotBe(guid);
+        new StructShouldBe<Guid>(guid, "actual", default).ShouldNotBe(empty);
     }
 
     [Fact]
@@ -44,10 +43,10 @@ public class StructShouldBeTests
         var empty = Guid.Empty;
         var guid = Guid.NewGuid();
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => empty.Should().NotBe(empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => guid.Should().NotBe(guid));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new StructShouldBe<Guid>(empty, "actual", default).ShouldNotBe(empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new StructShouldBe<Guid>(guid, "actual", default).ShouldNotBe(guid));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => empty.Should().NotBe(guid, AlwaysEqual<Guid>.Default));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => guid.Should().NotBe(empty, AlwaysEqual<Guid>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new StructShouldBe<Guid>(empty, "actual", default).ShouldNotBe(guid, AlwaysEqual<Guid>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new StructShouldBe<Guid>(guid, "actual", default).ShouldNotBe(empty, AlwaysEqual<Guid>.Default));
     }
 }

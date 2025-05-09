@@ -1,8 +1,7 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.NullableStructShouldBe<StructTypeArg>)])]
 public class NullableStructShouldBeTests
 {
     [Fact]
@@ -11,25 +10,25 @@ public class NullableStructShouldBeTests
         var empty = Guid.Empty;
         var guid = Guid.NewGuid();
 
-        empty.Should().Be((Guid?)empty);
-        guid.Should().Be((Guid?)guid);
+        new NullableStructShouldBe<Guid>(empty, "actual", default).ShouldBe((Guid?)empty);
+        new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldBe((Guid?)guid);
 
-        empty.Should().Be((Guid?)guid, AlwaysEqual<Guid>.Default);
-        guid.Should().Be((Guid?)empty, AlwaysEqual<Guid>.Default);
+        new NullableStructShouldBe<Guid>(empty, "actual", default).ShouldBe((Guid?)guid, AlwaysEqual<Guid>.Default);
+        new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldBe((Guid?)empty, AlwaysEqual<Guid>.Default);
 
-        ((Guid?)empty).Should().Be((Guid?)empty);
-        ((Guid?)guid).Should().Be((Guid?)guid);
+        new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldBe((Guid?)empty);
+        new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldBe((Guid?)guid);
 
-        ((Guid?)empty).Should().Be((Guid?)guid, AlwaysEqual<Guid>.Default);
-        ((Guid?)guid).Should().Be((Guid?)empty, AlwaysEqual<Guid>.Default);
+        new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldBe((Guid?)guid, AlwaysEqual<Guid>.Default);
+        new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldBe((Guid?)empty, AlwaysEqual<Guid>.Default);
 
-        ((Guid?)empty).Should().Be(empty);
-        ((Guid?)guid).Should().Be(guid);
+        new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldBe(empty);
+        new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldBe(guid);
 
-        ((Guid?)empty).Should().Be(guid, AlwaysEqual<Guid>.Default);
-        ((Guid?)guid).Should().Be(empty, AlwaysEqual<Guid>.Default);
+        new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldBe(guid, AlwaysEqual<Guid>.Default);
+        new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldBe(empty, AlwaysEqual<Guid>.Default);
 
-        (default(Guid?)).Should().Be(null);
+        new NullableStructShouldBe<Guid>((default(Guid?)), "actual", default).ShouldBe(null);
     }
 
     [Fact]
@@ -38,24 +37,24 @@ public class NullableStructShouldBeTests
         var empty = Guid.Empty;
         var guid = Guid.NewGuid();
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => empty.Should().Be((Guid?)guid));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => guid.Should().Be((Guid?)empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => empty.Should().Be(default(Guid?)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => guid.Should().Be(default(Guid?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(empty, "actual", default).ShouldBe((Guid?)guid));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldBe((Guid?)empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(empty, "actual", default).ShouldBe(default(Guid?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldBe(default(Guid?)));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)empty).Should().Be((Guid?)guid));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)guid).Should().Be((Guid?)empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)empty).Should().Be(default(Guid?)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)guid).Should().Be(default(Guid?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldBe((Guid?)guid));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldBe((Guid?)empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldBe(default(Guid?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldBe(default(Guid?)));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)empty).Should().Be(guid));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)guid).Should().Be(empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldBe(guid));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldBe(empty));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)guid).Should().Be(default(Guid?)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => guid.Should().Be(default(Guid?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldBe(default(Guid?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldBe(default(Guid?)));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)guid).Should().Be(null));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => guid.Should().Be(null));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldBe(null));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldBe(null));
     }
 
     [Fact]
@@ -64,20 +63,20 @@ public class NullableStructShouldBeTests
         var empty = Guid.Empty;
         var guid = Guid.NewGuid();
 
-        empty.Should().NotBe((Guid?)guid);
-        guid.Should().NotBe((Guid?)empty);
+        new NullableStructShouldBe<Guid>(empty, "actual", default).ShouldNotBe((Guid?)guid);
+        new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldNotBe((Guid?)empty);
 
-        empty.Should().NotBe(default(Guid?));
-        guid.Should().NotBe(default(Guid?));
+        new NullableStructShouldBe<Guid>(empty, "actual", default).ShouldNotBe(default(Guid?));
+        new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldNotBe(default(Guid?));
 
-        ((Guid?)empty).Should().NotBe((Guid?)guid);
-        ((Guid?)guid).Should().NotBe((Guid?)empty);
+        new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldNotBe((Guid?)guid);
+        new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldNotBe((Guid?)empty);
 
-        ((Guid?)empty).Should().NotBe(default(Guid?));
-        ((Guid?)guid).Should().NotBe(default(Guid?));
+        new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldNotBe(default(Guid?));
+        new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldNotBe(default(Guid?));
 
-        ((Guid?)empty).Should().NotBe(null);
-        ((Guid?)guid).Should().NotBe(null);
+        new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldNotBe(null);
+        new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldNotBe(null);
     }
 
     [Fact]
@@ -86,25 +85,25 @@ public class NullableStructShouldBeTests
         var empty = Guid.Empty;
         var guid = Guid.NewGuid();
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => empty.Should().NotBe((Guid?)empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => guid.Should().NotBe((Guid?)guid));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(empty, "actual", default).ShouldNotBe((Guid?)empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldNotBe((Guid?)guid));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => empty.Should().NotBe((Guid?)guid, AlwaysEqual<Guid>.Default));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => guid.Should().NotBe((Guid?)empty, AlwaysEqual<Guid>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(empty, "actual", default).ShouldNotBe((Guid?)guid, AlwaysEqual<Guid>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(guid, "actual", default).ShouldNotBe((Guid?)empty, AlwaysEqual<Guid>.Default));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)empty).Should().NotBe((Guid?)empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)guid).Should().NotBe((Guid?)guid));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldNotBe((Guid?)empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldNotBe((Guid?)guid));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)empty).Should().NotBe((Guid?)guid, AlwaysEqual<Guid>.Default));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)guid).Should().NotBe((Guid?)empty, AlwaysEqual<Guid>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldNotBe((Guid?)guid, AlwaysEqual<Guid>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldNotBe((Guid?)empty, AlwaysEqual<Guid>.Default));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)empty).Should().NotBe(empty));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)guid).Should().NotBe(guid));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldNotBe(empty));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldNotBe(guid));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)empty).Should().NotBe(guid, AlwaysEqual<Guid>.Default));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Guid?)guid).Should().NotBe(empty, AlwaysEqual<Guid>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)empty), "actual", default).ShouldNotBe(guid, AlwaysEqual<Guid>.Default));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>(((Guid?)guid), "actual", default).ShouldNotBe(empty, AlwaysEqual<Guid>.Default));
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => (default(Guid?)).Should().NotBe(default(Guid?)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => (default(Guid?)).Should().NotBe(null));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>((default(Guid?)), "actual", default).ShouldNotBe(default(Guid?)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new NullableStructShouldBe<Guid>((default(Guid?)), "actual", default).ShouldNotBe(null));
     }
 }

@@ -1,8 +1,7 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.EnumShouldHaveFlag)])]
 public class EnumShouldHaveFlagTests
 {
     [Flags]
@@ -21,36 +20,36 @@ public class EnumShouldHaveFlagTests
     [Fact]
     public void ShouldHaveFlag_NotFail()
     {
-        Flags.None.Should().HaveFlag(Flags.None);
-        Flags.A.Should().HaveFlag(Flags.None);
-        Flags.B.Should().HaveFlag(Flags.B);
-        Flags.BC.Should().HaveFlag(Flags.B);
-        ((Flags)~0).Should().HaveFlag(Flags.BC);
+        new EnumShouldHaveFlag(Flags.None, "actual", default).ShouldHaveFlag(Flags.None);
+        new EnumShouldHaveFlag(Flags.A, "actual", default).ShouldHaveFlag(Flags.None);
+        new EnumShouldHaveFlag(Flags.B, "actual", default).ShouldHaveFlag(Flags.B);
+        new EnumShouldHaveFlag(Flags.BC, "actual", default).ShouldHaveFlag(Flags.B);
+        new EnumShouldHaveFlag((Flags)~0, "actual", default).ShouldHaveFlag(Flags.BC);
     }
 
     [Fact]
     public void ShouldHaveFlag_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Flags.None.Should().HaveFlag(Flags.A));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Flags.BC.Should().HaveFlag(Flags.A));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => (Flags.A | Flags.B).Should().HaveFlag(Flags.BC));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumShouldHaveFlag(Flags.None, "actual", default).ShouldHaveFlag(Flags.A));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumShouldHaveFlag(Flags.BC, "actual", default).ShouldHaveFlag(Flags.A));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumShouldHaveFlag(Flags.A | Flags.B, "actual", default).ShouldHaveFlag(Flags.BC));
     }
 
     [Fact]
     public void ShouldNotHaveFlag_NotFail()
     {
-        Flags.None.Should().NotHaveFlag(Flags.A);
-        Flags.BC.Should().NotHaveFlag(Flags.A);
-        (Flags.A | Flags.B).Should().NotHaveFlag(Flags.BC);
+        new EnumShouldHaveFlag(Flags.None, "actual", default).ShouldNotHaveFlag(Flags.A);
+        new EnumShouldHaveFlag(Flags.BC, "actual", default).ShouldNotHaveFlag(Flags.A);
+        new EnumShouldHaveFlag(Flags.A | Flags.B, "actual", default).ShouldNotHaveFlag(Flags.BC);
     }
 
     [Fact]
     public void ShouldNotHaveFlag_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Flags.None.Should().NotHaveFlag(Flags.None));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Flags.A.Should().NotHaveFlag(Flags.None));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Flags.B.Should().NotHaveFlag(Flags.B));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => Flags.BC.Should().NotHaveFlag(Flags.B));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((Flags)~0).Should().NotHaveFlag(Flags.BC));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumShouldHaveFlag(Flags.None, "actual", default).ShouldNotHaveFlag(Flags.None));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumShouldHaveFlag(Flags.A, "actual", default).ShouldNotHaveFlag(Flags.None));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumShouldHaveFlag(Flags.B, "actual", default).ShouldNotHaveFlag(Flags.B));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumShouldHaveFlag(Flags.BC, "actual", default).ShouldNotHaveFlag(Flags.B));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumShouldHaveFlag((Flags)~0, "actual", default).ShouldNotHaveFlag(Flags.BC));
     }
 }

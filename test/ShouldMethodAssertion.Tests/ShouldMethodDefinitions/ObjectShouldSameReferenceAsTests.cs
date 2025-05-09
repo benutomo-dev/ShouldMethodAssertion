@@ -1,8 +1,7 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldSameReferenceAs)])]
 public class ObjectShouldSameReferenceAsTests
 {
     [Fact]
@@ -18,11 +17,11 @@ public class ObjectShouldSameReferenceAsTests
 
         var num = (object)1;
 
-        obj.Should().SameReferenceAs(obj);
-        str1.Should().SameReferenceAs(str1);
-        ((object)str1).Should().SameReferenceAs(str1);
-        str1.Should().SameReferenceAs(((object)str1));
-        num.Should().SameReferenceAs(num);
+        new ObjectShouldSameReferenceAs(obj, "actual", default).ShouldSameReferenceAs(obj);
+        new ObjectShouldSameReferenceAs(str1, "actual", default).ShouldSameReferenceAs(str1);
+        new ObjectShouldSameReferenceAs(((object)str1), "actual", default).ShouldSameReferenceAs(str1);
+        new ObjectShouldSameReferenceAs(str1, "actual", default).ShouldSameReferenceAs(((object)str1));
+        new ObjectShouldSameReferenceAs(num, "actual", default).ShouldSameReferenceAs(num);
     }
 
     [Fact]
@@ -39,9 +38,9 @@ public class ObjectShouldSameReferenceAsTests
 
         var num = (object)1;
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => str1.Should().SameReferenceAs(str2));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => str1.Should().SameReferenceAs(obj));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().SameReferenceAs(num));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldSameReferenceAs(str1, "actual", default).ShouldSameReferenceAs(str2));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldSameReferenceAs(str1, "actual", default).ShouldSameReferenceAs(obj));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldSameReferenceAs(1, "actual", default).ShouldSameReferenceAs(num));
     }
 
     [Fact]
@@ -58,9 +57,9 @@ public class ObjectShouldSameReferenceAsTests
 
         var num = (object)1;
 
-        str1.Should().NotSameReferenceAs(str2);
-        str1.Should().NotSameReferenceAs(obj);
-        1.Should().NotSameReferenceAs(num);
+        new ObjectShouldSameReferenceAs(str1, "actual", default).ShouldNotSameReferenceAs(str2);
+        new ObjectShouldSameReferenceAs(str1, "actual", default).ShouldNotSameReferenceAs(obj);
+        new ObjectShouldSameReferenceAs(1, "actual", default).ShouldNotSameReferenceAs(num);
     }
 
     [Fact]
@@ -76,10 +75,10 @@ public class ObjectShouldSameReferenceAsTests
 
         var num = (object)1;
 
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => obj.Should().NotSameReferenceAs(obj));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => str1.Should().NotSameReferenceAs(str1));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => ((object)str1).Should().NotSameReferenceAs(str1));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => str1.Should().NotSameReferenceAs(((object)str1)));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => num.Should().NotSameReferenceAs(num));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldSameReferenceAs(obj, "actual", default).ShouldNotSameReferenceAs(obj));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldSameReferenceAs(str1, "actual", default).ShouldNotSameReferenceAs(str1));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldSameReferenceAs(((object)str1), "actual", default).ShouldNotSameReferenceAs(str1));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldSameReferenceAs(str1, "actual", default).ShouldNotSameReferenceAs(((object)str1)));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldSameReferenceAs(num, "actual", default).ShouldNotSameReferenceAs(num));
     }
 }

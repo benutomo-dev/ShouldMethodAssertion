@@ -1,8 +1,7 @@
-﻿using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions;
 
 namespace ShouldMethodAssertion.Tests.ShouldMethodDefinitions;
 
-[TestReference([nameof(ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeDefault)])]
 public class ObjectShouldBeDefaultTests
 {
     private struct RawStruct(int value)
@@ -13,30 +12,30 @@ public class ObjectShouldBeDefaultTests
     [Fact]
     public void ShouldBeDefault_NotFail()
     {
-        default(int).Should().BeDefault();
-        default(RawStruct).Should().BeDefault();
+        new ObjectShouldBeDefault(default(int), "actual", default).ShouldBeDefault();
+        new ObjectShouldBeDefault(default(RawStruct), "actual", default).ShouldBeDefault();
     }
 
     [Fact]
     public void ShouldBeDefault_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new RawStruct(1).Should().BeDefault());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 1.Should().BeDefault());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeDefault(new RawStruct(1), "actual", default).ShouldBeDefault());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeDefault(1, "actual", default).ShouldBeDefault());
     }
 
     [Fact]
     public void ShouldNotBeDefault_NotFail()
     {
-        new RawStruct(1).Should().NotBeDefault();
-        1.Should().NotBeDefault();
+        new ObjectShouldBeDefault(new RawStruct(1), "actual", default).ShouldNotBeDefault();
+        new ObjectShouldBeDefault(1, "actual", default).ShouldNotBeDefault();
     }
 
     [Fact]
     public void ShouldNotBeDefault_Fail()
     {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(int).Should().NotBeDefault());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => 0.Should().NotBeDefault()); // intの0はdefault(int)と等価
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => default(RawStruct).Should().NotBeDefault());
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new RawStruct(0).Should().NotBeDefault()); // new RawStruct(0)はdefault(RawStruct)と等価
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeDefault(default(int), "actual", default).ShouldNotBeDefault());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeDefault(0, "actual", default).ShouldNotBeDefault()); // intの0はdefault(int)と等価
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeDefault(default(RawStruct), "actual", default).ShouldNotBeDefault());
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ObjectShouldBeDefault(new RawStruct(0), "actual", default).ShouldNotBeDefault()); // new RawStruct(0)はdefault(RawStruct)と等価
     }
 }
