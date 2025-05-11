@@ -1,4 +1,5 @@
 ﻿using ShouldMethodAssertion.DataAnnotations;
+using ShouldMethodAssertion.ShouldExtensions;
 using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions;
@@ -6,7 +7,7 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions;
 [ShouldMethodDefinition(typeof(object))]
 public partial struct ObjectShouldBeOfType
 {
-    public T ShouldBeOfType<T>()
+    public ShouldContinuation<T> ShouldBeOfType<T>()
     {
         if (Actual.GetType() != typeof(T))
             throw AssertExceptionUtil.Create($"""
@@ -19,7 +20,7 @@ public partial struct ObjectShouldBeOfType
                 {ExpressionUtil.FormatValueAsOneline(typeof(T))}
                 """);
 
-        return (T)Actual;
+        return new ShouldContinuation<T>((T)Actual);
     }
 
     public void ShouldBeOfType(Type type)
