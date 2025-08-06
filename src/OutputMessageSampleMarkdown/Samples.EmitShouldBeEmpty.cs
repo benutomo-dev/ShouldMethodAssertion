@@ -4,9 +4,9 @@ namespace OutputMessageSampleMarkdown;
 
 internal static partial class Samples
 {
-    public static void EmitShouldEmpty(string outputPath)
+    public static void EmitShouldBeEmpty(string outputPath)
     {
-        using var writer = new MarkdownWriter(outputPath, "ShouldEmpty");
+        using var writer = new MarkdownWriter(outputPath, "ShouldBeEmpty");
 
         writer.WriteLine($"## Should().BeEmpty()");
 

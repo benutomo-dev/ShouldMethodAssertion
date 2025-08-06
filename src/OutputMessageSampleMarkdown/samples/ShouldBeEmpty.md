@@ -1,4 +1,4 @@
-﻿# ShouldEmpty
+﻿# ShouldBeEmpty
 
 ## Should().BeEmpty()
 
