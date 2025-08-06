@@ -10,7 +10,7 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <PackageVersion>1.11.0-preview2</PackageVersion>
+    <PackageVersion>1.11.0-preview3</PackageVersion>
 
     <PackageId>ShouldMethodAssertion</PackageId>
     <Description>ShouldMethodAssertion is an assertion framework.</Description>
