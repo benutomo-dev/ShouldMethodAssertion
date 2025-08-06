@@ -65,20 +65,22 @@ public partial struct StringShouldMatch
         else
         {
             // 前方一致で判定を開始
-            var expectedLeadingText = FetchTextPart(ref expected, multipleMatchWildcardChar);
-            return IsMatchTextStartPart(actual, expectedLeadingText, expected, ignoreCase, singleMatchWildcardChar, multipleMatchWildcardChar);
+            FetchTextPart(expected, multipleMatchWildcardChar, out var expectedLeadingText, out var nextWildcardPart);
+            return IsMatchTextStartPart(actual, expectedLeadingText, nextWildcardPart, ignoreCase, singleMatchWildcardChar, multipleMatchWildcardChar);
         }
     }
 
     private static bool IsMatchWildcardStartPart(ReadOnlySpan<char> actual, ReadOnlySpan<char> expectedNextWildcardStartText, bool ignoreCase, char singleMatchWildcardChar, char multipleMatchWildcardChar)
     {
-        var wildcardPart = FetchWildcardPart(ref expectedNextWildcardStartText, multipleMatchWildcardChar);
+        FetchHeadWildcardPart(expectedNextWildcardStartText, multipleMatchWildcardChar, out var wildcardPart, out var bodyText);
 
-        if (expectedNextWildcardStartText.IsEmpty)
+        var isSingleLineWildcard = wildcardPart.Length == 1;
+
+        if (bodyText.IsEmpty)
         {
             // 期待文字列が"*"または"**"の場合は基本的に任意の文字列に対して一致となる
 
-            if (wildcardPart.Length == 1 && actual.IndexOf('\n') >= 0)
+            if (isSingleLineWildcard && actual.IndexOf('\n') >= 0)
             {
                 // "*"の場合は対象文字列に改行コードが含まれない場合のみOK
                 return false;
@@ -87,17 +89,18 @@ public partial struct StringShouldMatch
             return true;
         }
 
-        int lastIndex = actual.Length;
-        if (wildcardPart.Length == 1 && actual.IndexOf('\n') is >= 0 and { } lineFeedIndex)
-        {
-            lastIndex = lineFeedIndex;
-        }
+        FetchTextPart(bodyText, multipleMatchWildcardChar, out var nextTextPart, out var nextWildcardStartPart);
 
-        var nextTextPart = FetchTextPart(ref expectedNextWildcardStartText, multipleMatchWildcardChar);
+        int lastIndex;
 
-        for (int i = 0; i < lastIndex - nextTextPart.Length + 1; i++)
+        if (isSingleLineWildcard && actual.IndexOf('\n') is >= 0 and { } lineFeedIndex)
+            lastIndex = Math.Min(lineFeedIndex, actual.Length - nextTextPart.Length + 1);
+        else
+            lastIndex = actual.Length - nextTextPart.Length + 1;
+
+        for (int i = 0; i < lastIndex; i++)
         {
-            if (IsMatchTextStartPart(actual.Slice(i), nextTextPart, expectedNextWildcardStartText, ignoreCase, singleMatchWildcardChar, multipleMatchWildcardChar))
+            if (IsMatchTextStartPart(actual.Slice(i), nextTextPart, nextWildcardStartPart, ignoreCase, singleMatchWildcardChar, multipleMatchWildcardChar))
                 return true;
         }
 
@@ -176,34 +179,43 @@ public partial struct StringShouldMatch
         }
     }
 
-    private static ReadOnlySpan<char> FetchWildcardPart(scoped ref ReadOnlySpan<char> text, char wildcardChar)
+    /// <summary>
+    /// <paramref name="text"/>の先頭にあるワイルドカード文字(<paramref name="wildcardChar"/>)の連続を取り除く、取り除いたワイルドカード文字の連続はこのメソッドの戻り値になる。
+    /// </summary>
+    /// <param name="text">文字列</param>
+    /// <param name="wildcardChar">ワイルドカード文字</param>
+    /// <returns><paramref name="text"/>の先頭にあるワイルドカード文字の連続</returns>
+    private static void FetchHeadWildcardPart(ReadOnlySpan<char> text, char wildcardChar, out ReadOnlySpan<char> headWildcardPart, out ReadOnlySpan<char> bodyText)
     {
         if (text.IsEmpty)
-            return ReadOnlySpan<char>.Empty;
-
-        ReadOnlySpan<char> fetchText;
+        {
+            headWildcardPart = ReadOnlySpan<char>.Empty;
+            bodyText = text;
+            return;
+        }
 
         for (int i = 1; i < text.Length; i++)
         {
             if (text[i] != wildcardChar)
             {
-                fetchText = text.Slice(0, i);
-
-                text = text.Slice(i);
-
-                return fetchText;
+                headWildcardPart = text.Slice(0, i);
+                bodyText = text.Slice(i);
+                return;
             }
         }
 
-        fetchText = text;
-        text = text.Slice(text.Length);
-        return fetchText;
+        headWildcardPart = text;
+        bodyText = text.Slice(text.Length);
     }
 
-    private static ReadOnlySpan<char> FetchTextPart(scoped ref ReadOnlySpan<char> text, char wildcardChar)
+    private static void FetchTextPart(ReadOnlySpan<char> text, char wildcardChar, out ReadOnlySpan<char> headTextPart, out ReadOnlySpan<char> wildcardStartBody)
     {
         if (text.IsEmpty)
-            return ReadOnlySpan<char>.Empty;
+        {
+            headTextPart = text;
+            wildcardStartBody = ReadOnlySpan<char>.Empty;
+            return;
+        }
 
         ReadOnlySpan<char> fetchText;
 
@@ -211,15 +223,13 @@ public partial struct StringShouldMatch
 
         if (wildcardCharIndex >= 0)
         {
-            fetchText = text.Slice(0, wildcardCharIndex);
-
-            text = text.Slice(wildcardCharIndex);
-
-            return fetchText;
+            headTextPart = text.Slice(0, wildcardCharIndex);
+            wildcardStartBody = text.Slice(wildcardCharIndex);
+            return;
         }
 
-        fetchText = text;
-        text = text.Slice(text.Length);
-        return fetchText;
+        headTextPart = text;
+        wildcardStartBody = text.Slice(text.Length);
+        return;
     }
 }

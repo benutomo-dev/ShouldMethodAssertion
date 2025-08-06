@@ -1,4 +1,4 @@
-using ShouldMethodAssertion.ShouldExtensions;
+﻿using ShouldMethodAssertion.ShouldExtensions;
 using System.Runtime.CompilerServices;
 
 namespace ShouldMethodAssertion.Tests;

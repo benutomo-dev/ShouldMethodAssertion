@@ -69,6 +69,36 @@ public class StringShouldMatchTests
         new StringShouldMatch("123\r\nabc\r\n123", "actual", default).ShouldMatch("123**123");
 
         new StringShouldMatch("123123123", "actual", default).ShouldMatch("*123");
+
+        new StringShouldMatch("""
+            123
+            123
+            123
+            """, "actual", default).ShouldMatch("""
+            *
+            123
+            *
+            """);
+
+        new StringShouldMatch("""
+            1
+            23
+            4
+            """, "actual", default).ShouldMatch("""
+            1
+            *3
+            4
+            """);
+
+        new StringShouldMatch("""
+            1
+            23
+            4
+            """, "actual", default).ShouldMatch("""
+            1
+            2*
+            4
+            """);
     }
 
     [Fact]
