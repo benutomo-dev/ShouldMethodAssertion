@@ -93,7 +93,7 @@ actualValues.Should().NotBeSingle();
 **Message**
 
 ```
-`actualValues` is not single.
+`actualValues` is single.
 ```
 
 ### Dictionary<TKey, TValue>
@@ -109,6 +109,6 @@ actualValues.Should().NotBeSingle();
 **Message**
 
 ```
-`actualValues` is not single.
+`actualValues` is single.
 ```
 

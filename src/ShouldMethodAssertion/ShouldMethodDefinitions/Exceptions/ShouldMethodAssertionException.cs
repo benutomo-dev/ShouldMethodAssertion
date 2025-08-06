@@ -1,9 +1,10 @@
 ﻿
+using ShouldMethodAssertion.ShouldMethodDefinitions.Exceptions;
 using System.Runtime.Serialization;
 
 namespace Xunit.Sdk
 {
-    internal sealed class ShouldMethodAssertionException : Exception
+    internal sealed class ShouldMethodAssertionException : Exception, IShouldMethodAssertionException
     {
         public ShouldMethodAssertionException()
         {
@@ -27,7 +28,7 @@ namespace Xunit.Sdk
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions.Exceptions
 {
-    internal sealed class ShouldMethodAssertionException : Exception
+    internal sealed class ShouldMethodAssertionException : Exception, IShouldMethodAssertionException
     {
         public ShouldMethodAssertionException()
         {

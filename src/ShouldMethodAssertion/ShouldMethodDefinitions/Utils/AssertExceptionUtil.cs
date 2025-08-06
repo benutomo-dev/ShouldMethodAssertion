@@ -1,9 +1,12 @@
-﻿using System.Globalization;
+﻿using ShouldMethodAssertion.ShouldMethodDefinitions.Exceptions;
+using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
-public static class AssertExceptionUtil
+public static partial class AssertExceptionUtil
 {
     private interface IExceptionFactory
     {
@@ -31,6 +34,18 @@ public static class AssertExceptionUtil
                 return new Xunit.Sdk.ShouldMethodAssertionException(message, exception);
         }
     }
+
+    // lang=Regex
+    private const string LineFeedRegexValue = @"\r?\n";
+
+#if NET8_0_OR_GREATER
+    [GeneratedRegex(LineFeedRegexValue)]
+    private static partial Regex LineFeedRegex();
+#else
+    private static Regex s_lineFeedRegex = new Regex(LineFeedRegexValue);
+    private static Regex LineFeedRegex() => s_lineFeedRegex;
+#endif
+
 
     private static Lazy<IExceptionFactory> _exceptionFactory = new Lazy<IExceptionFactory>(CreateFactory);
 
@@ -349,6 +364,60 @@ public static class AssertExceptionUtil
     internal static Exception CreateBasicShouldNotEmptyFail<T>(ValueExpression actualExpression)
     {
         return Create($"{actualExpression.OneLine} is empty.");
+    }
+
+
+    internal static Exception CreateBasicShouldAllSatisfyFail<TKey, TValue>(List<(TKey key, TValue value, Exception exception)> fails, ValueExpression actualExpression, [CallerFilePath] string callerSourceFilePath = "unknown path")
+    {
+        const string IndentSpace = "  ";
+
+        var builder = new StringBuilder();
+
+        builder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} has not satisfied element.");
+        builder.AppendLine("");
+
+        foreach (var fail in fails)
+        {
+            builder.AppendLine(CultureInfo.InvariantCulture, $"--- [{ExpressionUtil.FormatValueAsOneline(fail.key)}]: {ExpressionUtil.FormatValueAsOneline(fail.value)} ---");
+
+            if (fail.exception is IShouldMethodAssertionException)
+            {
+                appendWithIndent(builder, fail.exception.Message);
+            }
+            else
+            {
+                appendWithIndent(builder, $"{fail.exception.GetType().FullName}: {fail.exception.Message}");
+            }
+
+            if (fail.exception.StackTrace is not null)
+            {
+                builder.AppendLine("");
+
+                var lines = LineFeedRegex().Split(fail.exception.StackTrace);
+
+                // 自分自身の呼出しと action の呼出し分のスタックトレース数
+                var selfStackTraceCount = lines.Reverse().TakeWhile(v => v.Contains(callerSourceFilePath, StringComparison.InvariantCulture)).Count() + 1;
+
+                foreach (var line in lines.Take(lines.Length - selfStackTraceCount))
+                {
+                    builder.Append(IndentSpace);
+                    builder.AppendLine(line.TrimStart());
+                }
+            }
+        }
+
+        throw AssertExceptionUtil.Create(builder.ToString());
+
+
+        static void appendWithIndent(StringBuilder builder, string text)
+        {
+            var lines = LineFeedRegex().Split(text);
+            foreach (var line in lines)
+            {
+                builder.Append(IndentSpace);
+                builder.AppendLine(line);
+            }
+        }
     }
 
     public static Exception Create(string message, Exception? exception = null) =>  _exceptionFactory.Value.Create(message, exception);
