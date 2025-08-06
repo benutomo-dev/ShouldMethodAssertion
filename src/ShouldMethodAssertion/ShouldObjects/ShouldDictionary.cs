@@ -7,6 +7,7 @@ namespace ShouldMethodAssertion.ShouldObjects;
 [ShouldMethod(typeof(ObjectShouldBeNull))]
 [ShouldMethod(typeof(ObjectShouldBeDefault))]
 [ShouldMethod(typeof(EnumerableShouldBeEmpty<>),   TypeArgs = [typeof(KeyValuePair<TypeArg1, TypeArg2>)])]
+[ShouldMethod(typeof(EnumerableShouldBeSingle<>),  TypeArgs = [typeof(KeyValuePair<TypeArg1, TypeArg2>)])]
 [ShouldMethod(typeof(EnumerableShouldHaveCount<>), TypeArgs = [typeof(KeyValuePair<TypeArg1, TypeArg2>)])]
 [ShouldMethod(typeof(DictionaryShouldEqual<,>),      TypeArgs = [typeof(TypeArg1), typeof(TypeArg2)])]
 [ShouldMethod(typeof(DictionaryShouldContainKey<,>), TypeArgs = [typeof(TypeArg1), typeof(TypeArg2)])]
