@@ -217,8 +217,6 @@ public partial struct StringShouldMatch
             return;
         }
 
-        ReadOnlySpan<char> fetchText;
-
         var wildcardCharIndex = text.IndexOf(wildcardChar);
 
         if (wildcardCharIndex >= 0)

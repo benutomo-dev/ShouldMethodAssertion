@@ -396,7 +396,7 @@ public static partial class AssertExceptionUtil
                 var lines = LineFeedRegex().Split(fail.exception.StackTrace);
 
                 // 自分自身の呼出しと action の呼出し分のスタックトレース数
-                var selfStackTraceCount = lines.Reverse().TakeWhile(v => v.Contains(callerSourceFilePath, StringComparison.InvariantCulture)).Count() + 1;
+                var selfStackTraceCount = lines.AsEnumerable().Reverse().TakeWhile(v => v.Contains(callerSourceFilePath, StringComparison.InvariantCulture)).Count() + 1;
 
                 foreach (var line in lines.Take(lines.Length - selfStackTraceCount))
                 {
