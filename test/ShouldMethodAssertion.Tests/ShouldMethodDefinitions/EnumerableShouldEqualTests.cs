@@ -28,7 +28,9 @@ public class EnumerableShouldEqualTests
 		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([1, 2, 2], ignoreOrder: true));
 
 		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<string>(["1", "2"], "actual", paramExpDefaultString).ShouldEqual(["1", "3"], comparer: StringComparer.InvariantCultureIgnoreCase));
-	}
+
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldEqual([3, 4], ignoreOrder: true));
+    }
 
 	[Fact]
 	public void ShouldEqual_NotFail()
@@ -55,7 +57,9 @@ public class EnumerableShouldEqualTests
 		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 2, 2], ignoreOrder: true);
 
 		new EnumerableShouldEqual<string>(["1", "2"], "actual", paramExpDefaultString).ShouldNotEqual(["1", "3"], comparer: StringComparer.InvariantCultureIgnoreCase);
-	}
+
+		new EnumerableShouldEqual<int>([1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([3, 4], ignoreOrder: true);
+    }
 
 	[Fact]
 	public void ShouldNotEqual_NotFail()
@@ -67,5 +71,5 @@ public class EnumerableShouldEqualTests
 		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<int>([1, 2, 3], "actual", paramExpDefaultInt).ShouldNotEqual([2, 3, 1], ignoreOrder: true));
 		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<string>(["abc", "DEF"], "actual", paramExpDefaultString).ShouldNotEqual(["ABC", "def"], comparer: StringComparer.OrdinalIgnoreCase));
 		Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new EnumerableShouldEqual<string>(["abc", "DEF"], "actual", paramExpDefaultString).ShouldNotEqual(["def", "ABC"], ignoreOrder: true, comparer: StringComparer.OrdinalIgnoreCase));
-	}
+    }
 }

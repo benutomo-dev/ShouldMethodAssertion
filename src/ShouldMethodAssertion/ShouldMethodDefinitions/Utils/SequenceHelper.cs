@@ -133,6 +133,16 @@ internal static class SequenceHelper
                 if (actualValueEntry.Value != expectedCount)
                     return false;
             }
+            else
+            {
+                return false;
+            }
+        }
+
+        foreach (var expectedTableEntry in expectedValuesHistgram.valueCountTable)
+        {
+            if (!expectedValuesHistgram.valueCountTable.TryGetValue(expectedTableEntry.Key, out _))
+                return false;
         }
 
         return true;
