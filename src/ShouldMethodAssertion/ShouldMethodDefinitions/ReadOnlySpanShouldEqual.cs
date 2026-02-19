@@ -45,12 +45,12 @@ public partial struct ReadOnlySpanShouldEqual<T> // ShouldMethod属性で指定�
     [StackTraceHidden]
     private void MatchWithoutOrdering(ReadOnlySpan<T> expected, IEqualityComparer<T> comparer)
     {
-        var actualValuesHistgram = ToValueHistgram(Actual, comparer);
-        var expectedValuesHistgram = ToValueHistgram(expected, comparer);
+        var actualValuesHistogram = ToValueHistogram(Actual, comparer);
+        var expectedValuesHistogram = ToValueHistogram(expected, comparer);
 
         SequenceHelper.ShouldEqualWithoutOrderingCore(
-            actualValuesHistgram,
-            expectedValuesHistgram,
+            actualValuesHistogram,
+            expectedValuesHistogram,
             ActualExpression,
             ParamExpressions.expected,
             ParamExpressions.comparer);
@@ -69,12 +69,12 @@ public partial struct ReadOnlySpanShouldEqual<T> // ShouldMethod属性で指定�
 
     private void NotMatchWithoutOrdering(ReadOnlySpan<T> expected, IEqualityComparer<T> comparer)
     {
-        var actualValuesHistgram = ToValueHistgram(Actual, comparer);
-        var expectedValuesHistgram = ToValueHistgram(expected, comparer);
+        var actualValuesHistogram = ToValueHistogram(Actual, comparer);
+        var expectedValuesHistogram = ToValueHistogram(expected, comparer);
 
         SequenceHelper.ShouldNotEqualWithoutOrderingCore(
-            actualValuesHistgram,
-            expectedValuesHistgram,
+            actualValuesHistogram,
+            expectedValuesHistogram,
             ActualExpression,
             ParamExpressions.expected,
             ParamExpressions.comparer);
@@ -99,7 +99,7 @@ public partial struct ReadOnlySpanShouldEqual<T> // ShouldMethod属性で指定�
     }
 
 #nullable disable warnings
-    private static (Dictionary<T, int> valueCountTable, int nullCount) ToValueHistgram(ReadOnlySpan<T> values, IEqualityComparer<T> comparer)
+    private static (Dictionary<T, int> valueCountTable, int nullCount) ToValueHistogram(ReadOnlySpan<T> values, IEqualityComparer<T> comparer)
     {
         var valueCountTable = new Dictionary<T, int>(comparer);
         int nullCount = 0;

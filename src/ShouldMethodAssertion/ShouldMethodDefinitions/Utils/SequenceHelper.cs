@@ -60,10 +60,10 @@ internal static class SequenceHelper
     }
 
 #nullable disable warnings
-    public static void ShouldEqualWithoutOrderingCore<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistgram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistgram, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
+    public static void ShouldEqualWithoutOrderingCore<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistogram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistogram, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
 #nullable restore
     {
-        var differenceValueList = SequenceHelper.MakeDifferenceValueList(actualValuesHistgram, expectedValuesHistgram);
+        var differenceValueList = SequenceHelper.MakeDifferenceValueList(actualValuesHistogram, expectedValuesHistogram);
 
         if (differenceValueList.Count == 0)
             return;
@@ -77,30 +77,30 @@ internal static class SequenceHelper
     }
 
 #nullable disable warnings
-    public static void ShouldNotEqualWithoutOrderingCore<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistgram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistgram, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
+    public static void ShouldNotEqualWithoutOrderingCore<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistogram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistogram, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
 #nullable restore
     {
-        if (!SequenceHelper.EqualsValuesHistgram(actualValuesHistgram, expectedValuesHistgram))
+        if (!SequenceHelper.EqualsValuesHistogram(actualValuesHistogram, expectedValuesHistogram))
             return;
 
         throw AssertExceptionUtil.CreateBasicShouldNotEqualFailMessage(actualExpression, expectedExpression, isIncludingTheOrder: false, comparerExpression);
     }
 
 #nullable disable warnings
-    public static List<(T? value, int countInActual, int countInExpected)> MakeDifferenceValueList<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistgram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistgram)
+    public static List<(T? value, int countInActual, int countInExpected)> MakeDifferenceValueList<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistogram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistogram)
 #nullable restore
     {
         var differenceValueList = new List<(T? value, int countInActual, int countInExpected)>();
 
-        if (actualValuesHistgram.nullCount != expectedValuesHistgram.nullCount)
-            differenceValueList.Add((default(T), actualValuesHistgram.nullCount, expectedValuesHistgram.nullCount));
+        if (actualValuesHistogram.nullCount != expectedValuesHistogram.nullCount)
+            differenceValueList.Add((default(T), actualValuesHistogram.nullCount, expectedValuesHistogram.nullCount));
 
-        foreach (var expectedValueEntry in expectedValuesHistgram.valueCountTable)
+        foreach (var expectedValueEntry in expectedValuesHistogram.valueCountTable)
         {
 #if NETFRAMEWORK
 #nullable disable warnings
 #endif
-            if (!actualValuesHistgram.valueCountTable.Remove(expectedValueEntry.Key, out var actualValueCount))
+            if (!actualValuesHistogram.valueCountTable.Remove(expectedValueEntry.Key, out var actualValueCount))
                 actualValueCount = 0;
 #if NETFRAMEWORK
 #nullable restore
@@ -110,25 +110,25 @@ internal static class SequenceHelper
                 differenceValueList.Add((expectedValueEntry.Key, actualValueCount, expectedValueEntry.Value));
         }
 
-        foreach (var actualValueEntry in actualValuesHistgram.valueCountTable)
+        foreach (var actualValueEntry in actualValuesHistogram.valueCountTable)
             differenceValueList.Add((actualValueEntry.Key, actualValueEntry.Value, 0));
 
         return differenceValueList;
     }
 
 #nullable disable warnings
-    public static bool EqualsValuesHistgram<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistgram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistgram)
+    public static bool EqualsValuesHistogram<T>((Dictionary<T, int> valueCountTable, int nullCount) actualValuesHistogram, (Dictionary<T, int> valueCountTable, int nullCount) expectedValuesHistogram)
 #nullable restore
     {
-        if (actualValuesHistgram.nullCount != expectedValuesHistgram.nullCount)
+        if (actualValuesHistogram.nullCount != expectedValuesHistogram.nullCount)
             return false;
 
-        if (actualValuesHistgram.valueCountTable.Count != expectedValuesHistgram.valueCountTable.Count)
+        if (actualValuesHistogram.valueCountTable.Count != expectedValuesHistogram.valueCountTable.Count)
             return false;
 
-        foreach (var actualValueEntry in actualValuesHistgram.valueCountTable)
+        foreach (var actualValueEntry in actualValuesHistogram.valueCountTable)
         {
-            if (expectedValuesHistgram.valueCountTable.TryGetValue(actualValueEntry.Key, out var expectedCount))
+            if (expectedValuesHistogram.valueCountTable.TryGetValue(actualValueEntry.Key, out var expectedCount))
             {
                 if (actualValueEntry.Value != expectedCount)
                     return false;
@@ -139,9 +139,9 @@ internal static class SequenceHelper
             }
         }
 
-        foreach (var expectedTableEntry in expectedValuesHistgram.valueCountTable)
+        foreach (var expectedTableEntry in expectedValuesHistogram.valueCountTable)
         {
-            if (!expectedValuesHistgram.valueCountTable.TryGetValue(expectedTableEntry.Key, out _))
+            if (!expectedValuesHistogram.valueCountTable.TryGetValue(expectedTableEntry.Key, out _))
                 return false;
         }
 

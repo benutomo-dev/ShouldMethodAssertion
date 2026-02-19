@@ -46,12 +46,12 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
     [StackTraceHidden]
     private void ShouldEqualWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
     {
-        var actualValuesHistgram = ToValueHistgram(Actual, comparer);
-        var expectedValuesHistgram = ToValueHistgram(expected, comparer);
+        var actualValuesHistogram = ToValueHistogram(Actual, comparer);
+        var expectedValuesHistogram = ToValueHistogram(expected, comparer);
 
         SequenceHelper.ShouldEqualWithoutOrderingCore(
-            actualValuesHistgram,
-            expectedValuesHistgram,
+            actualValuesHistogram,
+            expectedValuesHistogram,
             ActualExpression,
             ParamExpressions.expected,
             ParamExpressions.comparer);
@@ -70,19 +70,19 @@ public partial struct EnumerableShouldEqual<T> // ShouldMethod属性で指定し
 
     private void ShouldNotEqualWithoutOrdering(IEnumerable<T> expected, IEqualityComparer<T> comparer)
     {
-        var actualValuesHistgram = ToValueHistgram(Actual, comparer);
-        var expectedValuesHistgram = ToValueHistgram(expected, comparer);
+        var actualValuesHistogram = ToValueHistogram(Actual, comparer);
+        var expectedValuesHistogram = ToValueHistogram(expected, comparer);
 
         SequenceHelper.ShouldNotEqualWithoutOrderingCore(
-            actualValuesHistgram,
-            expectedValuesHistgram,
+            actualValuesHistogram,
+            expectedValuesHistogram,
             ActualExpression,
             ParamExpressions.expected,
             ParamExpressions.comparer);
     }
 
 #nullable disable warnings
-    private static (Dictionary<T, int> valueCountTable, int nullCount) ToValueHistgram(IEnumerable<T> values, IEqualityComparer<T> comparer)
+    private static (Dictionary<T, int> valueCountTable, int nullCount) ToValueHistogram(IEnumerable<T> values, IEqualityComparer<T> comparer)
     {
         var valueCountTable = new Dictionary<T, int>(comparer);
         int nullCount = 0;
