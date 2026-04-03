@@ -14,7 +14,7 @@ var element = rootElement.Should().HaveElement("itemB"); // element is XElement 
 
 **Message**
 
-```
+```text
 `rootElement` does not have itemB.
 ```
 
@@ -30,7 +30,7 @@ var element = rootElement.Should().HaveElement("itemA"); // element is XElement 
 
 **Message**
 
-```
+```text
 `rootElement` does not have itemA.
 ```
 
@@ -46,7 +46,7 @@ var element = rootElement.Should().HaveElement(XName.Get("itemA", "namespaceB"))
 
 **Message**
 
-```
+```text
 `rootElement` does not have {namespaceB}itemA.
 ```
 
@@ -62,7 +62,7 @@ var elements = rootElement.Should().HaveElement("itemA", 2..3); // elements is X
 
 **Message**
 
-```
+```text
 `rootElement` contains 1 itemA, but the expected correct range of elements is 2～3.
 ```
 
@@ -80,7 +80,7 @@ rootElement.Should().NotHaveElement("itemA");
 
 **Message**
 
-```
+```text
 `rootElement` contains 1 itemA, but the expected correct number of elements is 0.
 ```
 

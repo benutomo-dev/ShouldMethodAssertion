@@ -17,7 +17,7 @@ actualValues.Should().AllSatisfy(v =>
 
 **Message**
 
-```
+```text
 `actualValues` has unsatisfied elements.
 
 --- [2]: "orange" ---
@@ -47,7 +47,7 @@ actualValues.Should().AllSatisfy(v =>
 
 **Message**
 
-```
+```text
 `actualValues` has unsatisfied elements.
 
 --- [0]: "apple" ---
@@ -77,7 +77,7 @@ actualValues.Should().AllSatisfy((key, value) =>
 
 **Message**
 
-```
+```text
 `actualValues` has unsatisfied elements.
 
 --- [3]: "orange" ---

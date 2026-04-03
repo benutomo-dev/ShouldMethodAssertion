@@ -12,7 +12,7 @@ Invoke.That(() => someObject.Method()).Should().Throw<InvalidOperationException>
 
 **Message**
 
-```
+```text
 No exception was thrown by `Invoke.That(() => someObject.Method())`.
 ```
 
@@ -28,7 +28,7 @@ action.Should().Throw<IOException>(); // When default, disallow derive exception
 
 **Message**
 
-```
+```text
 Wrong exception type thrown by `action`.
 
 Expected: `System.IO.IOException`
@@ -47,7 +47,7 @@ Invoke.That(() => action(0)).Should().Throw<IOException>(); // When default, dis
 
 **Message**
 
-```
+```text
 Wrong exception type thrown by `Invoke.That(() => action(0))`.
 
 Expected: `System.IO.IOException`
@@ -88,7 +88,7 @@ action.Should()
 
 **Message**
 
-```
+```text
 `FileNotFoundException.Message` does not match expected.
 
 [Actual]
@@ -110,7 +110,7 @@ var returnValueOfMethod = Invoke.That(() => someObject.Method()).Should().NotThr
 
 **Message**
 
-```
+```text
 `Invoke.That(() => someObject.Method())` threw an exception of type `System.InvalidOperationException`.
 
 Message: "smple exception"
@@ -128,7 +128,7 @@ action.Should().NotThrow();
 
 **Message**
 
-```
+```text
 `action` threw an exception of type `System.InvalidOperationException`.
 
 Message: "smple exception"
@@ -146,7 +146,7 @@ var returnValueOfMethod = Invoke.That(() => action(0)).Should().NotThrow();
 
 **Message**
 
-```
+```text
 `Invoke.That(() => action(0))` threw an exception of type `System.InvalidOperationException`.
 
 Message: "smple exception"

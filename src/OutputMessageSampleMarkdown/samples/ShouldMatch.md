@@ -13,7 +13,7 @@ actualValue.Should().Match(expectedPattern);
 
 **Message**
 
-```
+```text
 `actualValue` does not match expected.
 
 [Actual]
@@ -33,7 +33,7 @@ actualValue.Should().Match("hello*earth");
 
 **Message**
 
-```
+```text
 `actualValue` does not match expected.
 
 [Actual]
@@ -56,7 +56,7 @@ actualValue.Should().NotMatch(expectedPattern);
 
 **Message**
 
-```
+```text
 `actualValue` matches expected.
 
 [Actual]
@@ -76,7 +76,7 @@ actualValue.Should().NotMatch("hello*");
 
 **Message**
 
-```
+```text
 `actualValue` matches expected.
 
 [Actual]

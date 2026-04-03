@@ -14,7 +14,7 @@ actualValue.Should().BeNull();
 
 **Message**
 
-```
+```text
 `actualValue` is not null.
 
 [Actual]
@@ -35,7 +35,7 @@ actualValue.Should().NotBeNull();
 
 **Message**
 
-```
+```text
 `actualValue` is null.
 ```
 

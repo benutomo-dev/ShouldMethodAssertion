@@ -12,7 +12,7 @@ await InvokeAsync.That(async () => await someObject.MethodAsync().ConfigureAwait
 
 **Message**
 
-```
+```text
 No exception was thrown by `InvokeAsync.That(async () => await someObject.MethodAsync().ConfigureAwait(false))`.
 ```
 
@@ -28,7 +28,7 @@ await InvokeAsync.That(actionAsync).Should().ThrowAsync<IOException>().Configure
 
 **Message**
 
-```
+```text
 Wrong exception type thrown by `InvokeAsync.That(actionAsync)`.
 
 Expected: `System.IO.IOException`
@@ -47,7 +47,7 @@ await InvokeAsync.That(actionAsync, 0).Should().ThrowAsync<IOException>().Config
 
 **Message**
 
-```
+```text
 Wrong exception type thrown by `InvokeAsync.That(actionAsync, 0)`.
 
 Expected: `System.IO.IOException`
@@ -93,7 +93,7 @@ await InvokeAsync.That(actionAsync)
 
 **Message**
 
-```
+```text
 `FileNotFoundException.Message` does not match expected.
 
 [Actual]
@@ -115,7 +115,7 @@ var returnValueOfMethod = await InvokeAsync.That(someObject.MethodAsync).Should(
 
 **Message**
 
-```
+```text
 `InvokeAsync.That(someObject.MethodAsync)` threw an exception of type `System.InvalidOperationException`.
 
 Message: "smple exception"
@@ -133,7 +133,7 @@ await InvokeAsync.That(funcAsync).Should().NotThrowAsync().ConfigureAwait(false)
 
 **Message**
 
-```
+```text
 `InvokeAsync.That(funcAsync)` threw an exception of type `System.InvalidOperationException`.
 
 Message: "smple exception"
@@ -151,7 +151,7 @@ var returnValueOfMethod = await InvokeAsync.That(funcAsync, 0).Should().NotThrow
 
 **Message**
 
-```
+```text
 `InvokeAsync.That(funcAsync, 0)` threw an exception of type `System.InvalidOperationException`.
 
 Message: "smple exception"

@@ -14,7 +14,7 @@ actualValue.Should().HaveCount(1);
 
 **Message**
 
-```
+```text
 Count of `actualValue` is 3. But it was expected to be 1.
 ```
 
@@ -30,7 +30,7 @@ actualValue.Should().HaveCount(1);
 
 **Message**
 
-```
+```text
 Count of `actualValue` is 3. But it was expected to be 1.
 ```
 
@@ -48,7 +48,7 @@ actualValue.Should().NotHaveCount(3);
 
 **Message**
 
-```
+```text
 Count of `actualValue` is 3. But did not expect it to be.
 ```
 
@@ -64,7 +64,7 @@ actualValue.Should().NotHaveCount(3);
 
 **Message**
 
-```
+```text
 Count of `actualValue` is 3. But did not expect it to be.
 ```
 

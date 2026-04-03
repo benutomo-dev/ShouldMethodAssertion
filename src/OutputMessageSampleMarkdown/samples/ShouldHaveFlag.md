@@ -13,7 +13,7 @@ actualValue.Should().HaveFlag(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` does not have `expectedValue`.
 ```
 
@@ -27,7 +27,7 @@ actualValue.Should().HaveFlag(SampleFlags.Write);
 
 **Message**
 
-```
+```text
 `actualValue` does not have `SampleFlags.Write`.
 ```
 
@@ -44,7 +44,7 @@ actualValue.Should().NotHaveFlag(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` has `expectedValue`.
 ```
 
@@ -58,7 +58,7 @@ actualValue.Should().NotHaveFlag(SampleFlags.Write);
 
 **Message**
 
-```
+```text
 `actualValue` has `SampleFlags.Write`.
 ```
 

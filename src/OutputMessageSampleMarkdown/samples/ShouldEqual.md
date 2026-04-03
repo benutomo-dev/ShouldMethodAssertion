@@ -15,7 +15,7 @@ actualValue.Should().Equal(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` must match `expectedValue`, but it did not match.
 
 The content of `actualValue`[2] is different.
@@ -37,7 +37,7 @@ actualValue.Should().Equal(["apple", "banana", "grape"]);
 
 **Message**
 
-```
+```text
 `actualValue` must match ["apple", "banana", "grape"], but it did not match.
 
 The content of `actualValue`[2] is different.
@@ -63,7 +63,7 @@ actualValue.Should().Equal([
 
 **Message**
 
-```
+```text
 `actualValue` must match the following, but it did not match.
 
 [
@@ -94,7 +94,7 @@ actualValue.Should().Equal(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` must match `expectedValue`, including the order, but it did not match.
 
 `actualValue` contains more elements than expected.
@@ -110,7 +110,7 @@ actualValue.Should().Equal(["apple", "banana"]);
 
 **Message**
 
-```
+```text
 `actualValue` must match ["apple", "banana"], including the order, but it did not match.
 
 `actualValue` contains more elements than expected.
@@ -129,7 +129,7 @@ actualValue.Should().Equal([
 
 **Message**
 
-```
+```text
 `actualValue` must match the following, including the order, but it did not match.
 
 [
@@ -153,7 +153,7 @@ actualValue.Should().Equal(expectedValue, ignoreOrder: true);
 
 **Message**
 
-```
+```text
 `actualValue` must match the following when compared with `ignoreOrder`, but it did not match.
 
 `expectedValue`
@@ -190,7 +190,7 @@ actualValue.Should().Equal([
 
 **Message**
 
-```
+```text
 `actualValue` must match the following when compared with `ignoreOrder`, but it did not match.
 
 ["A","C","D","E","F","G","H","I","J","K","L","M",]
@@ -225,7 +225,7 @@ actualValue.Should().Equal(expectedValue, comparer: StringComparer.OrdinalIgnore
 
 **Message**
 
-```
+```text
 `actualValue` must match `expectedValue` when compared using `StringComparer.OrdinalIgnoreCase`, but it did not match.
 
 The content of `actualValue`[2] is different.
@@ -247,7 +247,7 @@ actualValue.Should().Equal(["Apple", "Banana", "Grape"], comparer: StringCompare
 
 **Message**
 
-```
+```text
 `actualValue` must match ["Apple", "Banana", "Grape"] when compared using `StringComparer.OrdinalIgnoreCase`, but it did not match.
 
 The content of `actualValue`[2] is different.
@@ -272,7 +272,7 @@ actualValue.Should().Equal(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` is not `expectedValue`.
 ```
 
@@ -286,7 +286,7 @@ actualValue.Should().Equal([("apple", 1), ("banana", 1), ("orange", 2)]);
 
 **Message**
 
-```
+```text
 `actualValue` is not [("apple", 1), ("banana", 1), ("orange", 2)].
 ```
 
@@ -303,7 +303,7 @@ actualValue.Should().Equal(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` is not `expectedValue`.
 ```
 
@@ -317,7 +317,7 @@ actualValue.Should().Equal([("apple", 1), ("banana", 1), ("grape", 1)]);
 
 **Message**
 
-```
+```text
 `actualValue` is not [("apple", 1), ("banana", 1), ("grape", 1)].
 ```
 
@@ -334,7 +334,7 @@ actualValue.Should().Equal(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` is not `expectedValue`.
 ```
 
@@ -348,7 +348,7 @@ actualValue.Should().Equal([("apple", 1), ("banana", 1)]);
 
 **Message**
 
-```
+```text
 `actualValue` is not [("apple", 1), ("banana", 1)].
 ```
 
@@ -367,7 +367,7 @@ actualValue.Should().NotEqual(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` matches `expectedValue`, including the order,
 
 ```
@@ -382,7 +382,7 @@ actualValue.Should().NotEqual(["apple", "banana", "orange"]);
 
 **Message**
 
-```
+```text
 `actualValue` matches ["apple", "banana", "orange"], including the order,
 
 ```
@@ -400,7 +400,7 @@ actualValue.Should().NotEqual(expectedValue, ignoreOrder: true);
 
 **Message**
 
-```
+```text
 `actualValue` matches `expectedValue`, without the order,
 
 ```
@@ -415,7 +415,7 @@ actualValue.Should().NotEqual(["apple", "banana", "orange"], ignoreOrder: true);
 
 **Message**
 
-```
+```text
 `actualValue` matches ["apple", "banana", "orange"], without the order,
 
 ```
@@ -433,7 +433,7 @@ actualValue.Should().NotEqual(expectedValue, comparer: StringComparer.OrdinalIgn
 
 **Message**
 
-```
+```text
 `actualValue` matches `expectedValue` when compared using `StringComparer.OrdinalIgnoreCase`, including the order,
 
 ```
@@ -448,7 +448,7 @@ actualValue.Should().NotEqual(["Apple", "Banana", "Orange"], comparer: StringCom
 
 **Message**
 
-```
+```text
 `actualValue` matches ["Apple", "Banana", "Orange"] when compared using `StringComparer.OrdinalIgnoreCase`, including the order,
 
 ```
@@ -466,7 +466,7 @@ actualValue.Should().NotEqual(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` is `expectedValue`.
 ```
 
@@ -480,7 +480,7 @@ actualValue.Should().NotEqual([("apple", 1), ("banana", 1), ("orange", 2)]);
 
 **Message**
 
-```
+```text
 `actualValue` is [("apple", 1), ("banana", 1), ("orange", 2)].
 ```
 
@@ -497,7 +497,7 @@ actualValue.Should().NotEqual(expectedValue, valueComparer: StringComparer.Ordin
 
 **Message**
 
-```
+```text
 `actualValue` is `expectedValue`.
 ```
 
@@ -511,7 +511,7 @@ actualValue.Should().NotEqual([(1, "Apple"), (2, "Banana"), (3, "Orange")], valu
 
 **Message**
 
-```
+```text
 `actualValue` is [(1, "Apple"), (2, "Banana"), (3, "Orange")].
 ```
 

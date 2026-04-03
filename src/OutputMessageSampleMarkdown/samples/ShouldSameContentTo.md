@@ -18,7 +18,7 @@ actualValue.Should().SameContentTo(otherFile);
 
 **Message**
 
-```
+```text
 File sizes do not match.
 
 `actualValue`("C:\Users\SOME_USER\AppData\Local\Temp\c7397e81-e829-41c3-a755-ee5b39e0fce4\file1.txt"): 5
@@ -43,7 +43,7 @@ actualValue.Should().SameContentTo(otherFile);
 
 **Message**
 
-```
+```text
 File contents do not match.
 ```
 
@@ -65,7 +65,7 @@ actualValue.Should().NotSameContentTo(otherFile);
 
 **Message**
 
-```
+```text
 File contents matched, but were expected to differ.
 ```
 

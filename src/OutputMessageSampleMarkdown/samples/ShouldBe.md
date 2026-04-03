@@ -15,7 +15,7 @@ actualValue.Should().Be(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` is `2`. But did not expect it to be.
 
 [Actual]
@@ -35,7 +35,7 @@ actualValue.Should().Be(2);
 
 **Message**
 
-```
+```text
 `actualValue` is `2`. But did not expect it to be.
 
 [Actual]
@@ -58,7 +58,7 @@ actualValue.Should().Be(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` is "banana". But did not expect it to be.
 
 [Actual]
@@ -78,7 +78,7 @@ actualValue.Should().Be("banana");
 
 **Message**
 
-```
+```text
 `actualValue` is "banana". But did not expect it to be.
 
 [Actual]
@@ -101,7 +101,7 @@ actualValue.Should().Be(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` is not expected.
 
 [Actual]
@@ -121,7 +121,7 @@ actualValue.Should().Be(Guid.Parse("2968a94a-febf-4939-b90e-c763a9fefba4"));
 
 **Message**
 
-```
+```text
 `actualValue` is not expected.
 
 [Actual]
@@ -146,7 +146,7 @@ actualValue.Should().NotBe(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` is `1`. But did not expect it to be.
 
 ```
@@ -161,7 +161,7 @@ actualValue.Should().NotBe(1);
 
 **Message**
 
-```
+```text
 `actualValue` is `1`. But did not expect it to be.
 
 ```
@@ -179,7 +179,7 @@ actualValue.Should().NotBe(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` is "apple". But did not expect it to be.
 
 ```
@@ -194,7 +194,7 @@ actualValue.Should().NotBe("apple");
 
 **Message**
 
-```
+```text
 `actualValue` is "apple". But did not expect it to be.
 
 ```
@@ -212,7 +212,7 @@ actualValue.Should().NotBe(expectedValue);
 
 **Message**
 
-```
+```text
 The value of `actualValue` is not expected.
 
 [Actual]
@@ -229,7 +229,7 @@ actualValue.Should().NotBe(Guid.Parse("73b75ba1-8a48-4cb9-9eb3-c138743e9b0b"));
 
 **Message**
 
-```
+```text
 The value of `actualValue` is not expected.
 
 [Actual]

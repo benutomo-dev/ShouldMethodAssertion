@@ -12,7 +12,7 @@ actualValue.Should().BeAssignableTo<int>();
 
 **Message**
 
-```
+```text
 `actualValue` is not assignable to System.Int32.
 ```
 
@@ -29,7 +29,7 @@ actualValue.Should().BeAssignableTo(type);
 
 **Message**
 
-```
+```text
 `actualValue` is not assignable to `type`.
 ```
 
@@ -43,7 +43,7 @@ actualValue.Should().BeAssignableTo(typeof(int));
 
 **Message**
 
-```
+```text
 `actualValue` is not assignable to `typeof(int)`.
 ```
 
@@ -59,7 +59,7 @@ actualValue.Should().NotBeAssignableTo<string>();
 
 **Message**
 
-```
+```text
 `actualValue` is assignable to System.String.
 ```
 
@@ -76,7 +76,7 @@ actualValue.Should().NotBeAssignableTo(type);
 
 **Message**
 
-```
+```text
 `actualValue` is assignable to `type`.
 ```
 
@@ -90,7 +90,7 @@ actualValue.Should().NotBeAssignableTo(typeof(string));
 
 **Message**
 
-```
+```text
 `actualValue` is assignable to `typeof(string)`.
 ```
 

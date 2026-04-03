@@ -14,7 +14,7 @@ var attribute = rootElement.Should().HaveAttribute("itemB"); // attribute is XAt
 
 **Message**
 
-```
+```text
 `rootElement` does not have attribute of itemB.
 ```
 
@@ -30,7 +30,7 @@ var attribute = rootElement.Should().HaveAttribute("itemA"); // attribute is XAt
 
 **Message**
 
-```
+```text
 `rootElement` does not have attribute of itemA.
 ```
 
@@ -46,7 +46,7 @@ var attribute = rootElement.Should().HaveAttribute(XName.Get("itemA", "namespace
 
 **Message**
 
-```
+```text
 `rootElement` does not have attribute of {namespaceB}itemA.
 ```
 
@@ -62,7 +62,7 @@ var attributes = rootElement.Should().HaveAttribute("itemA", 2..3); // attribute
 
 **Message**
 
-```
+```text
 `rootElement` contains 1 attribute of itemA, but the expected correct range of attributes is 2～3.
 ```
 
@@ -80,7 +80,7 @@ rootElement.Should().NotHaveAttribute("itemA");
 
 **Message**
 
-```
+```text
 `rootElement` contains 1 attribute of itemA, but the expected correct number of attributes is 0.
 ```
 

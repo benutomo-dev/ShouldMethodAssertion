@@ -12,7 +12,7 @@ actualValue.Should().BeOfType<IEnumerable<string>>();
 
 **Message**
 
-```
+```text
 Type of `actualValue` is string[]. But did not expect it to be.
 
 [Actual]
@@ -32,7 +32,7 @@ actualValue.Should().BeOfType(typeof(IEnumerable<string>));
 
 **Message**
 
-```
+```text
 Type of `actualValue` is string[]. But did not expect it to be.
 
 [Actual]
@@ -54,7 +54,7 @@ actualValue.Should().NotBeOfType<string[]>();
 
 **Message**
 
-```
+```text
 Type of `actualValue` is string[].
 ```
 
@@ -68,7 +68,7 @@ actualValue.Should().NotBeOfType(typeof(string[]));
 
 **Message**
 
-```
+```text
 Type of `actualValue` is string[].
 ```
 

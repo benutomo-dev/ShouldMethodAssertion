@@ -14,7 +14,7 @@ actualValue.Should().BeEmpty();
 
 **Message**
 
-```
+```text
 `actualValue` has 3 elements.
 
 List of all elements:
@@ -35,7 +35,7 @@ actualValue.Should().BeEmpty();
 
 **Message**
 
-```
+```text
 `actualValue` has 12 elements.
 
 List of first 10 elements:
@@ -63,7 +63,7 @@ actualValue.Should().BeEmpty();
 
 **Message**
 
-```
+```text
 `actualValue` has 3 elements.
 
 List of all elements:
@@ -84,7 +84,7 @@ actualValue.Should().BeEmpty();
 
 **Message**
 
-```
+```text
 `actualValue` has 12 elements.
 
 List of first 10 elements:
@@ -114,7 +114,7 @@ actualValue.Should().NotBeEmpty();
 
 **Message**
 
-```
+```text
 `actualValue` is empty.
 ```
 
@@ -130,7 +130,7 @@ actualValue.Should().NotBeEmpty();
 
 **Message**
 
-```
+```text
 `actualValue` is empty.
 ```
 

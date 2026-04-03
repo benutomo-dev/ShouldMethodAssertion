@@ -15,7 +15,7 @@ actualValue.Should().Contain(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` does not contain "Apple".
 
 [Actual]
@@ -32,7 +32,7 @@ actualValue.Should().Contain("Apple", /*containedCounts*/ 2, ignoreCase: true);
 
 **Message**
 
-```
+```text
 `actualValue` contains 1 "Apple", with case ignored. But expected count is 2.
 
 [Actual]
@@ -49,7 +49,7 @@ actualValue.Should().Contain("banana", /*containedCountsRange*/ 2..3, ignoreCase
 
 **Message**
 
-```
+```text
 `actualValue` contains 1 "banana", with case ignored. But expected count is in range of 2～3.
 
 [Actual]
@@ -69,7 +69,7 @@ actualValue.Should().Contain(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` does not contain `expectedValue`.
 ```
 
@@ -83,7 +83,7 @@ actualValue.Should().Contain("Apple");
 
 **Message**
 
-```
+```text
 `actualValue` does not contain "Apple".
 ```
 
@@ -100,7 +100,7 @@ actualValue.Should().Contain(expectedValue, StringComparer.OrdinalIgnoreCase);
 
 **Message**
 
-```
+```text
 `actualValue` does not contain `expectedValue`.
 ```
 
@@ -114,7 +114,7 @@ actualValue.Should().Contain("Grape", StringComparer.OrdinalIgnoreCase);
 
 **Message**
 
-```
+```text
 `actualValue` does not contain "Grape".
 ```
 
@@ -131,7 +131,7 @@ actualValue.Should().Contain(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
@@ -151,7 +151,7 @@ actualValue.Should().Contain(new KeyValuePair<int, string>(1, "Apple"));
 
 **Message**
 
-```
+```text
 `actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
@@ -174,7 +174,7 @@ actualValue.Should().Contain(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
@@ -194,7 +194,7 @@ actualValue.Should().Contain((1, "Apple"));
 
 **Message**
 
-```
+```text
 `actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
@@ -217,7 +217,7 @@ actualValue.Should().Contain(expectedValue, valueComparer: StringComparer.Ordina
 
 **Message**
 
-```
+```text
 `actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
@@ -237,7 +237,7 @@ actualValue.Should().Contain((3, "grape"), valueComparer: StringComparer.Ordinal
 
 **Message**
 
-```
+```text
 `actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
@@ -262,7 +262,7 @@ actualValue.Should().ContainKey(expectedKey);
 
 **Message**
 
-```
+```text
 `actualValue` does not contain the expected key.
 
 [ExpectedKey]
@@ -279,7 +279,7 @@ actualValue.Should().ContainKey(4);
 
 **Message**
 
-```
+```text
 `actualValue` does not contain the expected key.
 
 [ExpectedKey]
@@ -301,7 +301,7 @@ actualValue.Should().NotContainKey(expectedKey);
 
 **Message**
 
-```
+```text
 `actualValue` contains `expectedKey`.
 ```
 
@@ -315,7 +315,7 @@ actualValue.Should().NotContainKey(1);
 
 **Message**
 
-```
+```text
 `actualValue` contains `1`.
 ```
 
@@ -334,7 +334,7 @@ actualValue.Should().NotContain(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` contains 1 "apple". But expected count is 0.
 
 [Actual]
@@ -351,7 +351,7 @@ actualValue.Should().NotContain("Apple", ignoreCase: true);
 
 **Message**
 
-```
+```text
 `actualValue` contains 1 "Apple", with case ignored. But expected count is 0.
 
 [Actual]
@@ -371,7 +371,7 @@ actualValue.Should().NotContain(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` contains `expectedValue`.
 ```
 
@@ -385,7 +385,7 @@ actualValue.Should().NotContain("banana");
 
 **Message**
 
-```
+```text
 `actualValue` contains "banana".
 ```
 
@@ -402,7 +402,7 @@ actualValue.Should().NotContain(expectedValue, comparer: StringComparer.OrdinalI
 
 **Message**
 
-```
+```text
 `actualValue` contains `expectedValue`.
 ```
 
@@ -416,7 +416,7 @@ actualValue.Should().NotContain("Banana", comparer: StringComparer.OrdinalIgnore
 
 **Message**
 
-```
+```text
 `actualValue` contains "Banana".
 ```
 
@@ -433,7 +433,7 @@ actualValue.Should().NotContain(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` contains `expectedValue`.
 ```
 
@@ -447,7 +447,7 @@ actualValue.Should().NotContain(new KeyValuePair<int, string>(1, "apple"));
 
 **Message**
 
-```
+```text
 `actualValue` contains `new KeyValuePair<int, string>(1, "apple")`.
 ```
 
@@ -464,7 +464,7 @@ actualValue.Should().NotContain(expectedValue);
 
 **Message**
 
-```
+```text
 `actualValue` contains `expectedValue`.
 ```
 
@@ -478,7 +478,7 @@ actualValue.Should().NotContain((1, "apple"));
 
 **Message**
 
-```
+```text
 `actualValue` contains (1, "apple").
 ```
 
@@ -495,7 +495,7 @@ actualValue.Should().NotContain(expectedValue, valueComparer: StringComparer.Ord
 
 **Message**
 
-```
+```text
 `actualValue` contains `expectedValue`.
 ```
 
@@ -509,7 +509,7 @@ actualValue.Should().NotContain((1, "Apple"), valueComparer: StringComparer.Ordi
 
 **Message**
 
-```
+```text
 `actualValue` contains (1, "Apple").
 ```
 

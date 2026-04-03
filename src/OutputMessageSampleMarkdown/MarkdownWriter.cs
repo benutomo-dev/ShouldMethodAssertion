@@ -237,7 +237,7 @@ internal sealed partial class MarkdownWriter : IDisposable
     {
         message = message.Replace(s_userProfileDir, s_dummyUserProfileDir, StringComparison.OrdinalIgnoreCase);
 
-        _writer.WriteLine("```");
+        _writer.WriteLine("```text");
         if (message.EndsWith('\n'))
             _writer.Write(message);
         else

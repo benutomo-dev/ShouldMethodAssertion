@@ -12,7 +12,7 @@ actualValue.Should().Exist();
 
 **Message**
 
-```
+```text
 `actualValue`("D:\source\ShouldMethodAssertion\bin\src\OutputMessageSampleMarkdown\Debug\net10.0\path\to\nonexistent-file.txt") does not exist.
 ```
 

@@ -14,7 +14,7 @@ actualValues.Should().BeSingle();
 
 **Message**
 
-```
+```text
 `actualValues` is empty.
 ```
 
@@ -30,7 +30,7 @@ actualValues.Should().BeSingle();
 
 **Message**
 
-```
+```text
 `actualValues` has two or more elements.
 ```
 
@@ -46,7 +46,7 @@ actualValues.Should().BeSingle();
 
 **Message**
 
-```
+```text
 `actualValues` is empty.
 ```
 
@@ -62,7 +62,7 @@ actualValues.Should().BeSingle();
 
 **Message**
 
-```
+```text
 `actualValues` has two or more elements.
 ```
 
@@ -92,7 +92,7 @@ actualValues.Should().NotBeSingle();
 
 **Message**
 
-```
+```text
 `actualValues` is single.
 ```
 
@@ -108,7 +108,7 @@ actualValues.Should().NotBeSingle();
 
 **Message**
 
-```
+```text
 `actualValues` is single.
 ```
 
