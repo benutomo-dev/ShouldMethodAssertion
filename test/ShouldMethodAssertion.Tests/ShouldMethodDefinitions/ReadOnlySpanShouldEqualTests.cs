@@ -45,6 +45,18 @@ public class ReadOnlySpanShouldEqualTests
     [Fact]
     public void ShouldNotEqual_Fail()
     {
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<int>([], "actual", paramExpDefaultInt).ShouldNotEqual([]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<int>([], "actual", paramExpDefaultInt).ShouldNotEqual([], ignoreOrder: true));
+
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<int>((ReadOnlySpan<int>)[1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 2]));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<int>((ReadOnlySpan<int>)[1, 2, 3], "actual", paramExpDefaultInt).ShouldNotEqual([2, 3, 1], ignoreOrder: true));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<string>((ReadOnlySpan<string>)["abc", "DEF"], "actual", paramExpDefaultString).ShouldNotEqual(["ABC", "def"], comparer: StringComparer.OrdinalIgnoreCase));
+        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<string>((ReadOnlySpan<string>)["abc", "DEF"], "actual", paramExpDefaultString).ShouldNotEqual(["def", "ABC"], ignoreOrder: true, comparer: StringComparer.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ShouldNotEqual_NotFail()
+    {
         new ReadOnlySpanShouldEqual<int>((ReadOnlySpan<int>)[1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1]);
         new ReadOnlySpanShouldEqual<int>((ReadOnlySpan<int>)[1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 2, 3]);
         new ReadOnlySpanShouldEqual<int>((ReadOnlySpan<int>)[1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 3]);
@@ -55,17 +67,5 @@ public class ReadOnlySpanShouldEqualTests
         new ReadOnlySpanShouldEqual<int>((ReadOnlySpan<int>)[1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 2, 2], ignoreOrder: true);
 
         new ReadOnlySpanShouldEqual<string>((ReadOnlySpan<string>)["1", "2"], "actual", paramExpDefaultString).ShouldNotEqual(["1", "3"], comparer: StringComparer.InvariantCultureIgnoreCase);
-    }
-
-    [Fact]
-    public void ShouldNotEqual_NotFail()
-    {
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<int>([], "actual", paramExpDefaultInt).ShouldNotEqual([]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<int>([], "actual", paramExpDefaultInt).ShouldNotEqual([], ignoreOrder: true));
-
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<int>((ReadOnlySpan<int>)[1, 2], "actual", paramExpDefaultInt).ShouldNotEqual([1, 2]));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<int>((ReadOnlySpan<int>)[1, 2, 3], "actual", paramExpDefaultInt).ShouldNotEqual([2, 3, 1], ignoreOrder: true));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<string>((ReadOnlySpan<string>)["abc", "DEF"], "actual", paramExpDefaultString).ShouldNotEqual(["ABC", "def"], comparer: StringComparer.OrdinalIgnoreCase));
-        Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() => new ReadOnlySpanShouldEqual<string>((ReadOnlySpan<string>)["abc", "DEF"], "actual", paramExpDefaultString).ShouldNotEqual(["def", "ABC"], ignoreOrder: true, comparer: StringComparer.OrdinalIgnoreCase));
     }
 }
