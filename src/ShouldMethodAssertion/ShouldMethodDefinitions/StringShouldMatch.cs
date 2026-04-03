@@ -20,6 +20,12 @@ public partial struct StringShouldMatch
         if (IsMatch(Actual.AsSpan(), text, ignoreCase, singleMatchWildcardChar: '?', multipleMatchWildcardChar: '*'))
             return;
 
+#if NET
+        var text_ = text;
+#else
+        var text_ = text.ToString();
+#endif
+
         throw AssertExceptionUtil.Create($"""
             {ActualExpression.OneLine} is not match to expected.
 
@@ -27,7 +33,7 @@ public partial struct StringShouldMatch
             {Actual}
 
             [Expected]
-            {text}
+            {text_}
             """);
     }
 
@@ -41,6 +47,12 @@ public partial struct StringShouldMatch
         if (!IsMatch(Actual.AsSpan(), text, ignoreCase, singleMatchWildcardChar: '?', multipleMatchWildcardChar: '*'))
             return;
 
+#if NET
+        var text_ = text;
+#else
+        var text_ = text.ToString();
+#endif
+
         throw AssertExceptionUtil.Create($"""
             {ActualExpression.OneLine} is match to expected.
 
@@ -48,7 +60,7 @@ public partial struct StringShouldMatch
             {Actual}
 
             [Expected]
-            {text}
+            {text_}
             """);
     }
 

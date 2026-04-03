@@ -195,7 +195,13 @@ public static partial class ExpressionUtil
         }
         else
         {
-            return $"\"{value}\"";
+#if NET
+            var value_ = value;
+#else
+            var value_ = value.ToString();
+#endif
+
+            return $"\"{value_}\"";
         }
     }
 
