@@ -72,7 +72,7 @@ public static partial class AssertExceptionUtil
         }
     }
 
-    internal static Exception CreateBasicShouldBeFailMessage<TActual, TExpected>(TActual actualValue, ValueExpression actualExpression, TExpected expectedValue, ValueExpression expectedExpression, Exception? exception = null)
+    internal static Exception CreateBasicShouldBeFailMessage<TActual, TExpected>(TActual actualValue, ValueExpression actualExpression, TExpected expectedValue, ValueExpression expectedExpression)
     {
         var stringBuilder = new StringBuilder();
 
@@ -95,10 +95,10 @@ public static partial class AssertExceptionUtil
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"[Expected]");
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{expectedValueText}");
 
-        return Create(stringBuilder.ToString(), exception);
+        return Create(stringBuilder.ToString());
     }
 
-    internal static Exception CreateBasicShouldNotBeFailMessage<TActual, TExpected>(TActual actualValue, ValueExpression actualExpression, TExpected expectedValue, ValueExpression expectedExpression, Exception? exception = null)
+    internal static Exception CreateBasicShouldNotBeFailMessage<TActual, TExpected>(TActual actualValue, ValueExpression actualExpression, TExpected expectedValue, ValueExpression expectedExpression)
     {
         var stringBuilder = new StringBuilder();
 
@@ -117,10 +117,10 @@ public static partial class AssertExceptionUtil
             stringBuilder.AppendLine();
         }
 
-        return Create(stringBuilder.ToString(), exception);
+        return Create(stringBuilder.ToString());
     }
 
-    internal static Exception CreateBasicShouldEqualFailMessageByDifferentNthElement<TActual, TExpected>(int differentElementIndex, TActual actualElementValue, TExpected expectedElementValue, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression, Exception? exception = null)
+    internal static Exception CreateBasicShouldEqualFailMessageByDifferentNthElement<TActual, TExpected>(int differentElementIndex, TActual actualElementValue, TExpected expectedElementValue, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
     {
         var comparerAnnotation = comparerExpression.HasValue
             ? $" when compared using {comparerExpression}"
@@ -161,7 +161,7 @@ public static partial class AssertExceptionUtil
             stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{expectedValueText}");
         }
 
-        return Create(stringBuilder.ToString(), exception);
+        return Create(stringBuilder.ToString());
 
         //$"""
         //{actualExpression.OneLine}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
@@ -174,7 +174,7 @@ public static partial class AssertExceptionUtil
         //"""
     }
 
-    internal static Exception CreateBasicShouldEqualFailMessageByOrderIgnoredElementSet<T>(List<(T? value, int countInActual, int countInExpected)> differenceValueList, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression, Exception? exception = null)
+    internal static Exception CreateBasicShouldEqualFailMessageByOrderIgnoredElementSet<T>(List<(T? value, int countInActual, int countInExpected)> differenceValueList, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression)
     {
         var comparerAnnotation = comparerExpression.HasValue
             ? $" and using {comparerExpression}"
@@ -199,7 +199,7 @@ public static partial class AssertExceptionUtil
         if (differenceValueList.Count > SequenceHelper.MaxListingCount)
             stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"Additionally, there were differences in the count of {differenceValueList.Count - SequenceHelper.MaxListingCount} other elements.");
 
-        return AssertExceptionUtil.Create(stringBuilder.ToString(), exception);
+        return AssertExceptionUtil.Create(stringBuilder.ToString());
 
 
         //$$"""
@@ -219,7 +219,7 @@ public static partial class AssertExceptionUtil
         ActualCountMoreThanExpectedCount,
     }
 
-    internal static Exception CreateBasicShouldEqualFailMessageByDifferentOfCount(CountNotMatchReason reason, ValueExpression actualExpression, ValueExpression expectedExpression, bool? isIncludingTheOrder, NullableValueExpression comparerExpression, Exception? exception = null)
+    internal static Exception CreateBasicShouldEqualFailMessageByDifferentOfCount(CountNotMatchReason reason, ValueExpression actualExpression, ValueExpression expectedExpression, bool? isIncludingTheOrder, NullableValueExpression comparerExpression)
     {
         var comparerAnnotation = comparerExpression.HasValue
             ? $" when compared using {comparerExpression}"
@@ -253,7 +253,7 @@ public static partial class AssertExceptionUtil
         }
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} contains{countDiffereceMessage}.");
 
-        return Create(stringBuilder.ToString(), exception);
+        return Create(stringBuilder.ToString());
 
         //$"""
         //{actualExpression.OneLine}は並び順を含めて{comparerAnnotation}以下と一致しなければなりませんが、一致しませんでした。
@@ -264,7 +264,7 @@ public static partial class AssertExceptionUtil
         //"""
     }
 
-    internal static Exception CreateBasicShouldNotEqualFailMessage(ValueExpression actualExpression, ValueExpression expectedExpression, bool? isIncludingTheOrder, NullableValueExpression comparerExpression, Exception? exception = null)
+    internal static Exception CreateBasicShouldNotEqualFailMessage(ValueExpression actualExpression, ValueExpression expectedExpression, bool? isIncludingTheOrder, NullableValueExpression comparerExpression)
     {
         var comparerAnnotation = comparerExpression.HasValue
             ? $" when compared using {comparerExpression}"
@@ -292,7 +292,7 @@ public static partial class AssertExceptionUtil
             stringBuilder.AppendLine();
         }
 
-        return Create(stringBuilder.ToString(), exception);
+        return Create(stringBuilder.ToString());
     }
 
     public static Exception CreateBasicShouldThrowFailByUnexpectedExceptionThrownMessage(Exception actualException, Type expectedExceptionType, ValueExpression actualExpression)
@@ -521,6 +521,8 @@ public static partial class AssertExceptionUtil
             }
         }
     }
+
+    public static Exception Create(string message) => _exceptionFactory.Value.Create(message, exception: null, stackTrace: null);
 
     public static Exception Create(string message, Exception? exception = null, string? stackTrace = null) =>  _exceptionFactory.Value.Create(message, exception, stackTrace);
 
