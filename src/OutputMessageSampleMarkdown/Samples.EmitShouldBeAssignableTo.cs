@@ -55,7 +55,7 @@ internal static partial class Samples
         {
             object actualValue = "hello";
 
-            actualValue.Should().NotBeAssignableTo(typeof(string));
+            actualValue.Should().NotBeAssignableTo(typeof(IEnumerable<char>));
         });
     }
 }

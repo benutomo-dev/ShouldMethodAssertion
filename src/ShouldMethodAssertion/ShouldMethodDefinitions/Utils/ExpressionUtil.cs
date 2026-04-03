@@ -10,6 +10,8 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
 
 public static partial class ExpressionUtil
 {
+    private const string TypeOfExpressionRegexValue = /* language=regex */ @"\Atypeof\s*\(.+\)\z";
+
     private const string HasBracketsRegexValue = /* language=regex */ @"\A(@$""|$@""|[@$]""|$*""{2,}|[\[(`""])";
 
     private const string LineSeparatorRegexValue = /* language=regex */ @"\r?\n";
@@ -17,6 +19,9 @@ public static partial class ExpressionUtil
     private const string LineSeparatorWithBeforeAndAfterWhiteSpaceRegexValue = /* language=regex */ @"\s*\r?\n\s*";
 
 #if NET8_0_OR_GREATER
+    [GeneratedRegex(TypeOfExpressionRegexValue)]
+    private static partial Regex TypeOfExpressionRegex();
+
     [GeneratedRegex(HasBracketsRegexValue)]
     private static partial Regex HasBracketsRegex();
 
@@ -27,6 +32,9 @@ public static partial class ExpressionUtil
     [GeneratedRegex(LineSeparatorWithBeforeAndAfterWhiteSpaceRegexValue)]
     private static partial Regex LineSeparatorWithBeforeAndAfterWhiteSpaceRegex();
 #else
+    private static Regex TypeOfExpressionRegex() => _typeOfExpressionRegex;
+    private static Regex _typeOfExpressionRegex = new Regex(TypeOfExpressionRegexValue, RegexOptions.Compiled);
+
     private static Regex HasBracketsRegex() => _hasBracketsRegex;
     private static Regex _hasBracketsRegex = new Regex(HasBracketsRegexValue, RegexOptions.Compiled);
 
@@ -118,8 +126,15 @@ public static partial class ExpressionUtil
         return fixedExpressionBuilder.ToString();
     }
 
-    [return: NotNullIfNotNull(nameof(expression))]
-    public static bool HasBracketsExpression(string? expression)
+    public static bool IsTypeOfExpression([NotNullWhen(true)] string? expression)
+    {
+        if (expression is null)
+            return false;
+
+        return TypeOfExpressionRegex().IsMatch(expression);
+    }
+
+    public static bool HasBracketsExpression([NotNullWhen(true)] string? expression)
     {
         if (expression is null)
             return false;

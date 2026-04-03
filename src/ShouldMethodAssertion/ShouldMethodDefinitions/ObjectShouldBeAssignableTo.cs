@@ -13,7 +13,10 @@ public partial struct ObjectShouldBeAssignableTo
             return default!;
 
         if (!Actual.GetType().IsAssignableTo(typeof(T)))
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not assignable to {typeof(T).FullName}.");
+            throw AssertExceptionUtil.Create($"""
+                {ActualExpression.OneLine} is not assignable to {ExpressionUtil.FormatValue(typeof(T))}.
+                {ActualExpression.OneLine} is {ExpressionUtil.FormatValue(Actual.GetType())}.
+                """);
 
         return new ShouldContinuation<T>((T)Actual);
     }
@@ -24,7 +27,10 @@ public partial struct ObjectShouldBeAssignableTo
             return;
 
         if (!Actual.GetType().IsAssignableTo(type))
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not assignable to {ParamExpressions.type.OneLine}.");
+            throw AssertExceptionUtil.Create($"""
+                {ActualExpression.OneLine} is not assignable to {(ParamExpressions.type.IsTypeOfExpression ? ParamExpressions.type.OneLine : $"{ParamExpressions.type.OneLine}({ExpressionUtil.FormatValue(type)})")}.
+                {ActualExpression.OneLine} is {ExpressionUtil.FormatValue(Actual.GetType())}.
+                """);
     }
 
     public void ShouldNotBeAssignableTo<T>()
@@ -33,7 +39,10 @@ public partial struct ObjectShouldBeAssignableTo
             return;
 
         if (Actual.GetType().IsAssignableTo(typeof(T)))
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is assignable to {typeof(T).FullName}.");
+            throw AssertExceptionUtil.Create($"""
+                {ActualExpression.OneLine} is assignable to {ExpressionUtil.FormatValue(typeof(T))}.
+                {ActualExpression.OneLine} is {ExpressionUtil.FormatValue(Actual.GetType())}.
+                """);
     }
 
     public void ShouldNotBeAssignableTo(Type type)
@@ -42,6 +51,9 @@ public partial struct ObjectShouldBeAssignableTo
             return;
 
         if (Actual.GetType().IsAssignableTo(type))
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is assignable to {ParamExpressions.type.OneLine}.");
+            throw AssertExceptionUtil.Create($"""
+                {ActualExpression.OneLine} is assignable to {(ParamExpressions.type.IsTypeOfExpression ? ParamExpressions.type.OneLine : $"{ParamExpressions.type.OneLine}({ExpressionUtil.FormatValue(type)})")}.
+                {ActualExpression.OneLine} is {ExpressionUtil.FormatValue(Actual.GetType())}.
+                """);
     }
 }

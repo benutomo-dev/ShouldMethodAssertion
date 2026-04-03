@@ -13,7 +13,8 @@ actualValue.Should().BeAssignableTo<int>();
 **Message**
 
 ```text
-`actualValue` is not assignable to System.Int32.
+`actualValue` is not assignable to int.
+`actualValue` is string.
 ```
 
 ## Should().BeAssignableTo(Type)
@@ -30,7 +31,8 @@ actualValue.Should().BeAssignableTo(type);
 **Message**
 
 ```text
-`actualValue` is not assignable to `type`.
+`actualValue` is not assignable to `type`(int).
+`actualValue` is string.
 ```
 
 **TestCode**
@@ -45,6 +47,7 @@ actualValue.Should().BeAssignableTo(typeof(int));
 
 ```text
 `actualValue` is not assignable to `typeof(int)`.
+`actualValue` is string.
 ```
 
 ## Should().NotBeAssignableTo<T>()
@@ -60,7 +63,8 @@ actualValue.Should().NotBeAssignableTo<string>();
 **Message**
 
 ```text
-`actualValue` is assignable to System.String.
+`actualValue` is assignable to string.
+`actualValue` is string.
 ```
 
 ## Should().NotBeAssignableTo(Type)
@@ -77,7 +81,8 @@ actualValue.Should().NotBeAssignableTo(type);
 **Message**
 
 ```text
-`actualValue` is assignable to `type`.
+`actualValue` is assignable to `type`(string).
+`actualValue` is string.
 ```
 
 **TestCode**
@@ -85,12 +90,13 @@ actualValue.Should().NotBeAssignableTo(type);
 ```csharp
 object actualValue = "hello";
 
-actualValue.Should().NotBeAssignableTo(typeof(string));
+actualValue.Should().NotBeAssignableTo(typeof(IEnumerable<char>));
 ```
 
 **Message**
 
 ```text
-`actualValue` is assignable to `typeof(string)`.
+`actualValue` is assignable to `typeof(IEnumerable<char>)`.
+`actualValue` is string.
 ```
 

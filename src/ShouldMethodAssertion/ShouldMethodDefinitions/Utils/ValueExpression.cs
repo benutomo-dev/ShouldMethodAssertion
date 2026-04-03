@@ -8,6 +8,8 @@ public struct ValueExpression
 
     public bool IsMultiLine => _rawValue.Contains('\n');
 
+    public bool IsTypeOfExpression => ExpressionUtil.IsTypeOfExpression(_rawValue);
+
     public bool HasBrackets => ExpressionUtil.HasBracketsExpression(_rawValue);
 
     private string _rawValue;

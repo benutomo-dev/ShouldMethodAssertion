@@ -15,6 +15,9 @@ public struct NullableValueExpression
     public bool IsMultiLine => _rawValue?.Contains('\n') ?? false;
 
     [MemberNotNullWhen(true, nameof(Default), nameof(OneLine))]
+    public bool IsTypeOfExpression => ExpressionUtil.IsTypeOfExpression(_rawValue);
+
+    [MemberNotNullWhen(true, nameof(Default), nameof(OneLine))]
     public bool HasBrackets => ExpressionUtil.HasBracketsExpression(_rawValue);
 
     private string? _rawValue;
