@@ -7,9 +7,9 @@ public struct NullableValueExpression
     [MemberNotNullWhen(true, nameof(Default), nameof(OneLine))]
     public bool HasValue => _rawValue is not null;
 
-    public string? Default => _indentAdjustmentedValue ??= ExpressionUtil.AdjustExpressionIndent(_rawValue, withComplementBruckets: true);
+    public string? Default => _indentAdjustmentedValue ??= ExpressionUtil.AdjustExpressionIndent(_rawValue, withComplementBrackets: true);
 
-    public string? OneLine => _oneLineValue ??= ExpressionUtil.ToOneLineExpression(_rawValue, withComplementBruckets: true);
+    public string? OneLine => _oneLineValue ??= ExpressionUtil.ToOneLineExpression(_rawValue, withComplementBrackets: true);
 
     [MemberNotNullWhen(true, nameof(Default), nameof(OneLine))]
     public bool IsMultiLine => _rawValue?.Contains('\n') ?? false;

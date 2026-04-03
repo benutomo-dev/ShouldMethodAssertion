@@ -2,9 +2,9 @@
 
 public struct ValueExpression
 {
-    public string Default => _indentAdjustmentedValue ??= ExpressionUtil.AdjustExpressionIndent(_rawValue, withComplementBruckets: true);
+    public string Default => _indentAdjustmentedValue ??= ExpressionUtil.AdjustExpressionIndent(_rawValue, withComplementBrackets: true);
 
-    public string OneLine => _oneLineValue ??= ExpressionUtil.ToOneLineExpression(_rawValue, withComplementBruckets: true);
+    public string OneLine => _oneLineValue ??= ExpressionUtil.ToOneLineExpression(_rawValue, withComplementBrackets: true);
 
     public bool IsMultiLine => _rawValue.Contains('\n');
 

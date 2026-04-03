@@ -39,14 +39,14 @@ public static partial class ExpressionUtil
 #endif
 
     [return: NotNullIfNotNull(nameof(expression))]
-    public static string? AdjustExpressionIndent(string? expression, bool withComplementBruckets)
+    public static string? AdjustExpressionIndent(string? expression, bool withComplementBrackets)
     {
         if (expression is null)
             return null;
 
         if (!expression.Contains('\n'))
         {
-            if (withComplementBruckets && !HasBracketsExpression(expression))
+            if (withComplementBrackets && !HasBracketsExpression(expression))
                 return $"`{expression}`";
             else
                 return expression;
@@ -56,7 +56,7 @@ public static partial class ExpressionUtil
 
         if (lines.Length == 2)
         {
-            if (withComplementBruckets && !HasBracketsExpression(expression))
+            if (withComplementBrackets && !HasBracketsExpression(expression))
             {
                 return $"""
                     `{lines[0]}
@@ -98,11 +98,11 @@ public static partial class ExpressionUtil
         if (trimCharCount == 0)
             return expression;
 
-        var putBruckets = withComplementBruckets && !HasBracketsExpression(expression);
+        var putBrackets = withComplementBrackets && !HasBracketsExpression(expression);
 
-        var fixedExpressionBuilder = new StringBuilder(putBruckets ? expression.Length + 2 : expression.Length); 
+        var fixedExpressionBuilder = new StringBuilder(putBrackets ? expression.Length + 2 : expression.Length); 
 
-        if (putBruckets)
+        if (putBrackets)
             fixedExpressionBuilder.Append('`');
 
         fixedExpressionBuilder.Append(lines[0]);
@@ -112,7 +112,7 @@ public static partial class ExpressionUtil
             fixedExpressionBuilder.Append(lines[i].AsSpan(trimCharCount));
         }
 
-        if (putBruckets)
+        if (putBrackets)
             fixedExpressionBuilder.Append('`');
 
         return fixedExpressionBuilder.ToString();
@@ -128,20 +128,20 @@ public static partial class ExpressionUtil
     }
 
     [return: NotNullIfNotNull(nameof(expression))]
-    public static string? ToOneLineExpression(string? expression, bool withComplementBruckets)
+    public static string? ToOneLineExpression(string? expression, bool withComplementBrackets)
     {
         if (expression is null)
             return null;
 
         if (!expression.Contains('\n'))
         {
-            if (withComplementBruckets && !HasBracketsExpression(expression))
+            if (withComplementBrackets && !HasBracketsExpression(expression))
                 return $"`{expression}`";
             else
                 return expression;
         }
 
-        if (withComplementBruckets && !HasBracketsExpression(expression))
+        if (withComplementBrackets && !HasBracketsExpression(expression))
             return $"`{LineSeparatorWithBeforeAndAfterWhiteSpaceRegex().Replace(expression, _ => "")}`";
         else
             return LineSeparatorWithBeforeAndAfterWhiteSpaceRegex().Replace(expression, _ => "");
