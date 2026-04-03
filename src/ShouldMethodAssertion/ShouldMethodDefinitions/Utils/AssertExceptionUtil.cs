@@ -1,4 +1,5 @@
 ﻿using ShouldMethodAssertion.ShouldMethodDefinitions.Exceptions;
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -10,28 +11,36 @@ public static partial class AssertExceptionUtil
 {
     private interface IExceptionFactory
     {
-        Exception Create(string message, Exception? exception);
+        Exception Create(string message, Exception? exception, string? stackTrace);
     }
 
     private sealed class DefaultExceptionFactory : IExceptionFactory
     {
-        public Exception Create(string message, Exception? exception)
+        public Exception Create(string message, Exception? exception, string? stackTrace)
         {
-            if (exception is null)
-                return new Exceptions.ShouldMethodAssertionException(message);
+            var assersionException = exception is null
+                ? new Exceptions.ShouldMethodAssertionException(message)
+                : new Exceptions.ShouldMethodAssertionException(message, exception);
+
+            if (stackTrace is null)
+                return assersionException;
             else
-                return new Exceptions.ShouldMethodAssertionException(message, exception);
+                return assersionException.WithStackTrace(stackTrace);
         }
     }
 
     private sealed class XunitExceptionFactory : IExceptionFactory
     {
-        public Exception Create(string message, Exception? exception)
+        public Exception Create(string message, Exception? exception, string? stackTrace)
         {
-            if (exception is null)
-                return new Xunit.Sdk.ShouldMethodAssertionException(message);
+            var assersionException = exception is null
+                ? new Xunit.Sdk.ShouldMethodAssertionException(message)
+                : new Xunit.Sdk.ShouldMethodAssertionException(message, exception);
+
+            if (stackTrace is null)
+                return assersionException;
             else
-                return new Xunit.Sdk.ShouldMethodAssertionException(message, exception);
+                return assersionException.WithStackTrace(stackTrace);
         }
     }
 
@@ -367,6 +376,99 @@ public static partial class AssertExceptionUtil
     }
 
 
+    internal static Exception CreateBasicShouldSatisfyFail(Exception fail, ValueExpression actualExpression, string? actionCallerArgumentExpression, [CallerFilePath] string callerSourceFilePath = "unknown path", [CallerMemberName] string callerMemberName = "unknown member")
+    {
+        const string IndentSpace = "  ";
+
+        var builder = new StringBuilder();
+
+        var variableExpressionPart = toVariableExpressionPart(actionCallerArgumentExpression);
+
+        if (fail is IShouldMethodAssertionException)
+        {
+            builder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine}{variableExpressionPart} failed the verification.");
+            builder.AppendLine("");
+
+            appendWithIndent(builder, fail.Message);
+
+            var message = builder.ToString();
+
+            if (fail.StackTrace is not null)
+            {
+                builder.Clear();
+
+                var lines = LineFeedRegex().Split(fail.StackTrace);
+
+                foreach (var stackFrame in lines)
+                {
+                    if (stackFrame.Contains(callerSourceFilePath, StringComparison.OrdinalIgnoreCase) && stackFrame.Contains(callerMemberName, StringComparison.Ordinal))
+                        break;
+
+                    builder.AppendLine(stackFrame);
+                }
+
+                var stackFrames = new StackTrace(skipFrames: 2, fNeedFileInfo: true).GetFrames().Where(v => v.GetFileName() is not null && v.GetMethod() is not null);
+
+#if NET8_0_OR_GREATER
+                return Create(message, null, $"{builder}{new StackTrace(stackFrames)}");
+#else
+                foreach (var stackFrame in stackFrames)
+                    builder.AppendLine(new StackTrace(stackFrame).ToString());
+
+                return Create(message, null, builder.ToString());
+#endif
+            }
+            else
+            {
+                return Create(message);
+            }
+        }
+        else
+        {
+            builder.AppendLine(CultureInfo.InvariantCulture, $"An exception occurred while verifying {actualExpression.OneLine}{variableExpressionPart}.");
+            builder.AppendLine("");
+
+            appendWithIndent(builder, $"{fail.GetType().FullName}: {fail.Message}");
+
+            return Create(builder.ToString(), fail);
+        }
+
+
+
+        static void appendWithIndent(StringBuilder builder, string text)
+        {
+            var lines = LineFeedRegex().Split(text);
+            foreach (var line in lines)
+            {
+                builder.Append(IndentSpace);
+                builder.AppendLine(line);
+            }
+        }
+
+        static string? toVariableExpressionPart(string? actionCallerArgumentExpression)
+        {
+            if (actionCallerArgumentExpression is null)
+                return null;
+
+            var match = Regex.Match(actionCallerArgumentExpression, @"\A\s*(((?<ArgName1>[\w_]+)|\(([\w_]+\s+)(?<ArgName2>[\w_]+)\))\s*=>|(?<ArgName3>\w+)_[\w_]+\s*\z)");
+
+            if (!match.Success)
+                return null;
+
+            if (match.Groups["ArgName1"].Value is { Length: > 0 } argName1)
+                return $"(⇒ `{argName1}`)";
+
+            if (match.Groups["ArgName2"].Value is { Length: > 0 } argName2)
+                return $"(⇒ `{argName2}`)";
+
+            if (match.Groups["ArgName3"].Value is { Length: > 0 } argName3)
+                return $"(⇒ `{argName3}`)";
+
+            return null;
+        }
+    }
+
+
     internal static Exception CreateBasicShouldAllSatisfyFail<TKey, TValue>(List<(TKey key, TValue value, Exception exception)> fails, ValueExpression actualExpression, [CallerFilePath] string callerSourceFilePath = "unknown path")
     {
         const string IndentSpace = "  ";
@@ -420,6 +522,6 @@ public static partial class AssertExceptionUtil
         }
     }
 
-    public static Exception Create(string message, Exception? exception = null) =>  _exceptionFactory.Value.Create(message, exception);
+    public static Exception Create(string message, Exception? exception = null, string? stackTrace = null) =>  _exceptionFactory.Value.Create(message, exception, stackTrace);
 
 }

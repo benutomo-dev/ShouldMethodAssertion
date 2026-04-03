@@ -6,6 +6,10 @@ namespace Xunit.Sdk
 {
     internal sealed class ShouldMethodAssertionException : Exception, IShouldMethodAssertionException
     {
+        public override string? StackTrace => _stackTrace ?? base.StackTrace;
+
+        private string? _stackTrace;
+
         public ShouldMethodAssertionException()
         {
         }
@@ -22,6 +26,12 @@ namespace Xunit.Sdk
         public ShouldMethodAssertionException(SerializationInfo info, StreamingContext context) : base(info, context)
 #pragma warning restore SYSLIB0051 // 型またはメンバーが旧型式です
         {
+        }
+
+        public ShouldMethodAssertionException WithStackTrace(string stackTrace)
+        {
+            _stackTrace = stackTrace;
+            return this;
         }
     }
 }
@@ -30,6 +40,10 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions.Exceptions
 {
     internal sealed class ShouldMethodAssertionException : Exception, IShouldMethodAssertionException
     {
+        public override string? StackTrace => _stackTrace ?? base.StackTrace;
+
+        private string? _stackTrace;
+
         public ShouldMethodAssertionException()
         {
         }
@@ -47,6 +61,12 @@ namespace ShouldMethodAssertion.ShouldMethodDefinitions.Exceptions
         public ShouldMethodAssertionException(SerializationInfo info, StreamingContext context) : base(info, context)
 #pragma warning restore SYSLIB0051 // 型またはメンバーが旧型式です
         {
+        }
+
+        public ShouldMethodAssertionException WithStackTrace(string stackTrace)
+        {
+            _stackTrace = stackTrace;
+            return this;
         }
     }
 }

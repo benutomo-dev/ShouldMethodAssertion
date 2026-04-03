@@ -96,7 +96,10 @@ public class UnitTest1
 
         exception2.Message.Should().Be("fugafuga");
 
-        "asdf".ShouldSatisfy(v => v.Length == 4);
+        "asdf".ShouldSatisfy(v =>
+        {
+            v.Length.Should().Be(4);
+        });
 
         "asdf".Should().BeOneOf(["23456", "457", "asdf", "srt"]);
 

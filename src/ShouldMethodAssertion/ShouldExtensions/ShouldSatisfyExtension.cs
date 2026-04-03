@@ -5,14 +5,15 @@ namespace ShouldMethodAssertion.ShouldExtensions;
 
 public static class ShouldSatisfyExtension
 {
-    public static void ShouldSatisfy<T>(this T actual, Func<T, bool> predicate, [CallerArgumentExpression(nameof(actual))] string? actualCallerArgumentExpression = null, [CallerArgumentExpression(nameof(predicate))] string? predicateCallerArgumentExpression = null)
+    public static void ShouldSatisfy<T>(this T actual, Action<T> action, [CallerArgumentExpression(nameof(actual))] string? actualCallerArgumentExpression = null, [CallerArgumentExpression(nameof(action))] string? actionCallerArgumentExpression = null)
     {
-        if (!predicate(actual))
+        try
         {
-            var _actualCallerArgumentExpression = new ValueExpression(actualCallerArgumentExpression ?? nameof(actual));
-            var _predicateCallerArgumentExpression = new ValueExpression(predicateCallerArgumentExpression ?? nameof(actual));
-
-            throw AssertExceptionUtil.Create($"{_actualCallerArgumentExpression.OneLine} is not satisfy {_predicateCallerArgumentExpression.OneLine}.");
+            action(actual);
+        }
+        catch (Exception ex)
+        {
+            throw AssertExceptionUtil.CreateBasicShouldSatisfyFail(ex, new ValueExpression(actualCallerArgumentExpression ?? nameof(actual)), actionCallerArgumentExpression);
         }
     }
 }
