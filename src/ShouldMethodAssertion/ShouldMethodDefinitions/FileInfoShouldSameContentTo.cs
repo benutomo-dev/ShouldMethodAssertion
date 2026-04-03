@@ -11,10 +11,10 @@ public partial struct FileInfoShouldSameContentTo
     public void ShouldSameContentTo(FileInfo otherFile)
     {
         if (!Actual.Exists)
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) is not existing.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) does not exist.");
 
         if (!otherFile.Exists)
-            throw AssertExceptionUtil.Create($"{ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormatValue(otherFile.FullName)}) is not existing.");
+            throw AssertExceptionUtil.Create($"{ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormatValue(otherFile.FullName)}) does not exist.");
 
         if (Actual.Length != otherFile.Length)
             throw AssertExceptionUtil.Create($"""
@@ -40,10 +40,10 @@ public partial struct FileInfoShouldSameContentTo
     public void ShouldNotSameContentTo(FileInfo otherFile)
     {
         if (!Actual.Exists)
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) is not existing.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) does not exist.");
 
         if (!otherFile.Exists)
-            throw AssertExceptionUtil.Create($"{ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormatValue(otherFile.FullName)}) is not existing.");
+            throw AssertExceptionUtil.Create($"{ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormatValue(otherFile.FullName)}) does not exist.");
 
         if (Actual.Length != otherFile.Length)
             return;
@@ -56,6 +56,6 @@ public partial struct FileInfoShouldSameContentTo
         var compareResult = expectedQuery.Zip(actualQuery, (e, a) => new { Expected = e, Actual = a }).All(v => v.Expected == v.Actual);
 
         if (compareResult)
-            throw AssertExceptionUtil.Create($"Expected file contents did not match, but matched.");
+            throw AssertExceptionUtil.Create($"File contents matched, but were expected to differ.");
     }
 }

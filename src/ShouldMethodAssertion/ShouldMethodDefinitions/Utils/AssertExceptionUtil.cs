@@ -373,7 +373,7 @@ public static partial class AssertExceptionUtil
 
         var builder = new StringBuilder();
 
-        builder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} has not satisfied element.");
+        builder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} has unsatisfied elements.");
         builder.AppendLine("");
 
         foreach (var fail in fails)

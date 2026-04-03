@@ -16,7 +16,7 @@ actualValue.Should().Contain(expectedValue);
 **Message**
 
 ```
-`actualValue` is not contain "Apple".
+`actualValue` does not contain "Apple".
 
 [Actual]
 "apple banana orange"
@@ -33,7 +33,7 @@ actualValue.Should().Contain("Apple", /*containedCounts*/ 2, ignoreCase: true);
 **Message**
 
 ```
-`actualValue` is contain 1 "Apple", with case ignored. But expected count is 2.
+`actualValue` contains 1 "Apple", with case ignored. But expected count is 2.
 
 [Actual]
 "apple banana orange"
@@ -50,7 +50,7 @@ actualValue.Should().Contain("banana", /*containedCountsRange*/ 2..3, ignoreCase
 **Message**
 
 ```
-`actualValue` is contain 1 "banana", with case ignored. But expected count is in range of 2～3.
+`actualValue` contains 1 "banana", with case ignored. But expected count is in range of 2～3.
 
 [Actual]
 "apple banana orange"
@@ -70,7 +70,7 @@ actualValue.Should().Contain(expectedValue);
 **Message**
 
 ```
-`actualValue` is NOT contain `expectedValue`.
+`actualValue` does not contain `expectedValue`.
 ```
 
 **TestCode**
@@ -84,7 +84,7 @@ actualValue.Should().Contain("Apple");
 **Message**
 
 ```
-`actualValue` is NOT contain "Apple".
+`actualValue` does not contain "Apple".
 ```
 
 ### Array / Not contain with comparer
@@ -101,7 +101,7 @@ actualValue.Should().Contain(expectedValue, StringComparer.OrdinalIgnoreCase);
 **Message**
 
 ```
-`actualValue` is NOT contain `expectedValue`.
+`actualValue` does not contain `expectedValue`.
 ```
 
 **TestCode**
@@ -115,7 +115,7 @@ actualValue.Should().Contain("Grape", StringComparer.OrdinalIgnoreCase);
 **Message**
 
 ```
-`actualValue` is NOT contain "Grape".
+`actualValue` does not contain "Grape".
 ```
 
 ### Dictionary<TKey, TValue> / Not contain by KeyValuePair<,>
@@ -132,7 +132,7 @@ actualValue.Should().Contain(expectedValue);
 **Message**
 
 ```
-`actualValue` contain expected key. But value is NOT expected.
+`actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
 apple
@@ -152,7 +152,7 @@ actualValue.Should().Contain(new KeyValuePair<int, string>(1, "Apple"));
 **Message**
 
 ```
-`actualValue` contain expected key. But value is NOT expected.
+`actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
 apple
@@ -175,7 +175,7 @@ actualValue.Should().Contain(expectedValue);
 **Message**
 
 ```
-`actualValue` contain expected key. But value is NOT expected.
+`actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
 apple
@@ -195,7 +195,7 @@ actualValue.Should().Contain((1, "Apple"));
 **Message**
 
 ```
-`actualValue` contain expected key. But value is NOT expected.
+`actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
 apple
@@ -218,7 +218,7 @@ actualValue.Should().Contain(expectedValue, valueComparer: StringComparer.Ordina
 **Message**
 
 ```
-`actualValue` contain expected key. But value is NOT expected.
+`actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
 orange
@@ -238,13 +238,85 @@ actualValue.Should().Contain((3, "grape"), valueComparer: StringComparer.Ordinal
 **Message**
 
 ```
-`actualValue` contain expected key. But value is NOT expected.
+`actualValue` contains the expected key, but the value does not match.
 
 [ActualValue]
 orange
 
 [ExpectedValue]
 grape
+```
+
+## Should().ContainKey()
+
+### Dictionary<TKey, TValue> / Not contain key
+
+**TestCode**
+
+```csharp
+var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" } };
+var expectedKey = 4;
+
+actualValue.Should().ContainKey(expectedKey);
+```
+
+**Message**
+
+```
+`actualValue` does not contain the expected key.
+
+[ExpectedKey]
+4
+```
+
+**TestCode**
+
+```csharp
+var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" } };
+
+actualValue.Should().ContainKey(4);
+```
+
+**Message**
+
+```
+`actualValue` does not contain the expected key.
+
+[ExpectedKey]
+4
+```
+
+## Should().NotContainKey()
+
+### Dictionary<TKey, TValue> / Contain key
+
+**TestCode**
+
+```csharp
+var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" } };
+var expectedKey = 1;
+
+actualValue.Should().NotContainKey(expectedKey);
+```
+
+**Message**
+
+```
+`actualValue` contains `expectedKey`.
+```
+
+**TestCode**
+
+```csharp
+var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" } };
+
+actualValue.Should().NotContainKey(1);
+```
+
+**Message**
+
+```
+`actualValue` contains `1`.
 ```
 
 ## Should().NotContain()
@@ -263,7 +335,7 @@ actualValue.Should().NotContain(expectedValue);
 **Message**
 
 ```
-`actualValue` is contain 1 "apple". But expected count is 0.
+`actualValue` contains 1 "apple". But expected count is 0.
 
 [Actual]
 "apple banana orange"
@@ -280,7 +352,7 @@ actualValue.Should().NotContain("Apple", ignoreCase: true);
 **Message**
 
 ```
-`actualValue` is contain 1 "Apple", with case ignored. But expected count is 0.
+`actualValue` contains 1 "Apple", with case ignored. But expected count is 0.
 
 [Actual]
 "apple banana orange"
@@ -300,7 +372,7 @@ actualValue.Should().NotContain(expectedValue);
 **Message**
 
 ```
-`actualValue` contain `expectedValue`.
+`actualValue` contains `expectedValue`.
 ```
 
 **TestCode**
@@ -314,7 +386,7 @@ actualValue.Should().NotContain("banana");
 **Message**
 
 ```
-`actualValue` contain "banana".
+`actualValue` contains "banana".
 ```
 
 ### Array / Contain with comparer
@@ -331,7 +403,7 @@ actualValue.Should().NotContain(expectedValue, comparer: StringComparer.OrdinalI
 **Message**
 
 ```
-`actualValue` contain `expectedValue`.
+`actualValue` contains `expectedValue`.
 ```
 
 **TestCode**
@@ -345,7 +417,7 @@ actualValue.Should().NotContain("Banana", comparer: StringComparer.OrdinalIgnore
 **Message**
 
 ```
-`actualValue` contain "Banana".
+`actualValue` contains "Banana".
 ```
 
 ### Dictionary<TKey, TValue> / Contain by KeyValuePair<,>
@@ -362,7 +434,7 @@ actualValue.Should().NotContain(expectedValue);
 **Message**
 
 ```
-`actualValue` contain `expectedValue`.
+`actualValue` contains `expectedValue`.
 ```
 
 **TestCode**
@@ -376,7 +448,7 @@ actualValue.Should().NotContain(new KeyValuePair<int, string>(1, "apple"));
 **Message**
 
 ```
-`actualValue` contain `new KeyValuePair<int, string>(1, "apple")`.
+`actualValue` contains `new KeyValuePair<int, string>(1, "apple")`.
 ```
 
 ### Dictionary<TKey, TValue> / Contain by ValueTuple
@@ -393,7 +465,7 @@ actualValue.Should().NotContain(expectedValue);
 **Message**
 
 ```
-`actualValue` contain `expectedValue`.
+`actualValue` contains `expectedValue`.
 ```
 
 **TestCode**
@@ -407,7 +479,7 @@ actualValue.Should().NotContain((1, "apple"));
 **Message**
 
 ```
-`actualValue` contain (1, "apple").
+`actualValue` contains (1, "apple").
 ```
 
 ### Dictionary<TKey, TValue> / Equal with value comparer
@@ -424,7 +496,7 @@ actualValue.Should().NotContain(expectedValue, valueComparer: StringComparer.Ord
 **Message**
 
 ```
-`actualValue` contain `expectedValue`.
+`actualValue` contains `expectedValue`.
 ```
 
 **TestCode**
@@ -438,6 +510,6 @@ actualValue.Should().NotContain((1, "Apple"), valueComparer: StringComparer.Ordi
 **Message**
 
 ```
-`actualValue` contain (1, "Apple").
+`actualValue` contains (1, "Apple").
 ```
 

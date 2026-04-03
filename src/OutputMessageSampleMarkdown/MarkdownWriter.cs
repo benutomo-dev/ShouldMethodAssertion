@@ -6,7 +6,17 @@ namespace OutputMessageSampleMarkdown;
 
 internal sealed partial class MarkdownWriter : IDisposable
 {
-    StreamWriter _writer;
+    private StreamWriter _writer;
+
+    private static string s_userProfileDir;
+    private static string s_dummyUserProfileDir;
+
+    static MarkdownWriter()
+    {
+        s_userProfileDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+        s_dummyUserProfileDir = s_userProfileDir.Replace(Environment.UserName, "SOME_USER");
+    }
 
     public MarkdownWriter(string file, string title)
     {
@@ -37,7 +47,7 @@ internal sealed partial class MarkdownWriter : IDisposable
         _writer.WriteLine();
     }
 
-    [GeneratedRegex(@"\A(\s*|static|async)*\(\s*\)\s*=>\s*{(\r?\n)?(?<body>(.|\r?\n)*?)(\r?\n)?}\s*\z", RegexOptions.Multiline)]
+    [GeneratedRegex(@"\A(\s*|static|async)*(\([\s\w,]*\)|\w+)\s*=>\s*{(\r?\n)?(?<body>(.|\r?\n)*?)(\r?\n)?}\s*\z", RegexOptions.Multiline)]
     private static partial Regex GetLambdaExpressionRegex();
 
     [GeneratedRegex(@"\r?\n")]
@@ -79,6 +89,42 @@ internal sealed partial class MarkdownWriter : IDisposable
             EmitMessageBody(ex.Message);
         }
     }
+
+    public void EmitMessageSample(Action<string> assertAction, [CallerArgumentExpression(nameof(assertAction))] string assertActionExpression = "")
+    {
+        EmitTestCode(assertActionExpression);
+
+        var guid = Guid.NewGuid().ToString();
+
+        var tempDir = Path.Combine(Path.GetTempPath(), guid);
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            _writer.WriteLine($"**Message**");
+            _writer.WriteLine();
+
+            assertAction(tempDir);
+
+            _writer.WriteLine(@"<span style=""color:red; font-weight: bold;"">No Messsage.</span>");
+            _writer.WriteLine();
+        }
+        catch (Exception ex)
+        {
+            var fixedGuid = "c7397e81-e829-41c3-a755-ee5b39e0fce4";
+
+            EmitMessageBody(ex.Message.Replace(guid, fixedGuid));
+        }
+        finally
+        {
+            try
+            {
+                Directory.Delete(tempDir, recursive: true);
+            }
+            catch { }
+        }
+    }
+
     public async Task EmitSuccessSampleAsync(Func<Task> assertAction, [CallerArgumentExpression(nameof(assertAction))] string assertActionExpression = "")
     {
         EmitTestCode(assertActionExpression);
@@ -113,6 +159,41 @@ internal sealed partial class MarkdownWriter : IDisposable
         catch (Exception ex)
         {
             EmitMessageBody(ex.Message);
+        }
+    }
+
+    public async Task EmitMessageSampleAsync(Func<string, Task> assertAction, [CallerArgumentExpression(nameof(assertAction))] string assertActionExpression = "")
+    {
+        EmitTestCode(assertActionExpression);
+
+        var guid = Guid.NewGuid().ToString();
+
+        var tempDir = Path.Combine(Path.GetTempPath(), guid);
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            _writer.WriteLine($"**Message**");
+            _writer.WriteLine();
+
+            await assertAction(tempDir).ConfigureAwait(false);
+
+            _writer.WriteLine(@"<span style=""color:red; font-weight: bold;"">No Messsage.</span>");
+            _writer.WriteLine();
+        }
+        catch (Exception ex)
+        {
+            var fixedGuid = "c7397e81-e829-41c3-a755-ee5b39e0fce4";
+
+            EmitMessageBody(ex.Message.Replace(guid, fixedGuid));
+        }
+        finally
+        {
+            try
+            {
+                Directory.Delete(tempDir, recursive: true);
+            }
+            catch { }
         }
     }
 
@@ -154,6 +235,8 @@ internal sealed partial class MarkdownWriter : IDisposable
 
     private void EmitMessageBody(string message)
     {
+        message = message.Replace(s_userProfileDir, s_dummyUserProfileDir, StringComparison.OrdinalIgnoreCase);
+
         _writer.WriteLine("```");
         if (message.EndsWith('\n'))
             _writer.Write(message);

@@ -11,7 +11,7 @@ public partial struct DictionaryShouldContainKey<TKey, TValue>
         if (!Actual.TryGetValue(key, out var actualValue))
         {
             throw AssertExceptionUtil.Create($"""
-                {ActualExpression.OneLine} is NOT contain expected key.
+                {ActualExpression.OneLine} does not contain the expected key.
                 
                 [ExpectedKey]
                 {key}
@@ -24,7 +24,7 @@ public partial struct DictionaryShouldContainKey<TKey, TValue>
         if (Actual.ContainsKey(key))
         {
             throw AssertExceptionUtil.Create($"""
-                {ActualExpression.OneLine} contain {ParamExpressions.key.OneLine}.
+                {ActualExpression.OneLine} contains {ParamExpressions.key.OneLine}.
                 """);
         }
     }

@@ -27,7 +27,7 @@ public partial struct StringShouldMatch
 #endif
 
         throw AssertExceptionUtil.Create($"""
-            {ActualExpression.OneLine} is not match to expected.
+            {ActualExpression.OneLine} does not match expected.
 
             [Actual]
             {Actual}
@@ -54,7 +54,7 @@ public partial struct StringShouldMatch
 #endif
 
         throw AssertExceptionUtil.Create($"""
-            {ActualExpression.OneLine} is match to expected.
+            {ActualExpression.OneLine} matches expected.
 
             [Actual]
             {Actual}

@@ -23,7 +23,7 @@ public partial struct DictionaryShouldContain<TKey, TValue>
         if (!Actual.TryGetValue(keyValuePair.Key, out var actualValue))
         {
             throw AssertExceptionUtil.Create($"""
-                {ActualExpression.OneLine} is NOT contain expected key.
+                {ActualExpression.OneLine} does not contain the expected key.
                 
                 [ExpectedKey]
                 {keyValuePair.Key}
@@ -38,7 +38,7 @@ public partial struct DictionaryShouldContain<TKey, TValue>
             if (actualValueText != expectdValueText)
             {
                 throw AssertExceptionUtil.Create($"""
-                    {ActualExpression.OneLine} contain expected key. But value is NOT expected.
+                    {ActualExpression.OneLine} contains the expected key, but the value does not match.
 
                     [ActualValue]
                     {actualValueText}
@@ -50,7 +50,7 @@ public partial struct DictionaryShouldContain<TKey, TValue>
             else
             {
                 throw AssertExceptionUtil.Create($"""
-                    {ActualExpression.OneLine} contain expected key. But value is NOT expected.
+                    {ActualExpression.OneLine} contains the expected key, but the value does not match.
                     """);
             }
         }
@@ -73,7 +73,7 @@ public partial struct DictionaryShouldContain<TKey, TValue>
         if (Actual.TryGetValue(keyValuePair.Key, out var actualValue) && valueComparer.Equals(actualValue, keyValuePair.Value))
         {
             throw AssertExceptionUtil.Create($"""
-                {ActualExpression.OneLine} contain {ParamExpressions.keyValuePair.OneLine}.
+                {ActualExpression.OneLine} contains {ParamExpressions.keyValuePair.OneLine}.
                 """);
         }
     }

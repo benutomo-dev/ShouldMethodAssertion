@@ -89,7 +89,7 @@ action.Should()
 **Message**
 
 ```
-`FileNotFoundException.Message` is not match to expected.
+`FileNotFoundException.Message` does not match expected.
 
 [Actual]
 Some message xxx yyy zzz A

@@ -13,7 +13,7 @@ public partial struct ObjectShouldBeAssignableTo
             return default!;
 
         if (!Actual.GetType().IsAssignableTo(typeof(T)))
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is can not assign to {typeof(T).FullName}.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not assignable to {typeof(T).FullName}.");
 
         return new ShouldContinuation<T>((T)Actual);
     }
@@ -24,7 +24,7 @@ public partial struct ObjectShouldBeAssignableTo
             return;
 
         if (!Actual.GetType().IsAssignableTo(type))
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is can not assign to {ParamExpressions.type.OneLine}.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not assignable to {ParamExpressions.type.OneLine}.");
     }
 
     public void ShouldNotBeAssignableTo<T>()
@@ -33,7 +33,7 @@ public partial struct ObjectShouldBeAssignableTo
             return;
 
         if (Actual.GetType().IsAssignableTo(typeof(T)))
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is can assign to {typeof(T).FullName}.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is assignable to {typeof(T).FullName}.");
     }
 
     public void ShouldNotBeAssignableTo(Type type)
@@ -42,6 +42,6 @@ public partial struct ObjectShouldBeAssignableTo
             return;
 
         if (Actual.GetType().IsAssignableTo(type))
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is can assign to {ParamExpressions.type.OneLine}.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is assignable to {ParamExpressions.type.OneLine}.");
     }
 }

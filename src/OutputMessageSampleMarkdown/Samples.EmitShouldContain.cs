@@ -110,6 +110,42 @@ internal static partial class Samples
             actualValue.Should().Contain((3, "grape"), valueComparer: StringComparer.OrdinalIgnoreCase);
         });
 
+        writer.WriteLine($"## Should().ContainKey()");
+
+        writer.WriteLine($"### Dictionary<TKey, TValue> / Not contain key");
+
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" } };
+            var expectedKey = 4;
+
+            actualValue.Should().ContainKey(expectedKey);
+        });
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" } };
+
+            actualValue.Should().ContainKey(4);
+        });
+
+        writer.WriteLine($"## Should().NotContainKey()");
+
+        writer.WriteLine($"### Dictionary<TKey, TValue> / Contain key");
+
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" } };
+            var expectedKey = 1;
+
+            actualValue.Should().NotContainKey(expectedKey);
+        });
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = new Dictionary<int, string> { { 1, "apple" }, { 2, "banana" }, { 3, "orange" } };
+
+            actualValue.Should().NotContainKey(1);
+        });
+
         writer.WriteLine($"## Should().NotContain()");
 
         writer.WriteLine($"### string");

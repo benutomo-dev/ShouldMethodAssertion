@@ -9,13 +9,13 @@ public partial struct FileInfoShouldExist
     public void ShouldExist()
     {
         if (!Actual.Exists)
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) is not existing.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) does not exist.");
 
     }
 
     public void ShouldNotExist()
     {
         if (Actual.Exists)
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) is existing.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) exists.");
     }
 }

@@ -13,7 +13,7 @@ public partial struct EnumerableShouldContain<T>
         if (!Actual.Contains(value, comparer))
         {
             throw AssertExceptionUtil.Create($"""
-                {ActualExpression.OneLine} is NOT contain {ParamExpressions.value.OneLine}.
+                {ActualExpression.OneLine} does not contain {ParamExpressions.value.OneLine}.
                 """);
         }
     }
@@ -25,7 +25,7 @@ public partial struct EnumerableShouldContain<T>
         if (Actual.Contains(value, comparer))
         {
             throw AssertExceptionUtil.Create($"""
-                {ActualExpression.OneLine} contain {ParamExpressions.value.OneLine}.
+                {ActualExpression.OneLine} contains {ParamExpressions.value.OneLine}.
                 """);
         }
     }

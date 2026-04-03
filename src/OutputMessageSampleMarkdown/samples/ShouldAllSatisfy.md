@@ -18,18 +18,18 @@ actualValues.Should().AllSatisfy(v =>
 **Message**
 
 ```
-`actualValues` has not satisfied element.
+`actualValues` has unsatisfied elements.
 
 --- [2]: "orange" ---
   `v` is not one of ["apple", "banana"].
 
-  at ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeOneOf.ShouldBeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer) in K:\Mine\repos\ShouldMethodAssertion\src\ShouldMethodAssertion\ShouldMethodDefinitions\ObjectShouldBeOneOf.cs:line 19
-  at ShouldMethodAssertion.ShouldObjects.ShouldString.BeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer, String expectedListCallerArgumentExpression, String comparerCallerArgumentExpression) in K:\Mine\repos\ShouldMethodAssertion\obj\src\ShouldMethodAssertion\Debug\net10.0\ShouldMethodAssertion.Generator\ShouldMethodAssertion.Generator.IncrementalGenerator\ShouldObjects\ShouldString\ObjectShouldBeOneOf\string.cs:line 24
+  at ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeOneOf.ShouldBeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer) in D:\source\ShouldMethodAssertion\src\ShouldMethodAssertion\ShouldMethodDefinitions\ObjectShouldBeOneOf.cs:line 19
+  at ShouldMethodAssertion.ShouldObjects.ShouldString.BeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer, String expectedListCallerArgumentExpression, String comparerCallerArgumentExpression) in D:\source\ShouldMethodAssertion\obj\src\ShouldMethodAssertion\Debug\net10.0\ShouldMethodAssertion.Generator\ShouldMethodAssertion.Generator.IncrementalGenerator\ShouldObjects\ShouldString\ObjectShouldBeOneOf\string.cs:line 24
 --- [3]: "grape" ---
   `v` is not one of ["apple", "banana"].
 
-  at ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeOneOf.ShouldBeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer) in K:\Mine\repos\ShouldMethodAssertion\src\ShouldMethodAssertion\ShouldMethodDefinitions\ObjectShouldBeOneOf.cs:line 19
-  at ShouldMethodAssertion.ShouldObjects.ShouldString.BeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer, String expectedListCallerArgumentExpression, String comparerCallerArgumentExpression) in K:\Mine\repos\ShouldMethodAssertion\obj\src\ShouldMethodAssertion\Debug\net10.0\ShouldMethodAssertion.Generator\ShouldMethodAssertion.Generator.IncrementalGenerator\ShouldObjects\ShouldString\ObjectShouldBeOneOf\string.cs:line 24
+  at ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeOneOf.ShouldBeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer) in D:\source\ShouldMethodAssertion\src\ShouldMethodAssertion\ShouldMethodDefinitions\ObjectShouldBeOneOf.cs:line 19
+  at ShouldMethodAssertion.ShouldObjects.ShouldString.BeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer, String expectedListCallerArgumentExpression, String comparerCallerArgumentExpression) in D:\source\ShouldMethodAssertion\obj\src\ShouldMethodAssertion\Debug\net10.0\ShouldMethodAssertion.Generator\ShouldMethodAssertion.Generator.IncrementalGenerator\ShouldObjects\ShouldString\ObjectShouldBeOneOf\string.cs:line 24
 ```
 
 ### string[] / Fail by exception
@@ -48,7 +48,7 @@ actualValues.Should().AllSatisfy(v =>
 **Message**
 
 ```
-`actualValues` has not satisfied element.
+`actualValues` has unsatisfied elements.
 
 --- [0]: "apple" ---
   System.FormatException: The input string 'apple' was not in a correct format.
@@ -78,12 +78,12 @@ actualValues.Should().AllSatisfy((key, value) =>
 **Message**
 
 ```
-`actualValues` has not satisfied element.
+`actualValues` has unsatisfied elements.
 
 --- [3]: "orange" ---
   `value` is not one of ["apple", "banana"].
 
-  at ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeOneOf.ShouldBeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer) in K:\Mine\repos\ShouldMethodAssertion\src\ShouldMethodAssertion\ShouldMethodDefinitions\ObjectShouldBeOneOf.cs:line 19
-  at ShouldMethodAssertion.ShouldObjects.ShouldString.BeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer, String expectedListCallerArgumentExpression, String comparerCallerArgumentExpression) in K:\Mine\repos\ShouldMethodAssertion\obj\src\ShouldMethodAssertion\Debug\net10.0\ShouldMethodAssertion.Generator\ShouldMethodAssertion.Generator.IncrementalGenerator\ShouldObjects\ShouldString\ObjectShouldBeOneOf\string.cs:line 24
+  at ShouldMethodAssertion.ShouldMethodDefinitions.ObjectShouldBeOneOf.ShouldBeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer) in D:\source\ShouldMethodAssertion\src\ShouldMethodAssertion\ShouldMethodDefinitions\ObjectShouldBeOneOf.cs:line 19
+  at ShouldMethodAssertion.ShouldObjects.ShouldString.BeOneOf[T](ReadOnlySpan`1 expectedList, IEqualityComparer`1 comparer, String expectedListCallerArgumentExpression, String comparerCallerArgumentExpression) in D:\source\ShouldMethodAssertion\obj\src\ShouldMethodAssertion\Debug\net10.0\ShouldMethodAssertion.Generator\ShouldMethodAssertion.Generator.IncrementalGenerator\ShouldObjects\ShouldString\ObjectShouldBeOneOf\string.cs:line 24
 ```
 
