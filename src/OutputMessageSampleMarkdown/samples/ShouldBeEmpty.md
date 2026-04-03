@@ -15,7 +15,7 @@ actualValue.Should().BeEmpty();
 **Message**
 
 ```
-`actualValue` have 3 elements.
+`actualValue` has 3 elements.
 
 List of all elements:
 [0] "apple"
@@ -36,7 +36,7 @@ actualValue.Should().BeEmpty();
 **Message**
 
 ```
-`actualValue` have 12 elements.
+`actualValue` has 12 elements.
 
 List of first 10 elements:
 [0] "apple"
@@ -64,7 +64,7 @@ actualValue.Should().BeEmpty();
 **Message**
 
 ```
-`actualValue` have 3 elements.
+`actualValue` has 3 elements.
 
 List of all elements:
 [0] [1, apple]
@@ -85,7 +85,7 @@ actualValue.Should().BeEmpty();
 **Message**
 
 ```
-`actualValue` have 12 elements.
+`actualValue` has 12 elements.
 
 List of first 10 elements:
 [0] [apple, APPLE]

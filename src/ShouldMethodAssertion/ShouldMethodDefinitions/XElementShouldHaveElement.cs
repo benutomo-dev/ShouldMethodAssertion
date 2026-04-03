@@ -20,7 +20,7 @@ public partial struct XElementShouldHaveElement
             return element;
 
         throw AssertExceptionUtil.Create($"""
-            {ActualExpression.OneLine} do not have {name}.
+            {ActualExpression.OneLine} does not have {name}.
             """);
     }
 

@@ -225,7 +225,7 @@ public static partial class AssertExceptionUtil
 
         var countDiffereceMessage = reason == CountNotMatchReason.ActualCountMoreThanExpectedCount
             ? $" more elements than expected"
-            : $" less elements than expected";
+            : $" fewer elements than expected";
 
 
         var stringBuilder = new StringBuilder();
@@ -320,7 +320,7 @@ public static partial class AssertExceptionUtil
         if (enumeratedCount is null)
             stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} is not empty.");
         else
-            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} have {enumeratedCount} elements.");
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} has {enumeratedCount} elements.");
 
         stringBuilder.AppendLine();
 
@@ -344,7 +344,7 @@ public static partial class AssertExceptionUtil
         if (enumeratedCount is null)
             stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} is not empty.");
         else
-            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} have {enumeratedCount} entries.");
+            stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine} has {enumeratedCount} entries.");
 
         stringBuilder.AppendLine();
 

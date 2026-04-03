@@ -15,7 +15,7 @@ var element = rootElement.Should().HaveElement("itemB"); // element is XElement 
 **Message**
 
 ```
-`rootElement` do not have itemB.
+`rootElement` does not have itemB.
 ```
 
 **TestCode**
@@ -31,7 +31,7 @@ var element = rootElement.Should().HaveElement("itemA"); // element is XElement 
 **Message**
 
 ```
-`rootElement` do not have itemA.
+`rootElement` does not have itemA.
 ```
 
 **TestCode**
@@ -47,7 +47,7 @@ var element = rootElement.Should().HaveElement(XName.Get("itemA", "namespaceB"))
 **Message**
 
 ```
-`rootElement` do not have {namespaceB}itemA.
+`rootElement` does not have {namespaceB}itemA.
 ```
 
 **TestCode**

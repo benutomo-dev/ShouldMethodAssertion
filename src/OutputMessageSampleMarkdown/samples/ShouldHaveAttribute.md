@@ -15,7 +15,7 @@ var attribute = rootElement.Should().HaveAttribute("itemB"); // attribute is XAt
 **Message**
 
 ```
-`rootElement` do not have attribute of itemB.
+`rootElement` does not have attribute of itemB.
 ```
 
 **TestCode**
@@ -31,7 +31,7 @@ var attribute = rootElement.Should().HaveAttribute("itemA"); // attribute is XAt
 **Message**
 
 ```
-`rootElement` do not have attribute of itemA.
+`rootElement` does not have attribute of itemA.
 ```
 
 **TestCode**
@@ -47,7 +47,7 @@ var attribute = rootElement.Should().HaveAttribute(XName.Get("itemA", "namespace
 **Message**
 
 ```
-`rootElement` do not have attribute of {namespaceB}itemA.
+`rootElement` does not have attribute of {namespaceB}itemA.
 ```
 
 **TestCode**

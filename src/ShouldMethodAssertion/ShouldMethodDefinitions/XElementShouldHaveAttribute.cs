@@ -22,7 +22,7 @@ public partial struct XElementShouldHaveAttribute
             return attribute;
 
         throw AssertExceptionUtil.Create($"""
-            {ActualExpression.OneLine} do not have attribute of {name}.
+            {ActualExpression.OneLine} does not have attribute of {name}.
             """);
     }
 

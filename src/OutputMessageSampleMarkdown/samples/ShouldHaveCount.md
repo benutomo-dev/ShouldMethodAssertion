@@ -15,7 +15,7 @@ actualValue.Should().HaveCount(1);
 **Message**
 
 ```
-Count of `actualValue` is 3. But it expected to be 1.
+Count of `actualValue` is 3. But it was expected to be 1.
 ```
 
 ### Dictionary<TKey, TValue>
@@ -31,7 +31,7 @@ actualValue.Should().HaveCount(1);
 **Message**
 
 ```
-Count of `actualValue` is 3. But it expected to be 1.
+Count of `actualValue` is 3. But it was expected to be 1.
 ```
 
 ## Should().NotHaveCount()

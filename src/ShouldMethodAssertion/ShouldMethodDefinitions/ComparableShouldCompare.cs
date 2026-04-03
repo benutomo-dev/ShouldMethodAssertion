@@ -35,7 +35,7 @@ public partial struct ComparableShouldCompare<T>
                 return;
         }
 
-        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not less than or equal {ParamExpressions.expected.OneLine}.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not less than or equal to {ParamExpressions.expected.OneLine}.");
     }
 
     public void ShouldBeGreaterThan(T expected, IComparer<T>? comparer = null)
@@ -67,7 +67,7 @@ public partial struct ComparableShouldCompare<T>
                 return;
         }
 
-        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not greater than or equal {ParamExpressions.expected.OneLine}.");
+        throw AssertExceptionUtil.Create($"{ActualExpression.OneLine} is not greater than or equal to {ParamExpressions.expected.OneLine}.");
     }
 
     public void ShouldBeInRange(T expected, IComparer<T>? comparer = null)

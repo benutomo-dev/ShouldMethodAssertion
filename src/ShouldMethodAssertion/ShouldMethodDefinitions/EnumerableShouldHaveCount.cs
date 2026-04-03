@@ -11,7 +11,7 @@ public partial struct EnumerableShouldHaveCount<T>
         var actualCount = Actual.Count();
 
         if (actualCount != count)
-            throw AssertExceptionUtil.Create($"Count of {ActualExpression.OneLine} is {actualCount}. But it expected to be {count}.");
+            throw AssertExceptionUtil.Create($"Count of {ActualExpression.OneLine} is {actualCount}. But it was expected to be {count}.");
     }
 
     public void ShouldNotHaveCount(int count)
