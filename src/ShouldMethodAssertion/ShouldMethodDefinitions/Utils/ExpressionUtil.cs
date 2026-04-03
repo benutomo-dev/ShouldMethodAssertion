@@ -237,7 +237,7 @@ public static partial class ExpressionUtil
             if (oneLineValueTextBuilder.Length >= maxLength - ellipse.Length)
             {
                 oneLineValueTextBuilder.Append(ellipse);
-                oneLineValueTextBuilder.Append(CultureInfo.InvariantCulture, $"(totallength: {sourceValueText.Length})");
+                oneLineValueTextBuilder.Append(CultureInfo.InvariantCulture, $"(total length: {sourceValueText.Length})");
                 break;
             }
 
