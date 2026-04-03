@@ -24,10 +24,10 @@ public partial struct StringShouldContain
         {
             if (!Actual.AsSpan().Contains(text, stringComparison))
                 throw AssertExceptionUtil.Create($"""
-                    {ActualExpression.OneLine} is not contain {ExpressionUtil.FormartValue(text)}{ignoreCaseAnnotation}.
+                    {ActualExpression.OneLine} is not contain {ExpressionUtil.FormatValue(text)}{ignoreCaseAnnotation}.
 
                     [Actual]
-                    {ExpressionUtil.FormartValue(Actual)}
+                    {ExpressionUtil.FormatValue(Actual)}
                     """);
 
             return;
@@ -39,17 +39,17 @@ public partial struct StringShouldContain
         {
             if (actualCount == 0)
                 throw AssertExceptionUtil.Create($"""
-                    {ActualExpression.OneLine} is not contain {ExpressionUtil.FormartValue(text)}.
+                    {ActualExpression.OneLine} is not contain {ExpressionUtil.FormatValue(text)}.
                     
                     [Actual]
-                    {ExpressionUtil.FormartValue(Actual)}
+                    {ExpressionUtil.FormatValue(Actual)}
                     """);
 
             throw AssertExceptionUtil.Create($"""
-                {ActualExpression.OneLine} is contain {actualCount} {ExpressionUtil.FormartValue(text)}{ignoreCaseAnnotation}. But expected count is {containedCounts}.
+                {ActualExpression.OneLine} is contain {actualCount} {ExpressionUtil.FormatValue(text)}{ignoreCaseAnnotation}. But expected count is {containedCounts}.
                 
                 [Actual]
-                {ExpressionUtil.FormartValue(Actual)}
+                {ExpressionUtil.FormatValue(Actual)}
                 """);
         }
     }
@@ -89,17 +89,17 @@ public partial struct StringShouldContain
         {
             if (actualCount == 0)
                 throw AssertExceptionUtil.Create($"""
-                    {ActualExpression.OneLine} is not contain {ExpressionUtil.FormartValue(text)}{ignoreCaseAnnotation}.
+                    {ActualExpression.OneLine} is not contain {ExpressionUtil.FormatValue(text)}{ignoreCaseAnnotation}.
                     
                     [Actual]
-                    {ExpressionUtil.FormartValue(Actual)}
+                    {ExpressionUtil.FormatValue(Actual)}
                     """);
 
             throw AssertExceptionUtil.Create($"""
-                {ActualExpression.OneLine} is contain {actualCount} {ExpressionUtil.FormartValue(text)}{ignoreCaseAnnotation}. But expected count is in range of {containedCountsRange.Start.Value}～{containedCountsRange.End.Value}.
+                {ActualExpression.OneLine} is contain {actualCount} {ExpressionUtil.FormatValue(text)}{ignoreCaseAnnotation}. But expected count is in range of {containedCountsRange.Start.Value}～{containedCountsRange.End.Value}.
                 
                 [Actual]
-                {ExpressionUtil.FormartValue(Actual)}
+                {ExpressionUtil.FormatValue(Actual)}
                 """);
         }
     }
@@ -122,10 +122,10 @@ public partial struct StringShouldContain
 
         if (actualCount != 0)
             throw AssertExceptionUtil.Create($"""
-                {ActualExpression.OneLine} is contain {actualCount} {ExpressionUtil.FormartValue(text)}{ignoreCaseAnnotation}. But expected count is 0.
+                {ActualExpression.OneLine} is contain {actualCount} {ExpressionUtil.FormatValue(text)}{ignoreCaseAnnotation}. But expected count is 0.
                 
                 [Actual]
-                {ExpressionUtil.FormartValue(Actual)}
+                {ExpressionUtil.FormatValue(Actual)}
                 """);
     }
 

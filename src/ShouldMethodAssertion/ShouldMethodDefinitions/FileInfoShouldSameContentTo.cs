@@ -11,17 +11,17 @@ public partial struct FileInfoShouldSameContentTo
     public void ShouldSameContentTo(FileInfo otherFile)
     {
         if (!Actual.Exists)
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormartValue(Actual.FullName)}) is not existing.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) is not existing.");
 
         if (!otherFile.Exists)
-            throw AssertExceptionUtil.Create($"{ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormartValue(otherFile.FullName)}) is not existing.");
+            throw AssertExceptionUtil.Create($"{ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormatValue(otherFile.FullName)}) is not existing.");
 
         if (Actual.Length != otherFile.Length)
             throw AssertExceptionUtil.Create($"""
                 File sizes do not match.
 
-                {ActualExpression.OneLine}({ExpressionUtil.FormartValue(Actual.FullName)}): {Actual.Length}
-                {ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormartValue(otherFile.FullName)}): {otherFile.Length}
+                {ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}): {Actual.Length}
+                {ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormatValue(otherFile.FullName)}): {otherFile.Length}
                 """);
 
         using var expectedStream = new FileStream(otherFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -40,10 +40,10 @@ public partial struct FileInfoShouldSameContentTo
     public void ShouldNotSameContentTo(FileInfo otherFile)
     {
         if (!Actual.Exists)
-            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormartValue(Actual.FullName)}) is not existing.");
+            throw AssertExceptionUtil.Create($"{ActualExpression.OneLine}({ExpressionUtil.FormatValue(Actual.FullName)}) is not existing.");
 
         if (!otherFile.Exists)
-            throw AssertExceptionUtil.Create($"{ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormartValue(otherFile.FullName)}) is not existing.");
+            throw AssertExceptionUtil.Create($"{ParamExpressions.otherFile.OneLine}({ExpressionUtil.FormatValue(otherFile.FullName)}) is not existing.");
 
         if (Actual.Length != otherFile.Length)
             return;

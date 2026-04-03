@@ -147,7 +147,7 @@ public static partial class ExpressionUtil
             return LineSeparatorWithBeforeAndAfterWhiteSpaceRegex().Replace(expression, _ => "");
     }
 
-    internal static string FormartValue<TValue>(TValue value)
+    internal static string FormatValue<TValue>(TValue value)
     {
         return value switch
         {
@@ -183,7 +183,7 @@ public static partial class ExpressionUtil
         }
     }
 
-    internal static string FormartValue(ReadOnlySpan<char> value)
+    internal static string FormatValue(ReadOnlySpan<char> value)
     {
         if (Unsafe.IsNullRef(ref MemoryMarshal.GetReference(value)))
         {

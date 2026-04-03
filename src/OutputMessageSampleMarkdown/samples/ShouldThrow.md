@@ -32,7 +32,7 @@ action.Should().Throw<IOException>(); // When default, disallow derive exception
 Wrong exception type thrown by `action`.
 
 Expected: `System.IO.IOException`
-Actual: `System.IO.FileNotFoundException` with messge "Unable to find the specified file."
+Actual: `System.IO.FileNotFoundException` with messsge "Unable to find the specified file."
 ```
 
 ### Action with args
@@ -51,7 +51,7 @@ Invoke.That(() => action(0)).Should().Throw<IOException>(); // When default, dis
 Wrong exception type thrown by `Invoke.That(() => action(0))`.
 
 Expected: `System.IO.IOException`
-Actual: `System.IO.FileNotFoundException` with messge "Unable to find the specified file."
+Actual: `System.IO.FileNotFoundException` with messsge "Unable to find the specified file."
 ```
 
 ### Include derived exception

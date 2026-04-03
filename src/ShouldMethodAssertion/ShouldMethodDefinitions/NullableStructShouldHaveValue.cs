@@ -16,7 +16,7 @@ public partial struct NullableStructShouldHaveValue<T> where T : struct
             {ActualExpression.OneLine} is not null.
 
             [Actual]
-            {ExpressionUtil.FormartValue(Actual.Value)}
+            {ExpressionUtil.FormatValue(Actual.Value)}
             """);
     }
 

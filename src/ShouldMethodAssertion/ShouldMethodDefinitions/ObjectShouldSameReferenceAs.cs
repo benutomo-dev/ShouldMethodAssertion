@@ -15,10 +15,10 @@ public partial struct ObjectShouldSameReferenceAs
             {ActualExpression.OneLine} is not same reference as {ParamExpressions.expected.OneLine}. But did not expect it to be.
 
             [Actual]
-            {ExpressionUtil.FormartValue(Actual)}
+            {ExpressionUtil.FormatValue(Actual)}
 
             [Expected]
-            {ExpressionUtil.FormartValue(expected)}
+            {ExpressionUtil.FormatValue(expected)}
             """);
     }
 

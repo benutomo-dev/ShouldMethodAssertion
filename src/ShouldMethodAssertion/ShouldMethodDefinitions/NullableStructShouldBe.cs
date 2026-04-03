@@ -19,7 +19,7 @@ public partial struct NullableStructShouldBe<T> where T : struct
                 return;
         }
 
-        throw AssertExceptionUtil.CreateBasicShouleBeFailMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
+        throw AssertExceptionUtil.CreateBasicShouldBeFailMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
     }
 
     public void ShouldNotBe(T? expected, IEqualityComparer<T>? comparer = null)

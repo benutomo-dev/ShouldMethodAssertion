@@ -16,7 +16,7 @@ public partial struct ObjectShouldBe<T>
         if (Actual is T actual && comparer.Equals(actual, expected!))
             return;
 
-        throw AssertExceptionUtil.CreateBasicShouleBeFailMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
+        throw AssertExceptionUtil.CreateBasicShouldBeFailMessage(Actual, ActualExpression, expected, ParamExpressions.expected);
     }
 
     public void ShouldNotBe(T? expected, IEqualityComparer<T>? comparer = null)

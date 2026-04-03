@@ -32,7 +32,7 @@ await InvokeAsync.That(actionAsync).Should().ThrowAsync<IOException>().Configure
 Wrong exception type thrown by `InvokeAsync.That(actionAsync)`.
 
 Expected: `System.IO.IOException`
-Actual: `System.IO.FileNotFoundException` with messge "Unable to find the specified file."
+Actual: `System.IO.FileNotFoundException` with messsge "Unable to find the specified file."
 ```
 
 ### Func with args
@@ -51,7 +51,7 @@ await InvokeAsync.That(actionAsync, 0).Should().ThrowAsync<IOException>().Config
 Wrong exception type thrown by `InvokeAsync.That(actionAsync, 0)`.
 
 Expected: `System.IO.IOException`
-Actual: `System.IO.FileNotFoundException` with messge "Unable to find the specified file."
+Actual: `System.IO.FileNotFoundException` with messsge "Unable to find the specified file."
 ```
 
 ### Include derived exception

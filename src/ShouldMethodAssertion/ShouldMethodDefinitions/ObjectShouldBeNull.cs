@@ -15,7 +15,7 @@ public partial struct ObjectShouldBeNull
             {ActualExpression.OneLine} is not null.
 
             [Actual]
-            {ExpressionUtil.FormartValue(Actual)}
+            {ExpressionUtil.FormatValue(Actual)}
             """);
     }
 

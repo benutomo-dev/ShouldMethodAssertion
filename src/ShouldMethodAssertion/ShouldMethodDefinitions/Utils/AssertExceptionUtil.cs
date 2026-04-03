@@ -63,12 +63,12 @@ public static partial class AssertExceptionUtil
         }
     }
 
-    internal static Exception CreateBasicShouleBeFailMessage<TActual, TExpected>(TActual actualValue, ValueExpression actualExpression, TExpected expectedValue, ValueExpression expectedExpression, Exception? exception = null)
+    internal static Exception CreateBasicShouldBeFailMessage<TActual, TExpected>(TActual actualValue, ValueExpression actualExpression, TExpected expectedValue, ValueExpression expectedExpression, Exception? exception = null)
     {
         var stringBuilder = new StringBuilder();
 
-        var actualValueText = ExpressionUtil.FormartValue(actualValue);
-        var expectedValueText = ExpressionUtil.FormartValue(expectedValue);
+        var actualValueText = ExpressionUtil.FormatValue(actualValue);
+        var expectedValueText = ExpressionUtil.FormatValue(expectedValue);
 
         if (expectedValueText.Contains('\n') || expectedValueText.Length > 30)
         {
@@ -93,7 +93,7 @@ public static partial class AssertExceptionUtil
     {
         var stringBuilder = new StringBuilder();
 
-        var actualValueText = ExpressionUtil.FormartValue(actualValue);
+        var actualValueText = ExpressionUtil.FormatValue(actualValue);
 
         if (actualValueText.Contains('\n') || actualValueText.Length > 30)
         {
@@ -117,8 +117,8 @@ public static partial class AssertExceptionUtil
             ? $" when compared using {comparerExpression}"
             : $"";
 
-        var actualValueText = ExpressionUtil.FormartValue(actualElementValue);
-        var expectedValueText = ExpressionUtil.FormartValue(expectedElementValue);
+        var actualValueText = ExpressionUtil.FormatValue(actualElementValue);
+        var expectedValueText = ExpressionUtil.FormatValue(expectedElementValue);
 
         var stringBuilder = new StringBuilder();
 
@@ -292,7 +292,7 @@ public static partial class AssertExceptionUtil
             Wrong exception type thrown by {actualExpression.OneLine}.
 
             Expected: `{expectedExceptionType.FullName}`
-            Actual: `{actualException.GetType().FullName}` with messge "{actualException.Message}"
+            Actual: `{actualException.GetType().FullName}` with messsge "{actualException.Message}"
             """, actualException);
     }
 
