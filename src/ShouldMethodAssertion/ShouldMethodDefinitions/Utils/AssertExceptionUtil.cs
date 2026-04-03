@@ -111,7 +111,7 @@ public static partial class AssertExceptionUtil
         return Create(stringBuilder.ToString(), exception);
     }
 
-    internal static Exception CreateBasicShouldEqualFailMessageByDifferentNthElement<TActual, TExpected>(int defferentElementIndex, TActual actualElementValue, TExpected expectedElementValue, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression, Exception? exception = null)
+    internal static Exception CreateBasicShouldEqualFailMessageByDifferentNthElement<TActual, TExpected>(int differentElementIndex, TActual actualElementValue, TExpected expectedElementValue, ValueExpression actualExpression, ValueExpression expectedExpression, NullableValueExpression comparerExpression, Exception? exception = null)
     {
         var comparerAnnotation = comparerExpression.HasValue
             ? $" when compared using {comparerExpression}"
@@ -135,7 +135,7 @@ public static partial class AssertExceptionUtil
             stringBuilder.AppendLine();
         }
 
-        stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"The content of {actualExpression.OneLine}[{defferentElementIndex}] is different.");
+        stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"The content of {actualExpression.OneLine}[{differentElementIndex}] is different.");
         stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"");
 
         if (actualValueText.Contains('\n') || expectedValueText.Contains('\n'))
