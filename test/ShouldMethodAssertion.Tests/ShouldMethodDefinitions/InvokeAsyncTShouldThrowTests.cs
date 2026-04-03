@@ -139,11 +139,22 @@ public class InvokeAsyncTShouldThrowTests
     {
         var invokeThat = InvokeAsync.That(async () =>
         {
-            if (True) throw new ArgumentException("xxx");
+            if (True) throw new AggregateException("xxx", new ArgumentException("expected"));
             return await Task.FromResult(1);
         });
 
-        await new InvokeAsyncTShouldThrow<int>(invokeThat, "actual", default).ShouldThrowAsync<ArgumentException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+        if (aggregateExceptionHandling != AggregateExceptionHandling.None)
+        {
+            var actualException = (await new InvokeAsyncTShouldThrow<int>(invokeThat, "actual", default).ShouldThrowAsync<ArgumentException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false));
+            Assert.Equal("expected", actualException.Message);
+        }
+        else
+        {
+            await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
+            {
+                await new InvokeAsyncTShouldThrow<int>(invokeThat, "actual", default).ShouldThrowAsync<ArgumentException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+            });
+        }
     }
 
     [Theory]
@@ -152,11 +163,11 @@ public class InvokeAsyncTShouldThrowTests
     {
         var invokeThat = InvokeAsync.That(async () =>
         {
-            if (True) throw new FileNotFoundException();
+            if (True) throw new AggregateException("xxx", new FileNotFoundException());
             return await Task.FromResult(1);
         });
 
-        if (includeDerivedType)
+        if (includeDerivedType && aggregateExceptionHandling != AggregateExceptionHandling.None)
         {
             await new InvokeAsyncTShouldThrow<int>(invokeThat, "actual", default).ShouldThrowAsync<IOException>(includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         }
@@ -297,11 +308,22 @@ public class InvokeAsyncTShouldThrowTests
     {
         var invokeThat = InvokeAsync.That(async () =>
         {
-            if (True) throw new ArgumentException("xxx");
+            if (True) throw new AggregateException("xxx", new ArgumentException("expected"));
             return await Task.FromResult(1);
         });
 
-        await new InvokeAsyncTShouldThrow<int>(invokeThat, "actual", default).ShouldThrowAsync(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+        if (aggregateExceptionHandling != AggregateExceptionHandling.None)
+        {
+            var actualException = (await new InvokeAsyncTShouldThrow<int>(invokeThat, "actual", default).ShouldThrowAsync(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false));
+            Assert.Equal("expected", actualException.Message);
+        }
+        else
+        {
+            await Assert.ThrowsAsync<Xunit.Sdk.ShouldMethodAssertionException>(async () =>
+            {
+                await new InvokeAsyncTShouldThrow<int>(invokeThat, "actual", default).ShouldThrowAsync(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
+            });
+        }
     }
 
     [Theory]
@@ -310,11 +332,11 @@ public class InvokeAsyncTShouldThrowTests
     {
         var invokeThat = InvokeAsync.That(async () =>
         {
-            if (True) throw new FileNotFoundException();
+            if (True) throw new AggregateException("xxx", new FileNotFoundException());
             return await Task.FromResult(1);
         });
 
-        if (includeDerivedType)
+        if (includeDerivedType && aggregateExceptionHandling != AggregateExceptionHandling.None)
         {
             await new InvokeAsyncTShouldThrow<int>(invokeThat, "actual", default).ShouldThrowAsync(typeof(IOException), includeDerivedType, aggregateExceptionHandling).ConfigureAwait(false);
         }

@@ -107,16 +107,29 @@ public class FuncShouldThrowTests
     [CombinatorialData]
     public void ShouldThrowT_ThrowAggregateSingleExactExpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        new FuncShouldThrow<int>(new Func<int>(() => throw new ArgumentException("xxx")), "actual", default).ShouldThrow<ArgumentException>(includeDerivedType, aggregateExceptionHandling);
+        var taskFunc = new Func<int>(() => throw new AggregateException("xxx", new ArgumentException("expected")));
+
+        if (aggregateExceptionHandling != AggregateExceptionHandling.None)
+        {
+            var actualException = new FuncShouldThrow<int>(taskFunc, "actual", default).ShouldThrow<ArgumentException>(includeDerivedType, aggregateExceptionHandling).Exception;
+            Assert.Equal("expected", actualException.Message);
+        }
+        else
+        {
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
+            {
+                new FuncShouldThrow<int>(taskFunc, "actual", default).ShouldThrow<ArgumentException>(includeDerivedType, aggregateExceptionHandling);
+            });
+        }
     }
 
     [Theory]
     [CombinatorialData]
     public void ShouldThrowT_ThrowAggregateSingleDerivedExpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        var taskFunc = new Func<int>(() => throw new FileNotFoundException());
+        var taskFunc = new Func<int>(() => throw new AggregateException("xxx", new FileNotFoundException()));
 
-        if (includeDerivedType)
+        if (includeDerivedType && aggregateExceptionHandling != AggregateExceptionHandling.None)
         {
             new FuncShouldThrow<int>(taskFunc, "actual", default).ShouldThrow<IOException>(includeDerivedType, aggregateExceptionHandling);
         }
@@ -229,16 +242,29 @@ public class FuncShouldThrowTests
     [CombinatorialData]
     public void ShouldThrow_ThrowAggregateSingleExactExpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        new FuncShouldThrow<int>(new Func<int>(() => throw new ArgumentException("xxx")), "actual", default).ShouldThrow(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling);
+        var taskFunc = new Func<int>(() => throw new AggregateException("xxx", new ArgumentException("expected")));
+
+        if (aggregateExceptionHandling != AggregateExceptionHandling.None)
+        {
+            var actualException = new FuncShouldThrow<int>(taskFunc, "actual", default).ShouldThrow(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling).Exception;
+            Assert.Equal("expected", actualException.Message);
+        }
+        else
+        {
+            Assert.Throws<Xunit.Sdk.ShouldMethodAssertionException>(() =>
+            {
+                new FuncShouldThrow<int>(taskFunc, "actual", default).ShouldThrow(typeof(ArgumentException), includeDerivedType, aggregateExceptionHandling);
+            });
+        }
     }
 
     [Theory]
     [CombinatorialData]
     public void ShouldThrow_ThrowAggregateSingleDerivedExpectedType(bool includeDerivedType, AggregateExceptionHandling aggregateExceptionHandling)
     {
-        var taskFunc = new Func<int>(() => throw new FileNotFoundException());
+        var taskFunc = new Func<int>(() => throw new AggregateException("xxx", new FileNotFoundException()));
 
-        if (includeDerivedType)
+        if (includeDerivedType && aggregateExceptionHandling != AggregateExceptionHandling.None)
         {
             new FuncShouldThrow<int>(taskFunc, "actual", default).ShouldThrow(typeof(IOException), includeDerivedType, aggregateExceptionHandling);
         }

@@ -13,7 +13,13 @@ internal static class ThrowHandlingHelper
         if (aggregateExceptionHandling == AggregateExceptionHandling.SingleDirect)
         {
             if (aggregateException.InnerExceptions.Count == 1 && aggregateException.InnerException is TException expectedException)
-                return expectedException;
+            {
+                if (includeDerivedType)
+                    return expectedException;
+
+                if (expectedException.GetType() == typeof(TException))
+                    return expectedException;
+            }
         }
         else
         {
@@ -88,10 +94,12 @@ internal static class ThrowHandlingHelper
             if (exception?.GetType() == typeof(TException))
             {
                 expectedTypeException = (TException)exception;
+                return true;
             }
         }
 
         expectedTypeException = null;
+
         return false;
     }
 
