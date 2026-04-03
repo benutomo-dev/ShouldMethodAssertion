@@ -1,4 +1,5 @@
 ﻿using ShouldMethodAssertion.ShouldMethodDefinitions.Utils;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace ShouldMethodAssertion.ShouldExtensions;
@@ -13,7 +14,7 @@ public static class ShouldSatisfyExtension
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.CreateBasicShouldSatisfyFail(ex, new ValueExpression(actualCallerArgumentExpression ?? nameof(actual)), actionCallerArgumentExpression);
+            throw AssertExceptionUtil.CreateBasicShouldSatisfyFail(ex, new ValueExpression(actualCallerArgumentExpression ?? nameof(actual)), actionCallerArgumentExpression, new StackFrame());
         }
     }
 }

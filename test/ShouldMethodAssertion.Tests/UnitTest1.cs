@@ -99,6 +99,16 @@ public class UnitTest1
         "asdf".ShouldSatisfy(v =>
         {
             v.Length.Should().Be(4);
+            v.Length.ShouldSatisfy(v =>
+            {
+                v.ShouldSatisfy(v =>
+                {
+                    v.ShouldSatisfy(v =>
+                    {
+                        v.Should().Be(4);
+                    });
+                });
+            });
         });
 
         "asdf".Should().BeOneOf(["23456", "457", "asdf", "srt"]);

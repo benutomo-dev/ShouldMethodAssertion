@@ -376,8 +376,10 @@ public static partial class AssertExceptionUtil
     }
 
 
-    internal static Exception CreateBasicShouldSatisfyFail(Exception fail, ValueExpression actualExpression, string? actionCallerArgumentExpression, [CallerFilePath] string callerSourceFilePath = "unknown path", [CallerMemberName] string callerMemberName = "unknown member")
+    internal static Exception CreateBasicShouldSatisfyFail(Exception fail, ValueExpression actualExpression, string? actionCallerArgumentExpression, StackFrame skipStackFrame)
     {
+        Debug.Assert(skipStackFrame.GetFileName() is null);
+
         const string IndentSpace = "  ";
 
         var builder = new StringBuilder();
@@ -397,30 +399,38 @@ public static partial class AssertExceptionUtil
             {
                 builder.Clear();
 
+                var stackFrameLineMethodSignature =  new StackTrace(skipStackFrame).ToString().Trim();
+
                 var lines = LineFeedRegex().Split(fail.StackTrace);
 
                 foreach (var stackFrame in lines)
                 {
-                    if (stackFrame.Contains(callerSourceFilePath, StringComparison.OrdinalIgnoreCase) && stackFrame.Contains(callerMemberName, StringComparison.Ordinal))
-                        break;
+                    if (stackFrameLineMethodSignature is not null && stackFrame.Contains(stackFrameLineMethodSignature))
+                        continue;
 
                     builder.AppendLine(stackFrame);
                 }
 
-                var stackFrames = new StackTrace(skipFrames: 2, fNeedFileInfo: true).GetFrames().Where(v => v.GetFileName() is not null && v.GetMethod() is not null);
+                var frames = new StackTrace(fNeedFileInfo: true).GetFrames();
+
+                var stackFrames = frames
+                    .SkipWhile(v => v.GetMethod() != skipStackFrame.GetMethod())
+                    .Skip(1)
+                    .TakeWhile(v => v.GetMethod() != skipStackFrame.GetMethod())
+                    .Where(v => v.GetFileName() is not null && v.GetMethod() is not null);
 
 #if NET8_0_OR_GREATER
-                return Create(message, null, $"{builder}{new StackTrace(stackFrames)}");
+                return Create(message, fail.InnerException, $"{builder}{new StackTrace(stackFrames)}");
 #else
                 foreach (var stackFrame in stackFrames)
                     builder.AppendLine(new StackTrace(stackFrame).ToString());
 
-                return Create(message, null, builder.ToString());
+                return Create(message, fail.InnerException, builder.ToString());
 #endif
             }
             else
             {
-                return Create(message);
+                return Create(message, fail.InnerException);
             }
         }
         else
