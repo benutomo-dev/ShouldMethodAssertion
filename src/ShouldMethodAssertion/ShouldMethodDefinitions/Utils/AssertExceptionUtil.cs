@@ -292,7 +292,7 @@ public static partial class AssertExceptionUtil
             Wrong exception type thrown by {actualExpression.OneLine}.
 
             Expected: `{expectedExceptionType.FullName}`
-            Actual: `{actualException.GetType().FullName}` with messsge "{actualException.Message}"
+            Actual: `{actualException.GetType().FullName}` with message "{actualException.Message}"
             """, actualException);
     }
 
