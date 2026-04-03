@@ -32,6 +32,13 @@ internal static partial class Samples
 
             actualValue.Should().HaveFlag(SampleFlags.Write);
         });
+        writer.EmitMessageSample(() =>
+        {
+            var actualValue = SampleFlags.Read | SampleFlags.Write;
+            var expectedValue = SampleFlags.Read | SampleFlags.Execute;
+
+            actualValue.Should().HaveFlag(expectedValue);
+        });
 
         writer.WriteLine($"## Should().NotHaveFlag()");
 

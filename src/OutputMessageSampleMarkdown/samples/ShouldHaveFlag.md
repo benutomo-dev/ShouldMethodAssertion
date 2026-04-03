@@ -15,6 +15,12 @@ actualValue.Should().HaveFlag(expectedValue);
 
 ```text
 `actualValue` does not have `expectedValue`.
+
+[Actual]
+`Read`
+
+[Expected Flag]
+`Write`
 ```
 
 **TestCode**
@@ -29,6 +35,33 @@ actualValue.Should().HaveFlag(SampleFlags.Write);
 
 ```text
 `actualValue` does not have `SampleFlags.Write`.
+
+[Actual]
+`Read`
+
+[Expected Flag]
+`Write`
+```
+
+**TestCode**
+
+```csharp
+var actualValue = SampleFlags.Read | SampleFlags.Write;
+var expectedValue = SampleFlags.Read | SampleFlags.Execute;
+
+actualValue.Should().HaveFlag(expectedValue);
+```
+
+**Message**
+
+```text
+`actualValue` does not have `expectedValue`.
+
+[Actual]
+`Read, Write`
+
+[Expected Flag]
+`Read, Execute`
 ```
 
 ## Should().NotHaveFlag()
@@ -46,6 +79,12 @@ actualValue.Should().NotHaveFlag(expectedValue);
 
 ```text
 `actualValue` has `expectedValue`.
+
+[Actual]
+`Read, Write`
+
+[Unexpected Flag]
+`Write`
 ```
 
 **TestCode**
@@ -60,5 +99,11 @@ actualValue.Should().NotHaveFlag(SampleFlags.Write);
 
 ```text
 `actualValue` has `SampleFlags.Write`.
+
+[Actual]
+`Read, Write`
+
+[Unexpected Flag]
+`Write`
 ```
 

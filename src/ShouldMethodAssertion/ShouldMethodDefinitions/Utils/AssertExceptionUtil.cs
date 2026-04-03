@@ -534,6 +534,32 @@ public static partial class AssertExceptionUtil
         }
     }
 
+    internal static Exception CreateBasicShouldHaveFlagFail<TActual>(TActual actualValue, ValueExpression actualExpression, TActual expectedFlag, ValueExpression expectedFlagExpression) where TActual : struct, Enum
+    {
+        return Create($"""
+            {actualExpression.OneLine} does not have {expectedFlagExpression.OneLine}.
+
+            [Actual]
+            {ExpressionUtil.FormatValue(actualValue)}
+
+            [Expected Flag]
+            {ExpressionUtil.FormatValue(expectedFlag)}
+            """);
+    }
+
+    internal static Exception CreateBasicShouldNotHaveFlagFail<TActual>(TActual actualValue, ValueExpression actualExpression, TActual expectedFlag, ValueExpression expectedFlagExpression) where TActual : struct, Enum
+    {
+        return Create($"""
+            {actualExpression.OneLine} has {expectedFlagExpression.OneLine}.
+
+            [Actual]
+            {ExpressionUtil.FormatValue(actualValue)}
+
+            [Unexpected Flag]
+            {ExpressionUtil.FormatValue(expectedFlag)}
+            """);
+    }
+
     public static Exception Create(string message) => _exceptionFactory.Value.Create(message, exception: null, stackTrace: null);
 
     public static Exception Create(string message, Exception? exception = null, string? stackTrace = null) =>  _exceptionFactory.Value.Create(message, exception, stackTrace);
