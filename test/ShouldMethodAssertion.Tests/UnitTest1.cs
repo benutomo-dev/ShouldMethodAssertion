@@ -111,6 +111,27 @@ public class UnitTest1
             });
         });
 
+        await "asdf".ShouldSatisfyAsync(async v =>
+        {
+            v.Length.Should().Be(4);
+            await v.Length.ShouldSatisfyAsync(async v =>
+            {
+                await Task.Delay(1).ConfigureAwait(false);
+
+                await v.ShouldSatisfyAsync(async v =>
+                {
+                    await Task.Delay(1).ConfigureAwait(false);
+
+                    await v.ShouldSatisfyAsync(async v =>
+                    {
+                        await Task.Delay(1).ConfigureAwait(false);
+
+                        v.Should().Be(4);
+                    });
+                });
+            });
+        });
+
         "asdf".Should().BeOneOf(["23456", "457", "asdf", "srt"]);
 
         int? nullInt = null;
