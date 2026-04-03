@@ -16,7 +16,8 @@ actual.ShouldSatisfy(v =>
 **Message**
 
 ```text
-`actual`(⇒ `v`) failed the verification.
+`actual`(⇒ `v`) did not satisfy the specified condition.
+[Actual Value] "hello"
 
   `v` is "world". But did not expect it to be.
   
@@ -45,6 +46,7 @@ actual.ShouldSatisfy(v =>
 
 ```text
 An exception occurred while verifying `actual`(⇒ `v`).
+[Actual Value] "not a number"
 
   System.FormatException: The input string 'not a number' was not in a correct format.
 ```
@@ -68,9 +70,11 @@ actual.ShouldSatisfy(v =>
 **Message**
 
 ```text
-`actual`(⇒ `v`) failed the verification.
+`actual`(⇒ `v`) did not satisfy the specified condition.
+[Actual Value] (Alice, 15)
 
-  `v.Name`(⇒ `name`) failed the verification.
+  `v.Name`(⇒ `name`) did not satisfy the specified condition.
+  [Actual Value] "Alice"
   
     `name` is "Bob". But did not expect it to be.
     

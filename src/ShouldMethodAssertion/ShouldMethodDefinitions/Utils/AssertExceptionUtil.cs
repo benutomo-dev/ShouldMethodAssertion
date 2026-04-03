@@ -376,7 +376,7 @@ public static partial class AssertExceptionUtil
     }
 
 
-    internal static Exception CreateBasicShouldSatisfyFail(Exception fail, ValueExpression actualExpression, string? actionCallerArgumentExpression, StackFrame skipStackFrame)
+    internal static Exception CreateBasicShouldSatisfyFail<T>(Exception fail, T actual, ValueExpression actualExpression, string? actionCallerArgumentExpression, StackFrame skipStackFrame)
     {
         Debug.Assert(skipStackFrame.GetFileName() is null);
 
@@ -388,7 +388,8 @@ public static partial class AssertExceptionUtil
 
         if (fail is IShouldMethodAssertionException)
         {
-            builder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine}{variableExpressionPart} failed the verification.");
+            builder.AppendLine(CultureInfo.InvariantCulture, $"{actualExpression.OneLine}{variableExpressionPart} did not satisfy the specified condition.");
+            builder.AppendLine(CultureInfo.InvariantCulture, $"[Actual Value] {ExpressionUtil.FormatValueAsOneline(actual)}");
             builder.AppendLine("");
 
             appendWithIndent(builder, fail.Message);
@@ -436,6 +437,7 @@ public static partial class AssertExceptionUtil
         else
         {
             builder.AppendLine(CultureInfo.InvariantCulture, $"An exception occurred while verifying {actualExpression.OneLine}{variableExpressionPart}.");
+            builder.AppendLine(CultureInfo.InvariantCulture, $"[Actual Value] {ExpressionUtil.FormatValueAsOneline(actual)}");
             builder.AppendLine("");
 
             appendWithIndent(builder, $"{fail.GetType().FullName}: {fail.Message}");

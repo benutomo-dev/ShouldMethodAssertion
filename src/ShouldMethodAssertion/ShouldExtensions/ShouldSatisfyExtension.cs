@@ -14,7 +14,7 @@ public static class ShouldSatisfyExtension
         }
         catch (Exception ex)
         {
-            throw AssertExceptionUtil.CreateBasicShouldSatisfyFail(ex, new ValueExpression(actualCallerArgumentExpression ?? nameof(actual)), actionCallerArgumentExpression, new StackFrame());
+            throw AssertExceptionUtil.CreateBasicShouldSatisfyFail(ex, actual, new ValueExpression(actualCallerArgumentExpression ?? nameof(actual)), actionCallerArgumentExpression, new StackFrame());
         }
     }
 }
